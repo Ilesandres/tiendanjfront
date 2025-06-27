@@ -68,7 +68,6 @@ export class UserService {
 
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      console.log('[DEBUG] Usuario decodificado del token:', payload);
       return {
         id: payload.id,
         user: payload.user,

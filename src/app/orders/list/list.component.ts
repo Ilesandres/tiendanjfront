@@ -44,8 +44,10 @@ export class ListComponent implements OnInit {
         console.log(this.orders);
       },
       error: (err) => {
+        console.log("error")
         this.error = 'Error al cargar las ventas';
         this.loading = false;
+        
       }
     });
   }
