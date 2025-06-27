@@ -7,40 +7,17 @@
     </button>
   </div>
 
+  <!-- Filtros -->
+  <app-order-filters
+    (filtersChanged)="onFiltersChanged($event)"
+    (searchChanged)="onSearchChanged($event)">
+  </app-order-filters>
+
   <!-- Estadísticas -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon">💰</div>
-      <div class="stat-content">
-        <h3>Total Ventas</h3>
-        <p class="stat-value">${{ totalSales | number }}</p>
-      </div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon">📦</div>
-      <div class="stat-content">
-        <h3>Órdenes</h3>
-        <p class="stat-value">{{ orders.length }}</p>
-      </div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon">✅</div>
-      <div class="stat-content">
-        <h3>Completadas</h3>
-        <p class="stat-value">{{ completedOrders }}</p>
-      </div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon">⏳</div>
-      <div class="stat-content">
-        <h3>Pendientes</h3>
-        <p class="stat-value">{{ pendingOrders }}</p>
-      </div>
-    </div>
-  </div>
+  <app-order-stats 
+    [orders]="orders" 
+    [filteredOrders]="filteredOrders">
+  </app-order-stats>
 
   <!-- Loading -->
   <div *ngIf="loading" class="loading">
@@ -55,11 +32,20 @@
 
   <!-- Lista de órdenes -->
   <div *ngIf="!loading && !error" class="orders-container">
-    <div *ngFor="let order of orders" class="order-card">
+    <!-- Información de resultados -->
+    <div class="results-info" *ngIf="filteredOrders.length > 0">
+      <p>
+        Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+        {{ Math.min(currentPage * itemsPerPage, totalItems) }} 
+        de {{ totalItems }} órdenes
+      </p>
+    </div>
+
+    <div *ngFor="let order of paginatedOrders" class="order-card">
       <div class="order-header">
         <div class="order-info">
           <h3>Venta #{{ order.id }}</h3>
-          <p class="order-date">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+          <p class="order-date">{{ formatDate(order.createdAt) }}</p>
         </div>
         
         <div class="order-status">
@@ -74,17 +60,36 @@
           <h4>Cliente</h4>
           <p>{{ order.user.people.name }} {{ order.user.people.lastname }}</p>
           <p class="customer-dni">DNI: {{ order.user.people.dni }}</p>
+          <p class="customer-email">{{ order.user.people.email }}</p>
+        </div>
+
+        <div class="order-type-info">
+          <h4>Tipo</h4>
+          <p>{{ order.typeOrder?.type || 'No especificado' }}</p>
+          <div *ngIf="order.invoice" class="invoice-html" [innerHTML]="order.invoice"></div>
         </div>
 
         <div class="payment-info">
           <h4>Pago</h4>
           <p>{{ order.payment?.method?.method || 'No especificado' }}</p>
           <p class="payment-status">{{ order.payment?.status?.status || 'Sin estado' }}</p>
+          <p *ngIf="hasVouchers(order)" class="vouchers-info">
+            {{ getVouchersText(order) }}
+          </p>
+        </div>
+
+        <div class="shipment-info">
+          <h4>Envío</h4>
+          <p>{{ order.shipment?.status?.status || 'Sin envío' }}</p>
+          <p *ngIf="order.shipment?.details" class="shipment-details">{{ order.shipment?.details }}</p>
         </div>
 
         <div class="order-total">
           <h4>Total</h4>
-          <p class="total-amount">${{ order.total | number }}</p>
+          <p class="total-amount">{{ formatCurrency(order.total) }}</p>
+          <p *ngIf="order.productOrder && order.productOrder.length > 0" class="products-count">
+            {{ order.productOrder.length }} producto{{ order.productOrder.length > 1 ? 's' : '' }}
+          </p>
         </div>
       </div>
 
@@ -100,14 +105,44 @@
         </ng-container>
       </div>
     </div>
+
+    <!-- Paginación -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button 
+        class="btn btn-outline" 
+        [disabled]="currentPage === 1"
+        (click)="changePage(currentPage - 1)">
+        ← Anterior
+      </button>
+      
+      <div class="page-numbers">
+        <button 
+          *ngFor="let page of pages" 
+          class="btn"
+          [class.btn-primary]="page === currentPage"
+          [class.btn-outline]="page !== currentPage"
+          (click)="changePage(page)">
+          {{ page }}
+        </button>
+      </div>
+      
+      <button 
+        class="btn btn-outline" 
+        [disabled]="currentPage === totalPages"
+        (click)="changePage(currentPage + 1)">
+        Siguiente →
+      </button>
+    </div>
   </div>
 
   <!-- Sin órdenes -->
-  <div *ngIf="!loading && !error && orders.length === 0" class="empty-state">
+  <div *ngIf="!loading && !error && filteredOrders.length === 0" class="empty-state">
     <div class="empty-icon">📋</div>
-    <h3>No hay ventas registradas</h3>
-    <p>Crea tu primera venta para comenzar</p>
-    <button (click)="router.navigate(['/orders/create'])" class="btn btn-primary">
+    <h3 *ngIf="orders.length === 0">No hay ventas registradas</h3>
+    <h3 *ngIf="orders.length > 0">No se encontraron órdenes</h3>
+    <p *ngIf="orders.length === 0">Crea tu primera venta para comenzar</p>
+    <p *ngIf="orders.length > 0">Intenta ajustar los filtros de búsqueda</p>
+    <button (click)="router.navigate(['/orders/create'])" class="btn btn-primary" *ngIf="orders.length === 0">
       ➕ Crear Primera Venta
     </button>
   </div>

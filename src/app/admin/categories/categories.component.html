@@ -62,7 +62,7 @@
           >
             {{ category.active ? 'Deshabilitar' : 'Habilitar' }}
           </button>
-          <button class="btn-delete" (click)="deleteCategory(category.id)">
+          <button *ngIf="userService.isAdmin()" class="btn-delete" (click)="deleteCategory(category.id)">
             Eliminar
           </button>
         </div>

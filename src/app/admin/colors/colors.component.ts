@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ColorService } from '../../services/color.service';
 import { Color, CreateColorRequest, UpdateColorRequest } from '../../interfaces/color.interface';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-colors',
@@ -21,7 +22,10 @@ export class ColorsComponent implements OnInit {
     color: ''
   };
 
-  constructor(private colorService: ColorService) {}
+  constructor(
+    private colorService: ColorService,
+    public userService: UserService
+  ) {}
 
   ngOnInit(): void {
     this.loadColors();

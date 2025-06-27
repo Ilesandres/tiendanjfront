@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { 
   TypeOrder, 
@@ -14,7 +14,9 @@ import {
   UpdateOrderRequest,
   Voucher,
   CreateVoucherRequest,
-  User
+  User,
+  OrderFilters,
+  UpdateOrderTotalRequest
 } from '../interfaces/order.interface';
 import { environment } from '../../environments/environment';
 
@@ -252,7 +254,7 @@ export class OrderService {
     return this.http.post(`${this.apiUrl}/order/update/${id}`, order, { headers });
   }
 
-  updateOrderTotal(id: number, total: { total: number }): Observable<any> {
+  updateOrderTotal(id: number, total: UpdateOrderTotalRequest): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.post(`${this.apiUrl}/order/update/total/${id}`, total, { headers });
   }
@@ -286,6 +288,67 @@ export class OrderService {
   deleteVoucher(id: number): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.delete(`${this.apiUrl}/vouchersabonos/delete/${id}`, { headers });
+  }
+
+  // Métodos de filtrado avanzado - CORREGIDOS para usar endpoints reales
+  getOrdersWithFilters(filters: OrderFilters): Observable<Order[]> {
+    // Si hay filtros específicos, usar los endpoints correspondientes
+    if (filters.userId) {
+      return this.getOrdersByUserId(filters.userId);
+    }
+    
+    if (filters.userDni) {
+      return this.getOrdersByUserDni(filters.userDni);
+    }
+    
+    // Por defecto, obtener todas las órdenes y filtrar en el frontend
+    return this.getAllOrders();
+  }
+
+  // Método para buscar órdenes - CORREGIDO
+  searchOrders(searchTerm: string, filters?: OrderFilters): Observable<Order[]> {
+    // Por ahora, obtener todas las órdenes y filtrar en el frontend
+    // En el futuro se puede implementar búsqueda en el backend
+    return this.getAllOrders();
+  }
+
+  // Método auxiliar para calcular rangos de fecha
+  private calculateDateRange(range: string): { startDate: string; endDate: string } {
+    const now = new Date();
+    let startDate = new Date();
+    let endDate = new Date();
+
+    switch (range) {
+      case 'today':
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(23, 59, 59, 999);
+        break;
+      case 'week':
+        startDate.setDate(now.getDate() - 7);
+        break;
+      case 'month':
+        startDate.setMonth(now.getMonth() - 1);
+        break;
+      case 'quarter':
+        startDate.setMonth(now.getMonth() - 3);
+        break;
+      case 'year':
+        startDate.setFullYear(now.getFullYear() - 1);
+        break;
+      default:
+        startDate.setDate(now.getDate() - 30); // Por defecto último mes
+    }
+
+    return {
+      startDate: startDate.toISOString().split('T')[0],
+      endDate: endDate.toISOString().split('T')[0]
+    };
+  }
+
+  // Método para obtener estadísticas de órdenes - CORREGIDO
+  getOrderStats(filters?: OrderFilters): Observable<any> {
+    // Por ahora, obtener todas las órdenes y calcular estadísticas en el frontend
+    return this.getAllOrders();
   }
 
   private getAuthHeaders(): HttpHeaders {

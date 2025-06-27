@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Product, Category } from '../../interfaces/product.interface';
 import { UserService } from '../../services/user.service';
+import { ErrorFiltersService } from '../../interceptors/error.filters';
 
 @Component({
   selector: 'app-list',
@@ -25,7 +26,9 @@ export class ListComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router,
+    private errorFilter: ErrorFiltersService
   ) { }
 
   ngOnInit(): void {
@@ -102,5 +105,38 @@ export class ListComponent implements OnInit {
 
   canEdit(): boolean {
     return this.isAdmin() || this.isSeller();
+  }
+
+  editProduct(productId: number): void {
+    this.router.navigate(['/products/edit', productId]);
+  }
+
+  deleteProduct(productId: number): void {
+    if (confirm('¿Estás seguro de que quieres eliminar este producto? Esta acción no se puede deshacer.')) {
+      this.productService.deleteProduct(productId).subscribe({
+        next: () => {
+          // Recargar la lista de productos
+          this.loadProducts();
+        },
+        error: (err) => {
+          this.error = 'Error al eliminar el producto';
+          console.error('Error deleting product:', err);
+        }
+      });
+    }
+  }
+
+  toggleProductStatus(productId: number): void {
+    this.productService.changeProductStatus(productId).subscribe({
+      next: () => {
+        // Recargar la lista de productos
+        this.loadProducts();
+      },
+      error: (err) => {
+        this.error = 'Error al cambiar el estado del producto';
+        console.error('Error toggling product status:', err);
+        this.errorFilter.handle(err);
+      }
+    });
   }
 }

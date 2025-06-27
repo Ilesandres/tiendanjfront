@@ -51,7 +51,7 @@
           <button class="btn-edit" (click)="editSpice(spice)">
             Editar
           </button>
-          <button class="btn-delete" (click)="deleteSpice(spice.id)">
+          <button *ngIf="userService.isAdmin()" class="btn-delete" (click)="deleteSpice(spice.id)">
             Eliminar
           </button>
         </div>

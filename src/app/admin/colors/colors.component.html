@@ -51,7 +51,7 @@
           <button class="btn-edit" (click)="editColor(color)">
             Editar
           </button>
-          <button class="btn-delete" (click)="deleteColor(color.id)">
+          <button *ngIf="userService.isAdmin()" class="btn-delete" (click)="deleteColor(color.id)">
             Eliminar
           </button>
         </div>

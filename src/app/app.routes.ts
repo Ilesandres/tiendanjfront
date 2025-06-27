@@ -49,6 +49,18 @@ export const routes: Routes = [
     loadComponent: () => import('./products/create/create.component').then(m => m.CreateComponent)
   },
   {
+    path: 'products/edit/:id',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./products/edit/edit.component').then(m => m.EditComponent)
+  },
+  {
+    path: 'products/variations/edit/:id',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./products/variations/edit/edit.component').then(m => m.EditVariationComponent)
+  },
+  {
     path: 'products/:id',
     canActivate: [authGuard],
     loadComponent: () => import('./products/detail/detail.component').then(m => m.DetailComponent)

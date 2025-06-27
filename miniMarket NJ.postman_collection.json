@@ -121,7 +121,69 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "get user by Dni",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/auth/user/info/dni/0000000000",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"auth",
+												"user",
+												"info",
+												"dni",
+												"0000000000"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "364"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"16c-boMAblDaLPLzA3sd7bWQKnkU2v4\""
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 26 Jun 2025 21:10:35 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 7,\n    \"people\": {\n        \"id\": 2,\n        \"name\": \"na\",\n        \"lastname\": \"ca\",\n        \"phone\": \"0000000\",\n        \"birthdate\": \"1990-01-01\",\n        \"email\": \"admin@admin.com\",\n        \"typeDni\": {\n            \"id\": 1,\n            \"name\": \"CC\"\n        },\n        \"dni\": \"0000000000\"\n    },\n    \"user\": \"admin\",\n    \"password\": \"$2b$10$0W.fv2cF5HPUQqiFIPAB6u6cdxDKc3fNgFDdg8gqxnoAX9oymHXFy\",\n    \"verificationCode\": null,\n    \"token\": null,\n    \"datesendverify\": null,\n    \"rol\": {\n        \"id\": 1,\n        \"rol\": \"admin\"\n    },\n    \"verify\": true\n}"
+								}
+							]
 						}
 					],
 					"description": "crea datos de clientes y vendedores, modifica los datos de estas personas, siempre y cuando no se repitan con otros existenetes como el dni y email"
@@ -1154,7 +1216,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"price\":2500,\r\n    \"stock\":5\r\n}",
+									"raw": "{\r\n    \"price\":2500,\r\n    \"stock\":5,\r\n    \"image\":\"https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1515,7 +1577,7 @@
 					"response": []
 				},
 				{
-					"name": "disable-product<admin, seller>",
+					"name": "vhange-status-product<admin, seller>",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1530,7 +1592,7 @@
 						"method": "PATCH",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/product/disable/1",
+							"raw": "http://localhost:8080/product/change-status/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1538,7 +1600,7 @@
 							"port": "8080",
 							"path": [
 								"product",
-								"disable",
+								"change-status",
 								"1"
 							]
 						}
@@ -2936,7 +2998,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MDk1MTgxNiwiZXhwIjoxNzUwOTUzNjE2fQ.q3NhlZJqeW1yk9LSmvN0bkny-wsk97oaFEhpAiHfo7k",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUwOTc3NjE1LCJleHAiOjE3NTA5Nzk0MTV9.KMmbxL0pZrkey9iaLMUxXAcZIP33e_72FyThOmAwoTQ",
 											"type": "string"
 										}
 									]
@@ -2945,7 +3007,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"order\":{\r\n        \"id\":2\r\n    },\r\n    \"product\":{\r\n        \"id\":4\r\n    },\r\n    \"amount\":1\r\n}",
+									"raw": "{\r\n    \"order\":{\r\n        \"id\":1\r\n    },\r\n    \"product\":{\r\n        \"id\":4\r\n    },\r\n    \"amount\":1\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"

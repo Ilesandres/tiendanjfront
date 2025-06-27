@@ -67,8 +67,14 @@
           </a>
           
           <ng-container *ngIf="canEdit()">
-            <button class="btn btn-outline">
+            <button (click)="editProduct(product.id)" class="btn btn-outline">
               ✏️ Editar
+            </button>
+            <button (click)="toggleProductStatus(product.id)" class="btn btn-warning">
+              {{ product.active ? '🚫 Deshabilitar' : '✅ Habilitar' }}
+            </button>
+            <button *ngIf="isAdmin()" (click)="deleteProduct(product.id)" class="btn btn-danger">
+              🗑️ Eliminar
             </button>
           </ng-container>
         </div>

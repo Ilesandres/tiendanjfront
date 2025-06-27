@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Product, ProductVariation } from '../../interfaces/product.interface';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-detail',
@@ -24,7 +25,8 @@ export class DetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private productService: ProductService
+    private productService: ProductService,
+    public userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -117,5 +119,106 @@ export class DetailComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/products']);
+  }
+
+  // Métodos de autorización
+  isAdmin(): boolean {
+    return this.userService.isAdmin();
+  }
+
+  isSeller(): boolean {
+    return this.userService.isSeller();
+  }
+
+  canEdit(): boolean {
+    return this.isAdmin() || this.isSeller();
+  }
+
+  // Métodos de gestión de productos
+  editProduct(): void {
+    if (this.product) {
+      this.router.navigate(['/products/edit', this.product.id]);
+    }
+  }
+
+  deleteProduct(): void {
+    if (this.product && confirm('¿Estás seguro de que quieres eliminar este producto? Esta acción no se puede deshacer.')) {
+      this.productService.deleteProduct(this.product.id).subscribe({
+        next: () => {
+          this.router.navigate(['/products']);
+        },
+        error: (err) => {
+          this.error = 'Error al eliminar el producto';
+          console.error('Error deleting product:', err);
+        }
+      });
+    }
+  }
+
+  toggleProductStatus(): void {
+    if (this.product) {
+      this.productService.changeProductStatus(this.product.id).subscribe({
+        next: () => {
+          // Recargar el producto
+          this.loadProduct(this.product!.id);
+        },
+        error: (err) => {
+          this.error = 'Error al cambiar el estado del producto';
+          console.error('Error toggling product status:', err);
+        }
+      });
+    }
+  }
+
+  // Métodos de gestión de variaciones
+  editVariation(variationId: number): void {
+    this.router.navigate(['/products/variations/edit', variationId]);
+  }
+
+  deleteVariation(variationId: number): void {
+    if (confirm('¿Estás seguro de que quieres eliminar esta variación?')) {
+      this.productService.deleteVariation(variationId).subscribe({
+        next: () => {
+          // Recargar las variaciones
+          if (this.product) {
+            this.loadProductVariations(this.product.id);
+          }
+        },
+        error: (err) => {
+          this.error = 'Error al eliminar la variación';
+          console.error('Error deleting variation:', err);
+        }
+      });
+    }
+  }
+
+  toggleVariationStatus(variationId: number): void {
+    this.productService.changeVariationStatus(variationId).subscribe({
+      next: () => {
+        // Recargar las variaciones
+        if (this.product) {
+          this.loadProductVariations(this.product.id);
+        }
+      },
+      error: (err) => {
+        this.error = 'Error al cambiar el estado de la variación';
+        console.error('Error toggling variation status:', err);
+      }
+    });
+  }
+
+  updateVariationStock(variationId: number, newStock: number): void {
+    this.productService.updateVariationStock(variationId, { stock: newStock }).subscribe({
+      next: () => {
+        // Recargar las variaciones
+        if (this.product) {
+          this.loadProductVariations(this.product.id);
+        }
+      },
+      error: (err) => {
+        this.error = 'Error al actualizar el stock de la variación';
+        console.error('Error updating variation stock:', err);
+      }
+    });
   }
 }

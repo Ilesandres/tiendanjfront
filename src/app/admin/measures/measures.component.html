@@ -51,7 +51,7 @@
           <button class="btn-edit" (click)="editMeasure(measure)">
             Editar
           </button>
-          <button class="btn-delete" (click)="deleteMeasure(measure.id)">
+          <button *ngIf="userService.isAdmin()" class="btn-delete" (click)="deleteMeasure(measure.id)">
             Eliminar
           </button>
         </div>

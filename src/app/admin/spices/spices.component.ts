@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SpiceService } from '../../services/spice.service';
 import { Spice, CreateSpiceRequest, UpdateSpiceRequest } from '../../interfaces/spice.interface';
+import { ErrorFiltersService } from '../../interceptors/error.filters';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-spices',
@@ -21,7 +23,11 @@ export class SpicesComponent implements OnInit {
     spice: ''
   };
 
-  constructor(private spiceService: SpiceService) {}
+  constructor(
+    private spiceService: SpiceService,
+    private errorFilter: ErrorFiltersService,
+    public userService: UserService
+  ) {}
 
   ngOnInit(): void {
     this.loadSpices();

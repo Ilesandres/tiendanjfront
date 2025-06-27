@@ -140,7 +140,8 @@
 
 .customer-info h4,
 .payment-info h4,
-.order-total h4 {
+.order-total h4,
+.order-type-info h4 {
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--text-secondary);
@@ -150,7 +151,8 @@
 }
 
 .customer-info p,
-.payment-info p {
+.payment-info p,
+.order-type-info p {
   font-size: 1rem;
   color: var(--text-primary);
   margin: 0.25rem 0;
@@ -164,6 +166,24 @@
 .payment-status {
   font-size: 0.875rem;
   color: var(--text-secondary);
+}
+
+.invoice-number {
+  font-size: 0.875rem;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.vouchers-info {
+  font-size: 0.875rem;
+  color: var(--info-color);
+  font-weight: 500;
+}
+
+.products-count {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
 }
 
 .total-amount {

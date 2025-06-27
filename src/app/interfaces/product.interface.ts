@@ -34,8 +34,8 @@ export interface ProductVariation {
   price: number;
   stock: number;
   product: Product;
-  measure: Measure;
-  color: Color;
+  measure?: Measure;
+  color?: Color;
   image?: string;
   active: boolean;
 }
@@ -84,14 +84,5 @@ export interface CreateVariationRequest {
 export interface UpdateVariationRequest {
   price?: number;
   stock?: number;
-  spice?: {
-    id: number;
-  };
-  measure?: {
-    id: number;
-  };
-  color?: {
-    id: number;
-  };
   image?: string;
 } 

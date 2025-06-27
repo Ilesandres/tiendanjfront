@@ -48,23 +48,83 @@ export interface Shipment {
 
 export interface ProductOrder {
   id: number;
-  product: Product;
+  product: {
+    id: number;
+    price: number;
+    stock: number;
+    active: boolean;
+    image: string | null;
+    product: {
+      id: number;
+      product: string;
+      active: boolean;
+      category: {
+        id: number;
+        category: string;
+        active: boolean;
+      };
+    };
+  };
   amount: number;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface Order {
   id: number;
-  user: User;
-  payment?: Payment;
-  shipment?: Shipment;
-  typeOrder?: TypeOrder;
-  productOrder?: ProductOrder[];
+  user: {
+    id: number;
+    people: {
+      id: number;
+      name: string;
+      lastname: string;
+      phone: string;
+      birthdate: string;
+      email: string;
+      typeDni: {
+        id: number;
+        name: string;
+      };
+      dni: string;
+    };
+    user: string;
+    verificationCode: string | null;
+    token: string | null;
+    datesendverify: string | null;
+    verify: boolean;
+  };
   total: string | number;
   createdAt: string;
-  updatedAt: string;
-  invoice?: any;
+  updatedAt?: string;
+  invoice: string | null;
+  
+  payment?: {
+    id: number;
+    method: {
+      id: number;
+      method: string;
+    };
+    status: {
+      id: number;
+      status: string;
+    };
+    createdAt: string;
+    vouchers?: Voucher[];
+  };
+  
+  typeOrder?: {
+    id: number;
+    type: string;
+  };
+  
+  productOrder?: ProductOrder[];
+  
+  shipment?: {
+    id: number;
+    status: {
+      id: number;
+      status: string;
+    };
+    details: string;
+  };
 }
 
 export interface User {
@@ -115,24 +175,84 @@ export interface Category {
   updatedAt: string;
 }
 
+export interface OrderFilters {
+  // Filtros por cliente
+  userId?: number;
+  userDni?: string;
+  
+  // Filtros por fecha
+  startDate?: string;
+  endDate?: string;
+  dateRange?: 'today' | 'week' | 'month' | 'quarter' | 'year' | 'custom';
+  
+  // Filtros por estado
+  paymentStatus?: number;
+  shipmentStatus?: number;
+  
+  // Filtros por tipo de orden
+  orderType?: number;
+  
+  // Filtros por monto
+  minTotal?: number;
+  maxTotal?: number;
+  
+  // Filtros por producto
+  productId?: number;
+  
+  // Filtros por categoría
+  categoryId?: number;
+  
+  // Ordenamiento
+  sortBy?: 'id' | 'total' | 'createdAt' | 'userName';
+  sortOrder?: 'asc' | 'desc';
+  
+  // Paginación
+  page?: number;
+  limit?: number;
+}
+
 export interface CreateOrderRequest {
-  user: { id: number };
-  payment?: {
-    method: { id: number };
-    status: { id: number };
+  user: {
+    id: number;
   };
-  typeOrder?: { id: number };
-  productOrder?: { id: number }[];
+  payment?: {
+    method: {
+      id: number;
+    };
+    status: {
+      id: number;
+    };
+  };
+  typeOrder?: {
+    id: number;
+  };
+  productOrder?: {
+    id: number;
+  }[];
 }
 
 export interface UpdateOrderRequest {
-  user: { id: number };
-  payment?: {
-    method: { id: number };
-    status: { id: number };
+  user?: {
+    id: number;
   };
-  typeOrder?: { id: number };
-  productOrder?: { id: number }[];
+  payment?: {
+    method: {
+      id: number;
+    };
+    status: {
+      id: number;
+    };
+  };
+  typeOrder?: {
+    id: number;
+  };
+  productOrder?: {
+    id: number;
+  }[];
+}
+
+export interface UpdateOrderTotalRequest {
+  total: number;
 }
 
 export interface CreatePaymentRequest {

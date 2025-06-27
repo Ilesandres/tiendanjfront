@@ -22,7 +22,9 @@ import { environment } from '../../environments/environment';
 export class ProductService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+  ) { }
 
   // Categories
   getAllCategories(): Observable<Category[]> {
@@ -177,9 +179,9 @@ export class ProductService {
     return this.http.post(`${this.apiUrl}/product/update/${id}`, product, { headers });
   }
 
-  disableProduct(id: number): Observable<any> {
+  changeProductStatus(id: number): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.patch(`${this.apiUrl}/product/disable/${id}`, {}, { headers });
+    return this.http.patch(`${this.apiUrl}/product/change-status/${id}`, {}, { headers });
   }
 
   deleteProduct(id: number): Observable<any> {

@@ -15,6 +15,19 @@
         ← Volver a Productos
       </button>
       <h1>{{ product.product }}</h1>
+      
+      <!-- Botones de gestión del producto (solo admin/seller) -->
+      <div *ngIf="canEdit()" class="product-actions">
+        <button (click)="editProduct()" class="btn btn-outline">
+          ✏️ Editar Producto
+        </button>
+        <button (click)="toggleProductStatus()" class="btn btn-warning">
+          {{ product.active ? '🚫 Deshabilitar' : '✅ Habilitar' }}
+        </button>
+        <button *ngIf="isAdmin()" (click)="deleteProduct()" class="btn btn-danger">
+          🗑️ Eliminar Producto
+        </button>
+      </div>
     </div>
 
     <!-- Información del producto -->
@@ -80,17 +93,30 @@
                   
                   <div class="variation-item">
                     <span class="label">Medida:</span>
-                    <span class="value">{{ variation.measure.measure }}</span>
+                    <span class="value">{{ variation.measure?.measure || 'Sin medida' }}</span>
                   </div>
                   
                   <div class="variation-item">
                     <span class="label">Color:</span>
-                    <span class="value">{{ variation.color.color }}</span>
+                    <span class="value">{{ variation.color?.color || 'Sin color' }}</span>
                   </div>
                 </div>
                 
                 <div class="variation-status" [class]="variation.active ? 'status-active' : 'status-inactive'">
                   {{ variation.active ? 'Disponible' : 'No disponible' }}
+                </div>
+                
+                <!-- Botones de gestión de variaciones (solo admin/seller) -->
+                <div *ngIf="canEdit()" class="variation-actions">
+                  <button (click)="editVariation(variation.id)" class="btn btn-sm btn-outline">
+                    ✏️ Editar
+                  </button>
+                  <button (click)="toggleVariationStatus(variation.id)" class="btn btn-sm btn-warning">
+                    {{ variation.active ? '🚫 Deshabilitar' : '✅ Habilitar' }}
+                  </button>
+                  <button *ngIf="isAdmin()" (click)="deleteVariation(variation.id)" class="btn btn-sm btn-danger">
+                    🗑️ Eliminar
+                  </button>
                 </div>
               </div>
             </div>

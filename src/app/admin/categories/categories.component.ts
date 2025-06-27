@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../../services/category.service';
 import { Category, CreateCategoryRequest, UpdateCategoryRequest } from '../../interfaces/category.interface';
 import { ErrorFiltersService } from '../../interceptors/error.filters';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-categories',
@@ -24,7 +25,8 @@ export class CategoriesComponent implements OnInit {
 
   constructor(
     private categoryService: CategoryService,
-    private errorFilter:ErrorFiltersService
+    private errorFilter:ErrorFiltersService,
+    public userService: UserService
   ) {}
 
   ngOnInit(): void {

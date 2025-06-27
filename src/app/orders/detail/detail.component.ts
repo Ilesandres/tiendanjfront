@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
+import { ErrorFiltersService } from '../../interceptors/error.filters';
 
 @Component({
   selector: 'app-detail',
@@ -18,7 +19,8 @@ export class DetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private errorFilter: ErrorFiltersService
   ) { }
 
   ngOnInit(): void {
@@ -40,6 +42,7 @@ export class DetailComponent implements OnInit {
       error: (err) => {
         this.error = 'Error al cargar la orden';
         this.loading = false;
+        this.errorFilter.handle(err);
       }
     });
   }

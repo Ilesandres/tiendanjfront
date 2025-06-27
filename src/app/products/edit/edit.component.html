@@ -1,0 +1,70 @@
+<div class="container">
+  <div class="page-header">
+    <h1>✏️ Editar Producto</h1>
+    <p>Modifica la información del producto</p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando producto...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <!-- Formulario de edición -->
+  <div *ngIf="!loading && !error && product" class="edit-form">
+    <form (ngSubmit)="onSubmit()" #editForm="ngForm">
+      <div class="form-group">
+        <label for="productName" class="form-label">Nombre del Producto *</label>
+        <input 
+          type="text" 
+          id="productName" 
+          name="productName"
+          [(ngModel)]="formData.product" 
+          required
+          class="form-control"
+          placeholder="Ej: Leche, Pan, Arroz, etc."
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="category" class="form-label">Categoría</label>
+        <select 
+          id="category" 
+          name="category"
+          [(ngModel)]="formData.category"
+          class="form-control"
+        >
+          <option [value]="null">Sin categoría</option>
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.category }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="!editForm.form.valid || saving">
+          <span *ngIf="saving">Guardando...</span>
+          <span *ngIf="!saving">💾 Guardar Cambios</span>
+        </button>
+        <button type="button" class="btn btn-outline" (click)="cancel()">
+          ❌ Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Sin permisos -->
+  <div *ngIf="!canEdit()" class="no-permissions">
+    <div class="empty-icon">🚫</div>
+    <h3>Sin permisos</h3>
+    <p>No tienes permisos para editar productos</p>
+    <button (click)="cancel()" class="btn btn-primary">
+      ← Volver
+    </button>
+  </div>
+</div> 

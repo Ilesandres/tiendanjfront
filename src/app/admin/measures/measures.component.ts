@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MeasureService } from '../../services/measure.service';
 import { Measure, CreateMeasureRequest, UpdateMeasureRequest } from '../../interfaces/measure.interface';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-measures',
@@ -21,7 +22,10 @@ export class MeasuresComponent implements OnInit {
     measure: ''
   };
 
-  constructor(private measureService: MeasureService) {}
+  constructor(
+    private measureService: MeasureService,
+    public userService: UserService
+  ) {}
 
   ngOnInit(): void {
     this.loadMeasures();

@@ -88,6 +88,16 @@
             <div class="stat-label">Envío</div>
           </div>
         </div>
+        <div class="order-type-info">
+          <div class="info-item">
+            <span class="label">Tipo de Orden:</span>
+            <span class="value">{{ order.typeOrder?.type || 'No especificado' }}</span>
+          </div>
+          <div class="info-item" *ngIf="order.invoice">
+            <span class="label">Factura:</span>
+            <span class="value">{{ order.invoice }}</span>
+          </div>
+        </div>
         <div class="total-section">
           <div class="total-amount">
             <span class="total-label">Total Final:</span>
