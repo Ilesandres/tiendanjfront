@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ErrorHandler, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../interfaces/order.interface';
 import { UserService } from '../../services/user.service';
+import { ErrorFiltersService } from '../../interceptors/error.filters';
 
 @Component({
   selector: 'app-list',
@@ -25,7 +26,8 @@ export class ListComponent implements OnInit {
   constructor(
     private orderService: OrderService,
     private userService: UserService,
-    public router: Router
+    public router: Router,
+    private errorFilter:ErrorFiltersService
   ) { }
 
   ngOnInit(): void {
@@ -44,10 +46,9 @@ export class ListComponent implements OnInit {
         console.log(this.orders);
       },
       error: (err) => {
-        console.log("error")
         this.error = 'Error al cargar las ventas';
         this.loading = false;
-        
+        this.errorFilter.handle(err);
       }
     });
   }

@@ -8,6 +8,36 @@ export const routes: Routes = [
     loadChildren: () => import('./auth/auth-routing.module').then(m => m.AUTH_ROUTES)
   },
   {
+    path: 'admin',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./admin/admin.component').then(m => m.AdminComponent)
+  },
+  {
+    path: 'admin/categories',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./admin/categories/categories.component').then(m => m.CategoriesComponent)
+  },
+  {
+    path: 'admin/spices',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./admin/spices/spices.component').then(m => m.SpicesComponent)
+  },
+  {
+    path: 'admin/measures',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./admin/measures/measures.component').then(m => m.MeasuresComponent)
+  },
+  {
+    path: 'admin/colors',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./admin/colors/colors.component').then(m => m.ColorsComponent)
+  },
+  {
     path: 'products',
     canActivate: [authGuard],
     loadComponent: () => import('./products/list/list.component').then(m => m.ListComponent)

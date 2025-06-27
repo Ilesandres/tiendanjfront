@@ -20,19 +20,41 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return next.handle(request).pipe(
+    console.log("Interceptando petición:", request.url);
+    
+    // Obtener el token del localStorage (solo en navegador)
+    let token: string | null = null;
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('auth_token');
+    }
+
+    // Clonar la petición y agregar el token si existe
+    let modifiedRequest = request;
+    if (token) {
+      modifiedRequest = request.clone({
+        setHeaders: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log("Token agregado a la petición");
+    }
+
+    // Continuar con la petición modificada
+    return next.handle(modifiedRequest).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.log("error redata")
-        console.log(error)
+        console.log("Error en la petición:", error);
+        
         if (error.status === 401) {
+          console.log('Error 401 - Token inválido o expirado');
+          
           // Solo ejecutar en el navegador (no en SSR)
-            console.log('limpiando')
+          if (isPlatformBrowser(this.platformId)) {
             // Limpiar localStorage
             localStorage.clear();
             
             // Redirigir al login
             this.router.navigate(['/auth/login']);
-          
+          }
         }
         
         return throwError(() => error);

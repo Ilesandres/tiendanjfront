@@ -1,0 +1,65 @@
+<div class="spices-container">
+  <h1>Gestionar Sabores</h1>
+  
+  <!-- Formulario para crear/editar sabor -->
+  <div class="form-section">
+    <h3>{{ isEditing ? 'Editar' : 'Crear' }} Sabor</h3>
+    <form (ngSubmit)="onSubmit()" #spiceForm="ngForm">
+      <div class="form-group">
+        <label for="spiceName">Nombre del Sabor:</label>
+        <input 
+          type="text" 
+          id="spiceName" 
+          name="spiceName"
+          [(ngModel)]="formData.spice" 
+          required
+          class="form-control"
+          placeholder="Ej: Salado, Dulce, Picante, etc."
+        >
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="!spiceForm.form.valid">
+          {{ isEditing ? 'Actualizar' : 'Crear' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="cancelEdit()" *ngIf="isEditing">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Lista de sabores -->
+  <div class="list-section">
+    <h3>Sabores Existentes</h3>
+    
+    <div class="loading" *ngIf="loading">
+      <p>Cargando sabores...</p>
+    </div>
+
+    <div class="error" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <div class="spices-grid" *ngIf="!loading && spices.length > 0">
+      <div class="spice-card" *ngFor="let spice of spices">
+        <div class="spice-info">
+          <h4>{{ spice.spice }}</h4>
+        </div>
+        
+        <div class="spice-actions">
+          <button class="btn-edit" (click)="editSpice(spice)">
+            Editar
+          </button>
+          <button class="btn-delete" (click)="deleteSpice(spice.id)">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && spices.length === 0">
+      <p>No hay sabores creados. ¡Crea el primero!</p>
+    </div>
+  </div>
+</div> 

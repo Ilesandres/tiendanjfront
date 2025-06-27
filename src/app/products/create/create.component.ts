@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../services/product.service';
+import { ErrorFiltersService } from '../../interceptors/error.filters';
 
 interface Category {
   id: number;
@@ -68,7 +69,8 @@ export class CreateComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
-    private router: Router
+    private router: Router,
+    private errorFilter:ErrorFiltersService
   ) {
     // Formulario para crear producto nuevo
     this.productForm = this.fb.group({
@@ -222,6 +224,7 @@ export class CreateComponent implements OnInit {
       console.error('Error creating product:', error);
       this.message = error.error?.message || 'Error al crear el producto';
       this.messageType = 'error';
+      this.errorFilter.handle(error);
     } finally {
       this.isLoading = false;
     }
@@ -281,6 +284,7 @@ export class CreateComponent implements OnInit {
       console.error('Error creating variation:', error);
       this.message = error.error?.message || 'Error al crear la variación';
       this.messageType = 'error';
+      this.errorFilter.handle(error);
     } finally {
       this.isLoading = false;
     }

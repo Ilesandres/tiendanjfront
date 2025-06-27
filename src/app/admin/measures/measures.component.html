@@ -1,0 +1,65 @@
+<div class="measures-container">
+  <h1>Gestionar Unidades de Medida</h1>
+  
+  <!-- Formulario para crear/editar unidad de medida -->
+  <div class="form-section">
+    <h3>{{ isEditing ? 'Editar' : 'Crear' }} Unidad de Medida</h3>
+    <form (ngSubmit)="onSubmit()" #measureForm="ngForm">
+      <div class="form-group">
+        <label for="measureName">Nombre de la Unidad:</label>
+        <input 
+          type="text" 
+          id="measureName" 
+          name="measureName"
+          [(ngModel)]="formData.measure" 
+          required
+          class="form-control"
+          placeholder="Ej: Kilogramo, Litro, Unidad, etc."
+        >
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="!measureForm.form.valid">
+          {{ isEditing ? 'Actualizar' : 'Crear' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="cancelEdit()" *ngIf="isEditing">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Lista de unidades de medida -->
+  <div class="list-section">
+    <h3>Unidades de Medida Existentes</h3>
+    
+    <div class="loading" *ngIf="loading">
+      <p>Cargando unidades de medida...</p>
+    </div>
+
+    <div class="error" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <div class="measures-grid" *ngIf="!loading && measures.length > 0">
+      <div class="measure-card" *ngFor="let measure of measures">
+        <div class="measure-info">
+          <h4>{{ measure.measure }}</h4>
+        </div>
+        
+        <div class="measure-actions">
+          <button class="btn-edit" (click)="editMeasure(measure)">
+            Editar
+          </button>
+          <button class="btn-delete" (click)="deleteMeasure(measure.id)">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && measures.length === 0">
+      <p>No hay unidades de medida creadas. ¡Crea la primera!</p>
+    </div>
+  </div>
+</div> 

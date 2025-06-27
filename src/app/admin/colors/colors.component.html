@@ -1,0 +1,65 @@
+<div class="colors-container">
+  <h1>Gestionar Colores</h1>
+  
+  <!-- Formulario para crear/editar color -->
+  <div class="form-section">
+    <h3>{{ isEditing ? 'Editar' : 'Crear' }} Color</h3>
+    <form (ngSubmit)="onSubmit()" #colorForm="ngForm">
+      <div class="form-group">
+        <label for="colorName">Nombre del Color:</label>
+        <input 
+          type="text" 
+          id="colorName" 
+          name="colorName"
+          [(ngModel)]="formData.color" 
+          required
+          class="form-control"
+          placeholder="Ej: Rojo, Azul, Verde, etc."
+        >
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="!colorForm.form.valid">
+          {{ isEditing ? 'Actualizar' : 'Crear' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="cancelEdit()" *ngIf="isEditing">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Lista de colores -->
+  <div class="list-section">
+    <h3>Colores Existentes</h3>
+    
+    <div class="loading" *ngIf="loading">
+      <p>Cargando colores...</p>
+    </div>
+
+    <div class="error" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <div class="colors-grid" *ngIf="!loading && colors.length > 0">
+      <div class="color-card" *ngFor="let color of colors">
+        <div class="color-info">
+          <h4>{{ color.color }}</h4>
+        </div>
+        
+        <div class="color-actions">
+          <button class="btn-edit" (click)="editColor(color)">
+            Editar
+          </button>
+          <button class="btn-delete" (click)="deleteColor(color.id)">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && colors.length === 0">
+      <p>No hay colores creados. ¡Crea el primero!</p>
+    </div>
+  </div>
+</div> 
