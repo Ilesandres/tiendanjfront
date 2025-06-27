@@ -1,0 +1,39 @@
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-brand">
+      <a routerLink="/" class="navbar-logo">
+        🛒 Tienda NJ
+      </a>
+    </div>
+    
+    <div class="navbar-menu">
+      <a routerLink="/products" routerLinkActive="active" class="navbar-link">
+        📦 Productos
+      </a>
+      
+      <ng-container *ngIf="isAuthenticated() && (isAdmin() || isSeller())">
+        <a routerLink="/orders" routerLinkActive="active" class="navbar-link">
+          📋 Ventas
+        </a>
+      </ng-container>
+    </div>
+    
+    <div class="navbar-user">
+      <ng-container *ngIf="isAuthenticated(); else loginButton">
+        <div class="user-info">
+          <span class="user-name">{{ userInfo?.user || 'Usuario' }}</span>
+          <span class="user-role">{{ userInfo?.rol || 'Cliente' }}</span>
+        </div>
+        <button (click)="logout()" class="btn btn-outline btn-sm">
+          🚪 Cerrar Sesión
+        </button>
+      </ng-container>
+      
+      <ng-template #loginButton>
+        <a routerLink="/auth/login" class="btn btn-primary">
+          🔑 Iniciar Sesión
+        </a>
+      </ng-template>
+    </div>
+  </div>
+</nav>

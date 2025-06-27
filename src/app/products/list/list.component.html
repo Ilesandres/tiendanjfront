@@ -1,0 +1,85 @@
+<div class="container">
+  <div class="page-header">
+    <h1>📦 Productos</h1>
+    <p>Explora nuestro catálogo de productos</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="form-group">
+      <label for="category" class="form-label">Filtrar por categoría</label>
+      <select 
+        id="category" 
+        class="form-control"
+        [(ngModel)]="selectedCategory"
+        (change)="onCategoryChange()"
+      >
+        <option [value]="null">Todas las categorías</option>
+        <option *ngFor="let category of categories" [value]="category.id">
+          {{ category.category }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Botón crear producto (solo admin/seller) -->
+  <div *ngIf="canEdit()" class="actions">
+    <a [routerLink]="['/products/create']" class="btn-create">Crear Producto</a>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando productos...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <!-- Lista de productos -->
+  <div *ngIf="!loading && !error" class="products-grid">
+    <div *ngFor="let product of products" class="product-card">
+      <div class="product-image">
+        <img 
+          [src]="getProductImage(product)" 
+          [alt]="product.product" 
+          class="product-img"
+          (error)="onImageError($event)"
+        >
+      </div>
+      
+      <div class="product-info">
+        <h3 class="product-name">{{ product.product }}</h3>
+        <p class="product-category">{{ product.category?.category || 'Sin categoría' }}</p>
+        
+        <div class="product-variations" *ngIf="product.variationProducts && product.variationProducts.length > 0">
+          <div *ngFor="let variation of product.variationProducts.slice(0, 3)" class="variation-item">
+            <span class="variation-price">${{ variation.price | number }}</span>
+            <span class="variation-stock">{{ variation.stock }} disponibles</span>
+          </div>
+        </div>
+        
+        <div class="product-actions">
+          <a [routerLink]="['/products', product.id]" class="btn btn-primary">
+            👁️ Ver Detalles
+          </a>
+          
+          <ng-container *ngIf="canEdit()">
+            <button class="btn btn-outline">
+              ✏️ Editar
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sin productos -->
+  <div *ngIf="!loading && !error && products.length === 0" class="empty-state">
+    <div class="empty-icon">📦</div>
+    <h3>No se encontraron productos</h3>
+    <p>Intenta cambiar los filtros o vuelve más tarde</p>
+  </div>
+</div>

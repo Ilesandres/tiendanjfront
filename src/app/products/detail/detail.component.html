@@ -1,0 +1,119 @@
+<div class="container">
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando producto...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && product" class="product-detail">
+    <!-- Header con navegación -->
+    <div class="detail-header">
+      <button (click)="goBack()" class="btn btn-outline">
+        ← Volver a Productos
+      </button>
+      <h1>{{ product.product }}</h1>
+    </div>
+
+    <!-- Información del producto -->
+    <div class="product-content">
+      <div class="product-gallery">
+        <div class="main-image">
+          <img 
+            [src]="getProductImage(product)" 
+            [alt]="product.product" 
+            class="product-image"
+            (error)="onImageError($event)"
+          >
+        </div>
+      </div>
+
+      <div class="product-info">
+        <div class="product-header">
+          <h2>{{ product.product }}</h2>
+          <span class="product-status" [class]="product.active ? 'status-active' : 'status-inactive'">
+            {{ product.active ? 'Activo' : 'Inactivo' }}
+          </span>
+        </div>
+
+        <div class="product-category">
+          <strong>Categoría:</strong> {{ product.category?.category || 'Sin categoría' }}
+        </div>
+
+        <!-- Variaciones del producto -->
+        <div *ngIf="variations && variations.length > 0" class="variations-section">
+          <h3>Variaciones Disponibles</h3>
+          
+          <!-- Loading state for variations -->
+          <div *ngIf="loadingVariations" class="variations-loading">
+            <div class="spinner"></div>
+            <p>Cargando variaciones...</p>
+          </div>
+          
+          <!-- Variations grid -->
+          <div *ngIf="!loadingVariations" class="variations-grid">
+            <div *ngFor="let variation of variations" class="variation-card">
+              <div class="variation-image">
+                <img 
+                  [src]="getVariationImage(variation)" 
+                  [alt]="product.product + ' - ' + variation.spice.spice" 
+                  class="variation-img"
+                  (error)="onImageError($event)"
+                >
+              </div>
+              
+              <div class="variation-content">
+                <div class="variation-header">
+                  <span class="variation-spice">{{ variation.spice.spice || 'Sin sabor' }}</span>
+                  <span class="variation-price">${{ variation.price | number }}</span>
+                </div>
+                
+                <div class="variation-details">
+                  <div class="variation-item">
+                    <span class="label">Stock:</span>
+                    <span class="value" [class]="variation.stock > 0 ? 'in-stock' : 'out-of-stock'">
+                      {{ variation.stock }} unidades
+                    </span>
+                  </div>
+                  
+                  <div class="variation-item">
+                    <span class="label">Medida:</span>
+                    <span class="value">{{ variation.measure.measure }}</span>
+                  </div>
+                  
+                  <div class="variation-item">
+                    <span class="label">Color:</span>
+                    <span class="value">{{ variation.color.color }}</span>
+                  </div>
+                </div>
+                
+                <div class="variation-status" [class]="variation.active ? 'status-active' : 'status-inactive'">
+                  {{ variation.active ? 'Disponible' : 'No disponible' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sin variaciones -->
+        <div *ngIf="!loadingVariations && (!variations || variations.length === 0)" class="no-variations">
+          <div class="empty-icon">📦</div>
+          <h3>Sin variaciones</h3>
+          <p>Este producto no tiene variaciones configuradas</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Producto no encontrado -->
+  <div *ngIf="!loading && !error && !product" class="empty-state">
+    <div class="empty-icon">❌</div>
+    <h3>Producto no encontrado</h3>
+    <p>El producto que buscas no existe o ha sido eliminado</p>
+    <button (click)="goBack()" class="btn btn-primary">
+      ← Volver a Productos
+    </button>
+  </div>
+</div>

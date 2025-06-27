@@ -1,0 +1,254 @@
+<div class="container">
+  <div class="page-header">
+    <h1>🛒 Crear Nueva Venta</h1>
+    <p>Gestiona las ventas de tu tienda</p>
+  </div>
+
+  <!-- Búsqueda de Usuario -->
+  <div class="section">
+    <h2>👤 Cliente</h2>
+    <div class="user-search">
+      <form [formGroup]="userSearchForm" (ngSubmit)="searchUser()" class="search-form">
+        <div class="form-group">
+          <label for="dni" class="form-label">Buscar por DNI</label>
+          <div class="input-group">
+            <input 
+              type="text" 
+              id="dni" 
+              formControlName="dni"
+              class="form-control"
+              placeholder="Ingresa el DNI del cliente"
+              maxlength="11"
+            >
+            <button type="submit" class="btn btn-primary" [disabled]="userSearchForm.invalid || searchingUser">
+              <span *ngIf="searchingUser" class="spinner-small"></span>
+              🔍 Buscar
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Usuario encontrado -->
+      <div *ngIf="selectedUser" class="user-found">
+        <div class="user-card">
+          <div class="user-info">
+            <h3>{{ selectedUser.people.name || '' }} {{ selectedUser.people.lastname || '' }}</h3>
+            <p><strong>DNI:</strong> {{ selectedUser.people.dni || '' }}</p>
+            <p><strong>Email:</strong> {{ selectedUser.people.email || 'No especificado' }}</p>
+            <p><strong>Teléfono:</strong> {{ selectedUser.people.phone || 'No especificado' }}</p>
+          </div>
+          <button (click)="selectedUser = null" class="btn btn-outline">
+            ✏️ Cambiar Cliente
+          </button>
+        </div>
+      </div>
+
+      <!-- Usuario no encontrado -->
+      <div *ngIf="userNotFound" class="user-not-found">
+        <div class="alert alert-warning">
+          <h3>⚠️ Cliente no encontrado</h3>
+          <p>No se encontró un cliente con el DNI {{ userSearchForm.get('dni')?.value }}</p>
+          <button (click)="createUser()" class="btn btn-primary">
+            ➕ Crear Nuevo Cliente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selección de Productos -->
+  <div class="section" *ngIf="selectedUser">
+    <h2>📦 Productos</h2>
+    
+    <!-- Búsqueda de productos -->
+    <div class="product-search">
+      <form [formGroup]="productSearchForm" (ngSubmit)="searchProducts()" class="search-form">
+        <div class="form-group">
+          <label for="searchTerm" class="form-label">Buscar Productos</label>
+          <div class="input-group">
+            <input 
+              type="text" 
+              id="searchTerm" 
+              formControlName="searchTerm"
+              class="form-control"
+              placeholder="Nombre del producto..."
+            >
+            <button type="submit" class="btn btn-primary" [disabled]="productSearchForm.invalid || searchingProducts">
+              <span *ngIf="searchingProducts" class="spinner-small"></span>
+              🔍 Buscar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Lista de productos -->
+    <div class="products-grid">
+      <div *ngFor="let product of products" class="product-card">
+        <div class="product-image">
+          <img 
+            [src]="getProductImage(product)" 
+            [alt]="product.product" 
+            class="product-img"
+            (error)="onImageError($event)"
+          >
+        </div>
+        
+        <div class="product-info">
+          <h3 class="product-name">{{ product.product }}</h3>
+          <p class="product-category">{{ product.category?.category || 'Sin categoría' }}</p>
+          
+          <!-- Variaciones del producto -->
+          <div class="product-variations" *ngIf="product.variationProducts && product.variationProducts.length > 0">
+            <div *ngFor="let variation of product.variationProducts" class="variation-item">
+              <div class="variation-info">
+                <span class="variation-spice">{{ variation.spice.spice }}</span>
+                <span class="variation-price">${{ variation.price | number }}</span>
+                <span class="variation-stock">{{ variation.stock }} disponibles</span>
+              </div>
+              <div class="variation-actions">
+                <input 
+                  type="number" 
+                  min="1" 
+                  max="{{ variation.stock }}"
+                  value="1"
+                  class="quantity-input"
+                  #quantityInput
+                >
+                <button 
+                  (click)="addToCart(product, variation, +quantityInput.value)"
+                  class="btn btn-success"
+                  [disabled]="variation.stock === 0 || !variation.active"
+                >
+                  ➕ Agregar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carrito de Compras -->
+  <div class="section" *ngIf="selectedUser && cartItems.length > 0">
+    <h2>🛒 Carrito de Compras</h2>
+    
+    <div class="cart-container">
+      <div class="cart-items">
+        <div *ngFor="let item of cartItems; let i = index" class="cart-item">
+          <div class="item-image">
+            <img 
+              [src]="getProductImage(item.product)" 
+              [alt]="item.product.product" 
+              class="item-img"
+              (error)="onImageError($event)"
+            >
+          </div>
+          
+          <div class="item-info">
+            <h4>{{ item.product.product }}</h4>
+            <p>{{ item.variation.spice.spice }} - {{ item.variation.color.color }}</p>
+            <p class="item-price">${{ item.price | number }} c/u</p>
+          </div>
+          
+          <div class="item-quantity">
+            <input 
+              type="number" 
+              [value]="item.quantity"
+              min="1"
+              max="{{ item.variation.stock }}"
+              (change)="updateQuantity(i, $any($event.target).value)"
+              class="quantity-input"
+            >
+          </div>
+          
+          <div class="item-subtotal">
+            <span class="subtotal">${{ item.subtotal | number }}</span>
+          </div>
+          
+          <div class="item-actions">
+            <button (click)="removeFromCart(i)" class="btn btn-danger">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cart-summary">
+        <h3>Resumen de Compra</h3>
+        <div class="summary-item">
+          <span>Subtotal:</span>
+          <span>${{ subtotal | number }}</span>
+        </div>
+        <div class="summary-item total">
+          <span>Total:</span>
+          <span>${{ total | number }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Configuración de Pago -->
+  <div class="section" *ngIf="selectedUser && cartItems.length > 0">
+    <h2>💳 Configuración de Pago</h2>
+    
+    <form [formGroup]="orderForm" class="payment-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="paymentMethod" class="form-label">Método de Pago</label>
+          <select id="paymentMethod" formControlName="paymentMethod" class="form-control">
+            <option value="">Selecciona método de pago</option>
+            <option *ngFor="let method of paymentMethods" [value]="method.id">
+              {{ method.method }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="paymentStatus" class="form-label">Estado de Pago</label>
+          <select id="paymentStatus" formControlName="paymentStatus" class="form-control">
+            <option value="">Selecciona estado</option>
+            <option *ngFor="let status of paymentStatuses" [value]="status.id">
+              {{ status.status }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="typeOrder" class="form-label">Tipo de Orden</label>
+          <select id="typeOrder" formControlName="typeOrder" class="form-control">
+            <option value="">Selecciona tipo</option>
+            <option *ngFor="let type of typeOrders" [value]="type.id">
+              {{ type.type }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Botones de Acción -->
+  <div class="actions" *ngIf="selectedUser && cartItems.length > 0">
+    <button 
+      (click)="createOrder()" 
+      class="btn btn-success btn-large"
+      [disabled]="!canCreateOrder()"
+    >
+      <span *ngIf="loading" class="spinner-small"></span>
+      💾 Crear Venta
+    </button>
+    
+    <button (click)="goBack()" class="btn btn-outline btn-large">
+      ❌ Cancelar
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Creando venta...</p>
+    </div>
+  </div>
+</div> 

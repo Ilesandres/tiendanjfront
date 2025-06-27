@@ -1,0 +1,289 @@
+<div class="container mt-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Crear Producto y Variación</h2>
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i> Volver
+    </button>
+  </div>
+
+  <!-- Loading inicial -->
+  <div *ngIf="isInitialLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3">Cargando datos...</p>
+  </div>
+
+  <!-- Mensajes -->
+  <div *ngIf="message" class="alert alert-{{ messageType === 'error' ? 'danger' : 'success' }} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" (click)="message = ''"></button>
+  </div>
+
+  <!-- Wizard Steps -->
+  <div *ngIf="!isInitialLoading" class="wizard-container">
+    <!-- Step Indicators -->
+    <div class="step-indicators mb-4">
+      <div class="step {{ currentStep >= 1 ? 'active' : '' }}">
+        <div class="step-number">1</div>
+        <div class="step-label">Producto</div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step {{ currentStep >= 2 ? 'active' : '' }}">
+        <div class="step-number">2</div>
+        <div class="step-label">Variación</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Seleccionar/Crear Producto -->
+    <div *ngIf="currentStep === 1" class="step-content">
+      <div class="card">
+        <div class="card-header">
+          <h4>Paso 1: Seleccionar o Crear Producto</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <!-- Opción 1: Seleccionar Producto Existente -->
+            <div class="col-md-6 mb-4">
+              <div class="option-card" (click)="selectExistingProduct()">
+                <div class="option-icon">
+                  <i class="fas fa-search"></i>
+                </div>
+                <h5>Seleccionar Producto Existente</h5>
+                <p>Buscar y seleccionar un producto ya creado en el sistema</p>
+                <button class="btn btn-primary">Seleccionar</button>
+              </div>
+            </div>
+
+            <!-- Opción 2: Crear Producto Nuevo -->
+            <div class="col-md-6 mb-4">
+              <div class="option-card" (click)="createNewProduct()">
+                <div class="option-icon">
+                  <i class="fas fa-plus"></i>
+                </div>
+                <h5>Crear Producto Nuevo</h5>
+                <p>Crear un nuevo producto desde cero</p>
+                <button class="btn btn-success">Crear Nuevo</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulario para crear producto nuevo -->
+          <div *ngIf="isNewProduct" class="mt-4">
+            <h5>Crear Nuevo Producto</h5>
+            <form [formGroup]="productForm" (ngSubmit)="createProductAndContinue()">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="productName" class="form-label">Nombre del Producto *</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="productName"
+                    formControlName="productName"
+                    placeholder="Ej: Leche, Pan, etc."
+                  >
+                  <div *ngIf="productForm.get('productName')?.invalid && productForm.get('productName')?.touched" class="text-danger">
+                    <small *ngIf="productForm.get('productName')?.errors?.['required']">El nombre es requerido</small>
+                    <small *ngIf="productForm.get('productName')?.errors?.['minlength']">Mínimo 2 caracteres</small>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="category" class="form-label">Categoría (Opcional)</label>
+                  <select class="form-select" id="category" formControlName="category">
+                    <option value="">Seleccionar categoría</option>
+                    <option *ngFor="let category of categories" [value]="category.id">
+                      {{ category.category }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid || isLoading">
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                  Crear Producto y Continuar
+                </button>
+                <button type="button" class="btn btn-outline-secondary" (click)="cancelNewProduct()">
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Crear Variación -->
+    <div *ngIf="currentStep === 2" class="step-content">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4>Paso 2: Crear Variación</h4>
+          <button class="btn btn-outline-secondary btn-sm" (click)="previousStep()">
+            <i class="fas fa-arrow-left"></i> Volver
+          </button>
+        </div>
+        <div class="card-body">
+          <!-- Información del producto seleccionado -->
+          <div class="alert alert-info mb-4">
+            <strong>Producto:</strong> {{ selectedProduct?.product }}
+            <span *ngIf="selectedProduct?.category"> - {{ selectedProduct?.category?.category }}</span>
+            <span *ngIf="isNewProduct" class="badge bg-success ms-2">Nuevo</span>
+          </div>
+
+          <form [formGroup]="variationForm" (ngSubmit)="createVariation()">
+            <div class="row">
+              <!-- Precio -->
+              <div class="col-md-6 mb-3">
+                <label for="price" class="form-label">Precio *</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    id="price"
+                    formControlName="price"
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                  >
+                </div>
+                <div *ngIf="variationForm.get('price')?.invalid && variationForm.get('price')?.touched" class="text-danger">
+                  <small *ngIf="variationForm.get('price')?.errors?.['required']">El precio es requerido</small>
+                  <small *ngIf="variationForm.get('price')?.errors?.['min']">El precio debe ser mayor a 0</small>
+                </div>
+              </div>
+
+              <!-- Stock -->
+              <div class="col-md-6 mb-3">
+                <label for="stock" class="form-label">Stock *</label>
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  id="stock"
+                  formControlName="stock"
+                  placeholder="0"
+                  min="0"
+                >
+                <div *ngIf="variationForm.get('stock')?.invalid && variationForm.get('stock')?.touched" class="text-danger">
+                  <small *ngIf="variationForm.get('stock')?.errors?.['required']">El stock es requerido</small>
+                  <small *ngIf="variationForm.get('stock')?.errors?.['min']">El stock debe ser mayor a 0</small>
+                </div>
+              </div>
+
+              <!-- Sabor/Especia -->
+              <div class="col-md-6 mb-3">
+                <label for="spice" class="form-label">Sabor/Especia (Opcional)</label>
+                <select class="form-select" id="spice" formControlName="spice">
+                  <option value="">Seleccionar sabor</option>
+                  <option *ngFor="let spice of spices" [value]="spice.id">
+                    {{ spice.spice }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Medida -->
+              <div class="col-md-6 mb-3">
+                <label for="measure" class="form-label">Unidad de Medida (Opcional)</label>
+                <select class="form-select" id="measure" formControlName="measure">
+                  <option value="">Seleccionar medida</option>
+                  <option *ngFor="let measure of measures" [value]="measure.id">
+                    {{ measure.measure }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Color -->
+              <div class="col-md-6 mb-3">
+                <label for="color" class="form-label">Color (Opcional)</label>
+                <select class="form-select" id="color" formControlName="color">
+                  <option value="">Seleccionar color</option>
+                  <option *ngFor="let color of colors" [value]="color.id">
+                    {{ color.color }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- URL de Imagen -->
+              <div class="col-md-6 mb-3">
+                <label for="imageUrl" class="form-label">URL de Imagen (Opcional)</label>
+                <input 
+                  type="url" 
+                  class="form-control" 
+                  id="imageUrl"
+                  formControlName="imageUrl"
+                  placeholder="https://ejemplo.com/imagen.jpg"
+                >
+              </div>
+            </div>
+
+            <!-- Preview de imagen -->
+            <div *ngIf="variationForm.get('imageUrl')?.value" class="mb-3">
+              <label class="form-label">Vista Previa:</label>
+              <div class="image-preview">
+                <img [src]="variationForm.get('imageUrl')?.value" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-success" [disabled]="variationForm.invalid || isLoading">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                Crear Variación
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
+                Volver
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para seleccionar producto existente -->
+<div *ngIf="showProductModal" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Seleccionar Producto Existente</h5>
+        <button type="button" class="btn-close" (click)="showProductModal = false"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Buscar productos..."
+            #searchInput
+            (input)="filterProducts(searchInput.value)"
+          >
+        </div>
+        
+        <div class="product-list">
+          <div 
+            *ngFor="let product of filteredProducts" 
+            class="product-item"
+            (click)="onProductSelected(product)"
+          >
+            <div class="product-info">
+              <h6>{{ product.product }}</h6>
+              <small *ngIf="product.category" class="text-muted">
+                Categoría: {{ product.category.category }}
+              </small>
+            </div>
+            <button class="btn btn-sm btn-outline-primary">Seleccionar</button>
+          </div>
+        </div>
+
+        <div *ngIf="filteredProducts.length === 0" class="text-center py-4">
+          <p class="text-muted">No se encontraron productos</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="showProductModal = false">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
