@@ -99,7 +99,7 @@
         </a>
         
         <ng-container *ngIf="canEdit()">
-          <button class="btn btn-outline">
+          <button class="btn btn-outline" (click)="editOrder(order.id)">
             ✏️ Editar
           </button>
         </ng-container>

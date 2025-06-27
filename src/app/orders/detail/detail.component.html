@@ -95,7 +95,7 @@
           </div>
           <div class="info-item" *ngIf="order.invoice">
             <span class="label">Factura:</span>
-            <span class="value">{{ order.invoice }}</span>
+            <div class="invoice-card" [innerHTML]="order.invoice"></div>
           </div>
         </div>
         <div class="total-section">

@@ -78,6 +78,12 @@ export const routes: Routes = [
     data: { roles: ['admin', 'vendedor'] }
   },
   {
+    path: 'orders/edit/:id',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./orders/edit/edit.component').then(m => m.EditOrderComponent)
+  },
+  {
     path: 'orders/:id',
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'vendedor'] },
