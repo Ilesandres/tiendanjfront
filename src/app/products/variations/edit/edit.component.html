@@ -1,0 +1,129 @@
+<div class="container">
+  <div class="page-header">
+    <h1>✏️ Editar Variación</h1>
+    <p>Modifica el precio, stock e imagen de la variación del producto</p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando variación...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <!-- Información de la variación (solo lectura) -->
+  <div *ngIf="!loading && !error && variation" class="variation-info">
+    <div class="info-card">
+      <h3>Información de la Variación</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <strong>Producto:</strong> {{ variation.product.product || 'Sin producto' }}
+        </div>
+        <div class="info-item">
+          <strong>Sabor:</strong> {{ variation.spice.spice || 'Sin sabor' }}
+        </div>
+        <div class="info-item">
+          <strong>Color:</strong> {{ variation.color?.color || 'Sin color' }}
+        </div>
+        <div class="info-item">
+          <strong>Medida:</strong> {{ variation.measure?.measure || 'Sin medida' }}
+        </div>
+        <div class="info-item">
+          <strong>Estado:</strong> 
+          <span [class]="variation.active ? 'status-active' : 'status-inactive'">
+            {{ variation.active ? 'Activa' : 'Inactiva' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario de edición -->
+  <div *ngIf="!loading && !error && variation" class="edit-form">
+    <form (ngSubmit)="onSubmit()" #editForm="ngForm">
+      <div class="form-group">
+        <label for="price" class="form-label">Precio *</label>
+        <input 
+          type="number" 
+          id="price" 
+          name="price"
+          [(ngModel)]="formData.price" 
+          required
+          min="0"
+          step="0.01"
+          class="form-control"
+          placeholder="0.00"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="stock" class="form-label">Stock *</label>
+        <input 
+          type="number" 
+          id="stock" 
+          name="stock"
+          [(ngModel)]="formData.stock" 
+          required
+          min="0"
+          class="form-control"
+          placeholder="0"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="image" class="form-label">URL de la Imagen</label>
+        <input 
+          type="url" 
+          id="image" 
+          name="image"
+          [(ngModel)]="formData.image" 
+          class="form-control"
+          placeholder="https://ejemplo.com/imagen.jpg"
+        >
+        <small class="form-help">Deja vacío para mantener la imagen actual</small>
+      </div>
+
+      <!-- Vista previa de la imagen actual -->
+      <div *ngIf="variation.image" class="current-image">
+        <label class="form-label">Imagen Actual:</label>
+        <div class="image-preview">
+          <img [src]="variation.image" [alt]="'Imagen de ' + (variation.product.product || 'producto')" 
+               class="preview-img" (error)="onImageError($event)">
+        </div>
+      </div>
+
+      <!-- Mensaje cuando no hay imagen -->
+      <div *ngIf="!variation.image" class="no-image">
+        <label class="form-label">Imagen Actual:</label>
+        <div class="no-image-message">
+          <span class="no-image-icon">🖼️</span>
+          <p>No hay imagen asignada a esta variación</p>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="!editForm.form.valid || saving">
+          <span *ngIf="saving">Guardando...</span>
+          <span *ngIf="!saving">💾 Guardar Cambios</span>
+        </button>
+        <button type="button" class="btn btn-outline" (click)="cancel()">
+          ❌ Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Sin permisos -->
+  <div *ngIf="!canEdit()" class="no-permissions">
+    <div class="empty-icon">🚫</div>
+    <h3>Sin permisos</h3>
+    <p>No tienes permisos para editar variaciones</p>
+    <button (click)="cancel()" class="btn btn-primary">
+      ← Volver
+    </button>
+  </div>
+</div> 

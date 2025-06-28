@@ -1,0 +1,124 @@
+<div class="stats-container">
+  <!-- Estadísticas principales -->
+  <div class="main-stats">
+    <div class="stat-card primary">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <h3>Total Ventas</h3>
+        <p class="stat-value">{{ formatCurrency(totalSales) }}</p>
+        <small>Promedio: {{ formatCurrency(averageOrderValue) }}</small>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">📦</div>
+      <div class="stat-content">
+        <h3>Total Órdenes</h3>
+        <p class="stat-value">{{ totalOrders }}</p>
+        <small *ngIf="filteredOrders.length !== orders.length">
+          {{ filteredOrders.length }} filtradas de {{ orders.length }}
+        </small>
+      </div>
+    </div>
+    
+    <div class="stat-card success">
+      <div class="stat-icon">✅</div>
+      <div class="stat-content">
+        <h3>Completadas</h3>
+        <p class="stat-value">{{ completedOrders }}</p>
+        <small>{{ formatPercentage(completedOrders, totalOrders) }}</small>
+      </div>
+    </div>
+    
+    <div class="stat-card warning">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-content">
+        <h3>Pendientes</h3>
+        <p class="stat-value">{{ pendingOrders }}</p>
+        <small>{{ formatPercentage(pendingOrders, totalOrders) }}</small>
+      </div>
+    </div>
+    
+    <div class="stat-card danger" *ngIf="cancelledOrders > 0">
+      <div class="stat-icon">❌</div>
+      <div class="stat-content">
+        <h3>Canceladas</h3>
+        <p class="stat-value">{{ cancelledOrders }}</p>
+        <small>{{ formatPercentage(cancelledOrders, totalOrders) }}</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estadísticas detalladas -->
+  <div class="detailed-stats">
+    <!-- Métodos de pago -->
+    <div class="stat-section">
+      <h4>💳 Métodos de Pago</h4>
+      <div class="stat-list">
+        <div *ngFor="let item of getTopPaymentMethods()" class="stat-item">
+          <div class="stat-item-info">
+            <span class="stat-item-label">{{ item.method }}</span>
+            <span class="stat-item-value">{{ item.count }} órdenes</span>
+          </div>
+          <div class="stat-item-bar">
+            <div class="stat-item-progress" [style.width.%]="item.percentage"></div>
+          </div>
+          <span class="stat-item-percentage">{{ item.percentage.toFixed(1) }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tipos de orden -->
+    <div class="stat-section">
+      <h4>📋 Tipos de Orden</h4>
+      <div class="stat-list">
+        <div *ngFor="let item of getTopOrderTypes()" class="stat-item">
+          <div class="stat-item-info">
+            <span class="stat-item-label">{{ item.type }}</span>
+            <span class="stat-item-value">{{ item.count }} órdenes</span>
+          </div>
+          <div class="stat-item-bar">
+            <div class="stat-item-progress" [style.width.%]="item.percentage"></div>
+          </div>
+          <span class="stat-item-percentage">{{ item.percentage.toFixed(1) }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estadísticas mensuales -->
+    <div class="stat-section">
+      <h4>📅 Últimos 6 Meses</h4>
+      <div class="monthly-stats">
+        <div *ngFor="let month of getTopMonths()" class="monthly-item">
+          <div class="monthly-header">
+            <h5>{{ month.month }}</h5>
+          </div>
+          <div class="monthly-data">
+            <div class="monthly-stat">
+              <span class="monthly-label">Órdenes:</span>
+              <span class="monthly-value">{{ month.orders }}</span>
+            </div>
+            <div class="monthly-stat">
+              <span class="monthly-label">Ventas:</span>
+              <span class="monthly-value">{{ formatCurrency(month.sales) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resumen de filtros aplicados -->
+  <div class="filter-summary" *ngIf="filteredOrders.length !== orders.length">
+    <h4>📊 Resumen de Filtros</h4>
+    <div class="filter-summary-content">
+      <p>
+        Mostrando <strong>{{ filteredOrders.length }}</strong> de <strong>{{ orders.length }}</strong> órdenes
+        ({{ formatPercentage(filteredOrders.length, orders.length) }} del total)
+      </p>
+      <p>
+        Ventas filtradas: <strong>{{ formatCurrency(totalSales) }}</strong>
+      </p>
+    </div>
+  </div>
+</div> 

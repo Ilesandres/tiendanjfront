@@ -1,0 +1,57 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>🔑 Iniciar Sesión</h1>
+      <p>Accede a tu cuenta de Tienda NJ</p>
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label for="user" class="form-label">Usuario</label>
+        <input 
+          type="text" 
+          id="user" 
+          formControlName="user" 
+          class="form-control"
+          placeholder="Ingresa tu usuario"
+          [class.error]="loginForm.get('user')?.invalid && loginForm.get('user')?.touched"
+        >
+        <div *ngIf="loginForm.get('user')?.invalid && loginForm.get('user')?.touched" class="error-message">
+          El usuario es requerido
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          class="form-control"
+          placeholder="Ingresa tu contraseña"
+          [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        >
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+          La contraseña es requerida
+        </div>
+      </div>
+      
+      <div *ngIf="error" class="alert alert-error">
+        {{ error }}
+      </div>
+      
+      <button 
+        type="submit" 
+        class="btn btn-primary btn-block"
+        [disabled]="loginForm.invalid || loading"
+      >
+        <span *ngIf="loading" class="spinner"></span>
+        {{ loading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+      </button>
+    </form>
+    
+    <div class="auth-footer">
+      <p>¿No tienes cuenta? <a routerLink="/auth/register" class="auth-link">Regístrate aquí</a></p>
+    </div>
+  </div>
+</div>

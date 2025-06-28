@@ -1,0 +1,225 @@
+<div class="order-detail-container">
+  <!-- Header -->
+  <div class="header">
+    <button (click)="goBack()" class="btn btn-outline">
+      <i class="fas fa-arrow-left"></i>
+      Volver a Órdenes
+    </button>
+    <div class="header-content">
+      <h1>Orden #{{ order?.id }}</h1>
+      <div class="order-meta">
+        <span class="order-date">{{ order?.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        <span class="order-total">Total: ${{ order?.total | number }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando detalles de la orden...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="error">
+    <div class="error-icon">⚠️</div>
+    <p>{{ error }}</p>
+    <button (click)="loadOrder(order?.id || 0)" class="btn btn-primary">
+      <i class="fas fa-redo"></i>
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Order Details -->
+  <div *ngIf="order && !loading" class="order-content">
+    
+    <!-- Customer & Order Info Grid -->
+    <div class="info-grid-main">
+      <!-- Customer Info -->
+      <div class="info-card customer-card">
+        <div class="card-header">
+          <i class="fas fa-user"></i>
+          <h3>Información del Cliente</h3>
+        </div>
+        <div class="customer-avatar">
+          <div class="avatar">{{ order.user.people.name.charAt(0) }}{{ order.user.people.lastname.charAt(0) }}</div>
+        </div>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="label">Nombre:</span>
+            <span class="value">{{ order.user.people.name }} {{ order.user.people.lastname }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">DNI:</span>
+            <span class="value">{{ order.user.people.dni }} ({{ order.user.people.typeDni.name }})</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Email:</span>
+            <span class="value">{{ order.user.people.email || 'No especificado' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Teléfono:</span>
+            <span class="value">{{ order.user.people.phone || 'No especificado' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Usuario:</span>
+            <span class="value">{{ order.user.user }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="info-card order-summary">
+        <div class="card-header">
+          <i class="fas fa-receipt"></i>
+          <h3>Resumen de la Orden</h3>
+        </div>
+        <div class="summary-stats">
+          <div class="stat-item">
+            <div class="stat-value">{{ order.productOrder?.length || 0 }}</div>
+            <div class="stat-label">Productos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ order.payment?.vouchers?.length || 0 }}</div>
+            <div class="stat-label">Abonos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ order.shipment ? 'Sí' : 'No' }}</div>
+            <div class="stat-label">Envío</div>
+          </div>
+        </div>
+        <div class="order-type-info">
+          <div class="info-item">
+            <span class="label">Tipo de Orden:</span>
+            <span class="value">{{ order.typeOrder?.type || 'No especificado' }}</span>
+          </div>
+          <div class="info-item" *ngIf="order.invoice">
+            <span class="label">Factura:</span>
+            <span class="value">{{ order.invoice }}</span>
+          </div>
+        </div>
+        <div class="total-section">
+          <div class="total-amount">
+            <span class="total-label">Total Final:</span>
+            <span class="total-value">${{ order.total | number }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment & Shipment Info -->
+    <div class="info-grid-secondary">
+      <!-- Payment Info -->
+      <div class="info-card payment-card" *ngIf="order.payment">
+        <div class="card-header">
+          <i class="fas fa-credit-card"></i>
+          <h3>Información de Pago</h3>
+        </div>
+        <div class="payment-status">
+          <span class="status-badge status-{{ order.payment.status.status }}">
+            {{ order.payment.status.status }}
+          </span>
+        </div>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="label">Método:</span>
+            <span class="value">{{ order.payment.method.method }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Fecha:</span>
+            <span class="value">{{ order.payment.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+
+        <!-- Vouchers -->
+        <div *ngIf="order.payment.vouchers && order.payment.vouchers.length > 0" class="vouchers-section">
+          <h4><i class="fas fa-ticket-alt"></i> Vouchers/Abonos</h4>
+          <div class="vouchers-list">
+            <div *ngFor="let voucher of order.payment.vouchers" class="voucher-item">
+              <div class="voucher-header">
+                <span class="voucher-id">#{{ voucher.id }}</span>
+                <span class="voucher-value">${{ voucher.value | number }}</span>
+              </div>
+              <div class="voucher-date">
+                {{ voucher.createdAt | date:'dd/MM/yyyy HH:mm' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipment Info -->
+      <div class="info-card shipment-card" *ngIf="order.shipment">
+        <div class="card-header">
+          <i class="fas fa-shipping-fast"></i>
+          <h3>Información de Envío</h3>
+        </div>
+        <div class="shipment-status">
+          <span class="status-badge status-{{ order.shipment.status.status }}">
+            {{ order.shipment.status.status }}
+          </span>
+        </div>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="label">ID Envío:</span>
+            <span class="value">#{{ order.shipment.id }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Detalles:</span>
+            <span class="value">{{ order.shipment.details || 'Sin detalles' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="products-section">
+      <div class="info-card products-card">
+        <div class="card-header">
+          <i class="fas fa-shopping-cart"></i>
+          <h3>Productos de la Orden</h3>
+        </div>
+        <div *ngIf="order.productOrder && order.productOrder.length > 0" class="products-list">
+          <div *ngFor="let item of order.productOrder" class="product-item">
+            <div class="product-image">
+              <img [src]="item.product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pgo8L3N2Zz4='"
+                     [alt]="item.product.product?.product || 'Producto'"
+                     class="product-image"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pgo8L3N2Zz4='">
+            </div>
+            <div class="product-details">
+              <h4>{{ item.product.product?.product || 'Producto ID: ' + item.product.id }}</h4>
+              <div class="product-meta">
+                <span class="product-category">{{ item.product.product?.category?.category || 'Sin categoría' }}</span>
+                <span class="product-status" [class]="'status-' + (item.product.active ? 'active' : 'inactive')">
+                  {{ item.product.active ? 'Activo' : 'Inactivo' }}
+                </span>
+              </div>
+              <div class="product-pricing">
+                <div class="price-info">
+                  <span class="price">${{ item.product.price | number }}</span>
+                  <span class="price-label">por unidad</span>
+                </div>
+                <div class="quantity-info">
+                  <span class="quantity">{{ item.amount }}</span>
+                  <span class="quantity-label">cantidad</span>
+                </div>
+                <div class="subtotal-info">
+                  <span class="subtotal">${{ (item.product.price * item.amount) | number }}</span>
+                  <span class="subtotal-label">subtotal</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!order.productOrder || order.productOrder.length === 0" class="no-products">
+          <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <p>No hay productos en esta orden</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,195 @@
+<div class="filters-container">
+  <!-- Barra de búsqueda principal -->
+  <div class="search-bar">
+    <div class="search-input-group">
+      <input 
+        type="text" 
+        formControlName="searchTerm"
+        placeholder="🔍 Buscar por ID de orden, cliente, DNI..."
+        class="search-input"
+      >
+      <button type="button" class="search-btn" (click)="applyFilters()">
+        Buscar
+      </button>
+    </div>
+    
+    <button 
+      type="button" 
+      class="toggle-filters-btn"
+      (click)="toggleAdvancedFilters()"
+    >
+      {{ showAdvancedFilters ? '🔽' : '🔼' }} Filtros Avanzados
+    </button>
+  </div>
+
+  <!-- Filtros avanzados -->
+  <div class="advanced-filters" *ngIf="showAdvancedFilters">
+    <form [formGroup]="filtersForm" class="filters-form">
+      
+      <!-- Filtros de fecha -->
+      <div class="filter-section">
+        <h4>📅 Filtros de Fecha</h4>
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="dateRange">Rango de fecha:</label>
+            <select id="dateRange" formControlName="dateRange" (change)="onDateRangeChange()">
+              <option *ngFor="let range of dateRanges" [value]="range.value">
+                {{ range.label }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-group" *ngIf="filtersForm.get('dateRange')?.value === 'custom'">
+            <label for="startDate">Desde:</label>
+            <input type="date" id="startDate" formControlName="startDate">
+          </div>
+          
+          <div class="filter-group" *ngIf="filtersForm.get('dateRange')?.value === 'custom'">
+            <label for="endDate">Hasta:</label>
+            <input type="date" id="endDate" formControlName="endDate">
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros de cliente -->
+      <div class="filter-section">
+        <h4>👤 Filtros de Cliente</h4>
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="userDni">DNI del cliente:</label>
+            <input 
+              type="text" 
+              id="userDni" 
+              formControlName="userDni"
+              placeholder="Ej: 1234567890"
+            >
+          </div>
+          
+          <div class="filter-group">
+            <label for="userId">ID del cliente:</label>
+            <input 
+              type="number" 
+              id="userId" 
+              formControlName="userId"
+              placeholder="Ej: 1"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros de estado -->
+      <div class="filter-section">
+        <h4>📊 Filtros de Estado</h4>
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="paymentStatus">Estado de pago:</label>
+            <select id="paymentStatus" formControlName="paymentStatus">
+              <option value="">Todos</option>
+              <option *ngFor="let status of paymentStatuses" [value]="status.id">
+                {{ status.status }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="shipmentStatus">Estado de envío:</label>
+            <select id="shipmentStatus" formControlName="shipmentStatus">
+              <option value="">Todos</option>
+              <option *ngFor="let status of shipmentStatuses" [value]="status.id">
+                {{ status.status }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="orderType">Tipo de orden:</label>
+            <select id="orderType" formControlName="orderType">
+              <option value="">Todos</option>
+              <option *ngFor="let type of orderTypes" [value]="type.id">
+                {{ type.type }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros de monto -->
+      <div class="filter-section">
+        <h4>💰 Filtros de Monto</h4>
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="minTotal">Monto mínimo:</label>
+            <input 
+              type="number" 
+              id="minTotal" 
+              formControlName="minTotal"
+              placeholder="Ej: 10000"
+              min="0"
+            >
+          </div>
+          
+          <div class="filter-group">
+            <label for="maxTotal">Monto máximo:</label>
+            <input 
+              type="number" 
+              id="maxTotal" 
+              formControlName="maxTotal"
+              placeholder="Ej: 100000"
+              min="0"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros de ordenamiento -->
+      <div class="filter-section">
+        <h4>📋 Ordenamiento</h4>
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="sortBy">Ordenar por:</label>
+            <select id="sortBy" formControlName="sortBy">
+              <option *ngFor="let option of sortOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="sortOrder">Orden:</label>
+            <select id="sortOrder" formControlName="sortOrder">
+              <option *ngFor="let option of sortOrders" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="limit">Resultados por página:</label>
+            <select id="limit" formControlName="limit">
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="filter-actions">
+        <button type="button" class="btn btn-primary" (click)="applyFilters()">
+          🔍 Aplicar Filtros
+        </button>
+        <button type="button" class="btn btn-outline" (click)="clearFilters()">
+          🗑️ Limpiar Filtros
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Cargando filtros...</p>
+  </div>
+</div> 

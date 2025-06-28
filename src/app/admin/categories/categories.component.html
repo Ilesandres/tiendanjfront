@@ -1,0 +1,76 @@
+<div class="categories-container">
+  <h1>Gestionar Categorías</h1>
+  
+  <!-- Formulario para crear/editar categoría -->
+  <div class="form-section">
+    <h3>{{ isEditing ? 'Editar' : 'Crear' }} Categoría</h3>
+    <form (ngSubmit)="onSubmit()" #categoryForm="ngForm">
+      <div class="form-group">
+        <label for="categoryName">Nombre de la Categoría:</label>
+        <input 
+          type="text" 
+          id="categoryName" 
+          name="categoryName"
+          [(ngModel)]="formData.category" 
+          required
+          class="form-control"
+          placeholder="Ej: Bebidas, Comida, etc."
+        >
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="!categoryForm.form.valid">
+          {{ isEditing ? 'Actualizar' : 'Crear' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="cancelEdit()" *ngIf="isEditing">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Lista de categorías -->
+  <div class="list-section">
+    <h3>Categorías Existentes</h3>
+    
+    <div class="loading" *ngIf="loading">
+      <p>Cargando categorías...</p>
+    </div>
+
+    <div class="error" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <div class="categories-grid" *ngIf="!loading && categories.length > 0">
+      <div class="category-card" *ngFor="let category of categories">
+        <div class="category-info">
+          <h4>{{ category.category }}</h4>
+          <p class="status" [class.active]="category.active" [class.inactive]="!category.active">
+            {{ category.active ? 'Activa' : 'Inactiva' }}
+          </p>
+        </div>
+        
+        <div class="category-actions">
+          <button class="btn-edit" (click)="editCategory(category)">
+            Editar
+          </button>
+          <button 
+            class="btn-toggle" 
+            [class.btn-disable]="category.active"
+            [class.btn-enable]="!category.active"
+            (click)="toggleCategoryStatus(category)"
+          >
+            {{ category.active ? 'Deshabilitar' : 'Habilitar' }}
+          </button>
+          <button *ngIf="userService.isAdmin()" class="btn-delete" (click)="deleteCategory(category.id)">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && categories.length === 0">
+      <p>No hay categorías creadas. ¡Crea la primera!</p>
+    </div>
+  </div>
+</div> 
