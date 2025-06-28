@@ -80,6 +80,12 @@
   text-transform: capitalize;
 }
 
+.user-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 .btn-sm {
   padding: 0.375rem 0.75rem;
   font-size: 0.75rem;
@@ -104,5 +110,15 @@
   
   .user-info {
     align-items: center;
+  }
+  
+  .user-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .user-actions .btn {
+    width: 100%;
+    justify-content: center;
   }
 }

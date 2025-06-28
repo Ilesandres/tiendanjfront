@@ -1,0 +1,239 @@
+<div class="profile-container">
+  <!-- Header -->
+  <div class="profile-header">
+    <div class="header-content">
+      <h1>👤 Mi Perfil</h1>
+      <p>Gestiona tu información personal y de cuenta</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando información del perfil...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="error">
+    <div class="error-icon">⚠️</div>
+    <p>{{ error }}</p>
+    <button (click)="loadUserProfile()" class="btn btn-primary">
+      <i class="fas fa-redo"></i>
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Profile Content -->
+  <div *ngIf="user && !loading" class="profile-content">
+    
+    <!-- User Info Card -->
+    <div class="profile-card">
+      <div class="card-header">
+        <div class="user-avatar">
+          <div class="avatar">{{ user.people.name.charAt(0) }}{{ user.people.lastname.charAt(0) }}</div>
+        </div>
+        <div class="user-info">
+          <h2>{{ user.people.name }} {{ user.people.lastname }}</h2>
+          <div class="user-meta">
+            <span class="username">&#64;{{ user.user }}</span>
+            <span class="role-badge role-{{ user.rol }}">{{ user.rol }}</span>
+            <span class="verification-status" [class.verified]="user.verify">
+              {{ user.verify ? '✅ Verificado' : '❌ No verificado' }}
+            </span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button 
+            *ngIf="!editing" 
+            (click)="startEditing()" 
+            class="btn btn-primary">
+            <i class="fas fa-edit"></i>
+            Editar Perfil
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="success" class="success-message">
+      <i class="fas fa-check-circle"></i>
+      Perfil actualizado exitosamente
+    </div>
+
+    <!-- Profile Form -->
+    <div class="profile-form-card">
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
+        
+        <!-- Personal Information Section -->
+        <div class="form-section">
+          <h3><i class="fas fa-user"></i> Información Personal</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Nombre *</label>
+              <input 
+                type="text" 
+                id="name" 
+                formControlName="name"
+                [readonly]="!editing"
+                [class.readonly]="!editing"
+                placeholder="Tu nombre">
+                
+              <div class="error-message" *ngIf="getFieldError('name')">
+                {{ getFieldError('name') }}
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="lastname">Apellido *</label>
+              <input 
+                type="text" 
+                id="lastname" 
+                formControlName="lastname"
+                [readonly]="!editing"
+                [class.readonly]="!editing"
+                placeholder="Tu apellido">
+              <div class="error-message" *ngIf="getFieldError('lastname')">
+                {{ getFieldError('lastname') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Teléfono</label>
+              <input 
+                type="tel" 
+                id="phone" 
+                formControlName="phone"
+                [readonly]="!editing"
+                [class.readonly]="!editing"
+                placeholder="Tu teléfono">
+            </div>
+            
+            <div class="form-group">
+              <label for="birthdate">Fecha de Nacimiento</label>
+              <input 
+                type="date" 
+                id="birthdate" 
+                formControlName="birthdate"
+                [readonly]="!editing"
+                [class.readonly]="!editing">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input 
+                type="email" 
+                id="email" 
+                formControlName="email"
+                [readonly]="!editing"
+                [class.readonly]="!editing"
+                placeholder="tu@email.com">
+              <div class="error-message" *ngIf="getFieldError('email')">
+                {{ getFieldError('email') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dni">DNI *</label>
+              <input 
+                type="text" 
+                id="dni" 
+                formControlName="dni"
+                [readonly]="!editing"
+                [class.readonly]="!editing"
+                placeholder="Tu número de documento">
+              <div class="error-message" *ngIf="getFieldError('dni')">
+                {{ getFieldError('dni') }}
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="typeDni">Tipo de DNI * ({{ typeDnis.length }} tipos cargados)</label>
+              <select 
+                id="typeDni" 
+                formControlName="typeDniId"
+                [class.readonly]="!editing">
+                <option value="">Selecciona un tipo de documento</option>
+                <option *ngFor="let type of typeDnis" [value]="type.id">
+                  {{ type.name }}
+                </option>
+              </select>
+              <small>Tipos disponibles: {{ getTypeDniNames() }}</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Information Section -->
+        <div class="form-section">
+          <h3><i class="fas fa-lock"></i> Información de Cuenta</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="username">Usuario *</label>
+              <input 
+                type="text" 
+                id="username" 
+                formControlName="user"
+                [readonly]="!editing"
+                [class.readonly]="!editing"
+                placeholder="Tu nombre de usuario">
+              <div class="error-message" *ngIf="getFieldError('user')">
+                {{ getFieldError('user') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="editing">
+            <div class="form-group">
+              <label for="password">Nueva Contraseña</label>
+              <input 
+                type="password" 
+                id="password" 
+                formControlName="password"
+                placeholder="Deja en blanco para mantener la actual">
+              <div class="error-message" *ngIf="getPasswordError()">
+                {{ getPasswordError() }}
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="confirmPassword">Confirmar Contraseña</label>
+              <input 
+                type="password" 
+                id="confirmPassword" 
+                formControlName="confirmPassword"
+                placeholder="Confirma la nueva contraseña">
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions" *ngIf="editing">
+          <button 
+            type="button" 
+            (click)="cancelEditing()" 
+            class="btn btn-outline"
+            [disabled]="saving">
+            <i class="fas fa-times"></i>
+            Cancelar
+          </button>
+          
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="profileForm.invalid || saving">
+            <i class="fas fa-spinner fa-spin" *ngIf="saving"></i>
+            <i class="fas fa-save" *ngIf="!saving"></i>
+            {{ saving ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

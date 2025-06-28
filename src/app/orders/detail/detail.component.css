@@ -19,6 +19,61 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.send-invoice-btn {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.send-invoice-btn:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+}
+
+.send-invoice-btn.disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.send-invoice-btn.loading {
+  background: #95a5a6;
+  cursor: wait;
+}
+
+.success-message {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .header-content {
   flex: 1;
 }
@@ -567,6 +622,21 @@
     padding: 20px;
   }
   
+  .header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .send-invoice-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .success-message {
+    width: 100%;
+    justify-content: center;
+  }
+  
   .header h1 {
     font-size: 2rem;
   }
@@ -599,5 +669,200 @@
   
   .value {
     text-align: left;
+  }
+}
+
+.invoice-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 24px 32px;
+  margin: 16px auto 0 auto;
+  max-width: 420px;
+  min-width: 260px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.invoice-card h2 {
+  text-align: center !important;
+  margin-bottom: 12px;
+}
+
+.invoice-card ul {
+  text-align: left;
+  margin: 0 auto 12px auto;
+  padding-left: 24px;
+}
+
+.invoice-card p, .invoice-card li, .invoice-card h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+/* Shipment Management Styles */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.btn-edit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.btn-delete:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+  color: white;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
+}
+
+.shipment-actions {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #ecf0f1;
+}
+
+.shipment-form {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ecf0f1;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+  background: white;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-control:disabled {
+  background: #f8f9fa;
+  cursor: not-allowed;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.no-shipment {
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.no-shipment .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.no-shipment .empty-state i {
+  font-size: 3rem;
+  color: #bdc3c7;
+}
+
+.no-shipment .empty-state p {
+  color: #7f8c8d;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Status badge colors for shipment */
+.status-enviado {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+}
+
+.status-pendiente {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.status-en-reparto {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+}
+
+.status-entregado {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+}
+
+.status-cancelado {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+/* Responsive adjustments for shipment management */
+@media (max-width: 768px) {
+  .card-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .shipment-form {
+    padding: 12px;
+  }
+  
+  .no-shipment {
+    padding: 24px 12px;
   }
 }

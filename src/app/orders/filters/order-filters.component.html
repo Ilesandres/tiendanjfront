@@ -1,25 +1,27 @@
 <div class="filters-container">
   <!-- Barra de búsqueda principal -->
-  <div class="search-bar">
-    <div class="search-input-group">
-      <input 
-        type="text" 
-        formControlName="searchTerm"
-        placeholder="🔍 Buscar por ID de orden, cliente, DNI..."
-        class="search-input"
+  <div [formGroup]="filtersForm">
+    <div class="search-bar">
+      <div class="search-input-group">
+        <input 
+          type="text" 
+          formControlName="searchTerm"
+          placeholder="🔍 Buscar por ID de orden, cliente, DNI..."
+          class="search-input"
+        >
+        <button type="button" class="search-btn" (click)="applyFilters()">
+          Buscar
+        </button>
+      </div>
+      
+      <button 
+        type="button" 
+        class="toggle-filters-btn"
+        (click)="toggleAdvancedFilters()"
       >
-      <button type="button" class="search-btn" (click)="applyFilters()">
-        Buscar
+        {{ showAdvancedFilters ? '🔽' : '🔼' }} Filtros Avanzados
       </button>
     </div>
-    
-    <button 
-      type="button" 
-      class="toggle-filters-btn"
-      (click)="toggleAdvancedFilters()"
-    >
-      {{ showAdvancedFilters ? '🔽' : '🔼' }} Filtros Avanzados
-    </button>
   </div>
 
   <!-- Filtros avanzados -->

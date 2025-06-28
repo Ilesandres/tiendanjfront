@@ -40,7 +40,75 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "login-ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user\": \"vendedor1\",\r\n    \"password\": \"Admin123!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "223"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"df-oAlhcY4XtIH6D56YogYyU7bjra0\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 13:59:31 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"acces_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUxMTE5MTcxLCJleHAiOjE3NTExMjA5NzF9.wW9Y4zv4YJGtaYgMyjzndf-FlawTO06_FkDGweO6CmA\"\n}"
+						}
+					]
 				}
 			]
 		},
@@ -192,7 +260,7 @@
 					"name": "admin",
 					"item": [
 						{
-							"name": "block user-vendedor",
+							"name": "change-status user <admin>",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -222,41 +290,740 @@
 								}
 							},
 							"response": []
-						},
+						}
+					],
+					"description": "seccion de solicitudes admin, solo rol admin en especcifico"
+				},
+				{
+					"name": "typeDni",
+					"item": [
 						{
-							"name": "unblock-user-vendedor",
+							"name": "all types",
 							"request": {
 								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MDc3MzQxNiwiZXhwIjoxNzUwNzc1MjE2fQ.fB0Sa3VfbxKgOMq2fl_Zn0752WWUZrh5glJO7Xg5GTc",
-											"type": "string"
-										}
-									]
+									"type": "noauth"
 								},
-								"method": "PATCH",
+								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/auth/unblock/user/10",
+									"raw": "http://localhost:8080/typedni/all",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
 									"port": "8080",
 									"path": [
-										"auth",
-										"unblock",
-										"user",
-										"10"
+										"typedni",
+										"all"
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "all types",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/typedni/all",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"typedni",
+												"all"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "107"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"6b-fXoTUTrESIRrBve8nY9ngJxLjck\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 15:02:35 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"name\": \"CC\"\n    },\n    {\n        \"id\": 2,\n        \"name\": \"CE\"\n    },\n    {\n        \"id\": 5,\n        \"name\": \"NIT\"\n    },\n    {\n        \"id\": 3,\n        \"name\": \"PP\"\n    },\n    {\n        \"id\": 4,\n        \"name\": \"TI\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "dni by ID",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/typedni/id/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"typedni",
+										"id",
+										"1"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "dni by ID",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/typedni/id/1",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"typedni",
+												"id",
+												"1"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "20"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"14-aIopOV3W9p/9+Jdtf/TiPHM1UcQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 15:03:54 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 1,\n    \"name\": \"CC\"\n}"
+								}
+							]
+						},
+						{
+							"name": "create typeadmin, seller>",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUxMTIzMDg4LCJleHAiOjE3NTExMjQ4ODh9.rtAcSQLhQ0beKLpvoklULP3vZe6Q6Spl-ZsJGUVJZL4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"pe\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/typedni/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"typedni",
+										"create"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "create type",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\":\"pe\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/typedni/create",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"typedni",
+												"create"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "20"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"14-cEKtWyBWw1deVE0glq5Fjmv9nm8\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 15:06:57 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"name\": \"PE\",\n    \"id\": 6\n}"
+								}
+							]
+						},
+						{
+							"name": "update typeDni <admin, seller>",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUxMTIzMDg4LCJleHAiOjE3NTExMjQ4ODh9.rtAcSQLhQ0beKLpvoklULP3vZe6Q6Spl-ZsJGUVJZL4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"PESas\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/typedni/update/6",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"typedni",
+										"update",
+										"6"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "update typeDni <admin, seller>",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\":\"PESas\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/typedni/update/6",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"typedni",
+												"update",
+												"6"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "23"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"17-jygDeZ/Z4SQzgAkJyIGgbifOMrA\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 15:15:42 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 6,\n    \"name\": \"PESAS\"\n}"
+								}
+							]
+						},
+						{
+							"name": "delete type <admin>",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MTEyMzg0NSwiZXhwIjoxNzUxMTI1NjQ1fQ.MwpWEzabdk8ovR9Q-cnUeph84y9MpVcO2uje6vQl4Iw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/typedni/delete/6",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"typedni",
+										"delete",
+										"6"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "delete type <admin>",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/typedni/delete/6",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"typedni",
+												"delete",
+												"6"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "57"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"39-hwhGnmxrMMK206ADKaz76dOw6+4\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 15:17:37 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": [\n        \"tipo de documento eliminado correctamente\"\n    ]\n}"
+								}
+							]
 						}
-					],
-					"description": "seccion de solicitudes admin, solo rol admin en especcifico"
+					]
+				},
+				{
+					"name": "roles",
+					"item": [
+						{
+							"name": "all roles",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/rol",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"rol"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "all roles",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/rol",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"rol"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "102"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"66-pb977V/H8EWITrovZ8haDUF2tm8\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 19:01:31 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"rol\": \"admin\"\n    },\n    {\n        \"id\": 2,\n        \"rol\": \"cliente\"\n    },\n    {\n        \"id\": 4,\n        \"rol\": \"proveedor\"\n    },\n    {\n        \"id\": 3,\n        \"rol\": \"vendedor\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "rol by ID",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/rol/id/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"rol",
+										"id",
+										"1"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "rol by ID",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/rol/id/1",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"rol",
+												"id",
+												"1"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "22"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"16-QFIC4RdV7PUVFmDi9DzH5Oedud4\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 19:02:08 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 1,\n    \"rol\": \"admin\"\n}"
+								}
+							]
+						},
+						{
+							"name": "rol by name",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/rol/name/cliente",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"rol",
+										"name",
+										"cliente"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "rol by name",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/rol/name/cliente",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"rol",
+												"name",
+												"cliente"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "24"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"18-MlrnUAbyr4f5CVRlMRaVOewKtzI\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 19:02:35 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 2,\n    \"rol\": \"cliente\"\n}"
+								}
+							]
+						}
+					]
 				},
 				{
 					"name": "update-user-<admin-seller-auth>",
@@ -266,7 +1033,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUwNzczMDEyLCJleHAiOjE3NTA3NzQ4MTJ9.uZl7Ycp3mD4Ezrb4ehEDs2EqvQLpAcdIwPYJ2aqJCbY",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MTEzNzk5MSwiZXhwIjoxNzUxMTM5NzkxfQ.80rCP71r5on-9EH_j4Q0SDKuceE0HapmvxOj3jC1lQM",
 									"type": "string"
 								}
 							]
@@ -275,7 +1042,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"people\":{\r\n        \"name\":\"Administrador\"\r\n    }\r\n}",
+							"raw": "{\r\n    //opcional\r\n  \"people\": {\r\n    \"name\": \"Administrador\",\r\n    \"lastname\": \"Sistema\",\r\n    //optional-unique\r\n    \"phone\": \"3000000000\",\r\n    \"birthdate\": \"1980-01-01\",\r\n    //optional-unique\r\n    \"email\": \"admin@sistema.com\",\r\n    \"typeDni\": {\r\n      \"id\": 1\r\n    },\r\n    //unique\r\n    \"dni\": \"1111111112\"\r\n  },\r\n  //opcional\r\n  \"user\": \"admin01\",\r\n  //opcional\r\n  \"password\": \"Admin123!\",\r\n  //opcional\r\n  \"rol\": {\r\n    \"id\": 1\r\n  },\r\n  //opcional\r\n  \"verify\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -297,7 +1064,453 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "update-user-<admin-seller-auth>",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"people\": {\r\n    \"name\": \"Administrador\",\r\n    \"lastname\": \"Sistema\",\r\n    //optional-unique\r\n    \"phone\": \"3000000000\",\r\n    \"birthdate\": \"1980-01-01\",\r\n    //optional-unique\r\n    \"email\": \"admin@sistema.com\",\r\n    \"typeDni\": {\r\n      \"id\": 1\r\n    },\r\n    //unique\r\n    \"dni\": \"1111111112\"\r\n  },\r\n  //opcional\r\n  \"user\": \"admin01\",\r\n  //opcional\r\n  \"password\": \"Admin123!\",\r\n  //opcional\r\n  \"rol\": {\r\n    \"id\": 1\r\n  },\r\n  //opcional\r\n  \"verify\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/auth/update/user/9",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"update",
+										"user",
+										"9"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "302"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"12e-Ba/8XtJstYEKswhr15mncwTsl28\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 19:15:22 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 9,\n    \"people\": {\n        \"id\": 7,\n        \"name\": \"Administrador\",\n        \"lastname\": \"Sistema\",\n        \"phone\": \"3000000000\",\n        \"birthdate\": \"1980-01-01\",\n        \"email\": \"admin@sistema.com\",\n        \"typeDni\": {\n            \"id\": 1\n        },\n        \"dni\": \"1111111112\"\n    },\n    \"user\": \"admin01\",\n    \"verificationCode\": null,\n    \"token\": null,\n    \"datesendverify\": null,\n    \"rol\": {\n        \"id\": 1,\n        \"rol\": \"admin\"\n    },\n    \"verify\": false\n}"
+						}
+					]
+				},
+				{
+					"name": "user info by email<admin, seller>",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUxMTE5MTcxLCJleHAiOjE3NTExMjA5NzF9.wW9Y4zv4YJGtaYgMyjzndf-FlawTO06_FkDGweO6CmA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/auth/user/info/email/ilesandres6@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"user",
+								"info",
+								"email",
+								"ilesandres6@gmail.com"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "user info by email<admin, seller>-ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/auth/user/info/email/ilesandres6@gmail.com",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"user",
+										"info",
+										"email",
+										"ilesandres6@gmail.com"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "316"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"13c-aWtsOYQ6RhUp0R9dBh5240lOy2U\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 14:04:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 8,\n    \"people\": {\n        \"id\": 3,\n        \"name\": \"Administrador\",\n        \"lastname\": \"Sistema\",\n        \"phone\": \"3000000000\",\n        \"birthdate\": \"1980-01-01\",\n        \"email\": \"ilesandres6@gmail.com\",\n        \"typeDni\": {\n            \"id\": 1,\n            \"name\": \"CC\"\n        },\n        \"dni\": \"1111111111\"\n    },\n    \"user\": \"admin1\",\n    \"verificationCode\": null,\n    \"token\": null,\n    \"datesendverify\": null,\n    \"rol\": {\n        \"id\": 1,\n        \"rol\": \"admin\"\n    },\n    \"verify\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "info user by username<admin,seller>",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUxMTM3MDI3LCJleHAiOjE3NTExMzg4Mjd9.9ibrEiMibK37TwXa0587ktutBZfwFgova-jB40abG_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/auth/user/info/username/admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"user",
+								"info",
+								"username",
+								"admin"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "info user by username-ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/auth/user/info/username/admin",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"user",
+										"info",
+										"username",
+										"admin"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "290"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"122-EeEdNCGGPWraPLYJ1iCDDUtom8Y\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 14:05:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"people\": {\n        \"id\": 2,\n        \"name\": \"na\",\n        \"lastname\": \"ca\",\n        \"phone\": \"0000000\",\n        \"birthdate\": \"1990-01-01\",\n        \"email\": \"admin@admin.com\",\n        \"typeDni\": {\n            \"id\": 1,\n            \"name\": \"CC\"\n        },\n        \"dni\": \"0000000000\"\n    },\n    \"user\": \"admin\",\n    \"verificationCode\": null,\n    \"token\": null,\n    \"datesendverify\": null,\n    \"rol\": {\n        \"id\": 1,\n        \"rol\": \"admin\"\n    },\n    \"verify\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "info user by ID<admin, seller>",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUxMTE5MTcxLCJleHAiOjE3NTExMjA5NzF9.wW9Y4zv4YJGtaYgMyjzndf-FlawTO06_FkDGweO6CmA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/auth/user/info/id/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"user",
+								"info",
+								"id",
+								"7"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "info user by ID-ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/auth/user/info/id/7",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"user",
+										"info",
+										"id",
+										"7"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "290"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"122-EeEdNCGGPWraPLYJ1iCDDUtom8Y\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 14:07:16 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"people\": {\n        \"id\": 2,\n        \"name\": \"na\",\n        \"lastname\": \"ca\",\n        \"phone\": \"0000000\",\n        \"birthdate\": \"1990-01-01\",\n        \"email\": \"admin@admin.com\",\n        \"typeDni\": {\n            \"id\": 1,\n            \"name\": \"CC\"\n        },\n        \"dni\": \"0000000000\"\n    },\n    \"user\": \"admin\",\n    \"verificationCode\": null,\n    \"token\": null,\n    \"datesendverify\": null,\n    \"rol\": {\n        \"id\": 1,\n        \"rol\": \"admin\"\n    },\n    \"verify\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "list user <admin, seller>",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MTE0MjE0OCwiZXhwIjoxNzUxMTQzOTQ4fQ.xnYqo7PktXBjrFpAuZyeT317w_nyeDSbTRFUe5Z0c8Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/auth/users/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"users",
+								"list"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "list user <admin, seller>",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/auth/users/list",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"users",
+										"list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1555"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"613-PFFqWBrubMWYeduZFzjolpQDCyc\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 20:23:44 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 7,\n        \"people\": {\n            \"id\": 2,\n            \"name\": \"na\",\n            \"lastname\": \"ca\",\n            \"phone\": \"0000000\",\n            \"birthdate\": \"1990-01-01\",\n            \"email\": \"admin@admin.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"0000000000\"\n        },\n        \"user\": \"admin\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 1,\n            \"rol\": \"admin\"\n        },\n        \"verify\": true\n    },\n    {\n        \"id\": 8,\n        \"people\": {\n            \"id\": 3,\n            \"name\": \"Administrador\",\n            \"lastname\": \"Sistema\",\n            \"phone\": \"3000000000\",\n            \"birthdate\": \"1980-01-01\",\n            \"email\": \"ilesandres6@gmail.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"1111111111\"\n        },\n        \"user\": \"admin1\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 1,\n            \"rol\": \"admin\"\n        },\n        \"verify\": true\n    },\n    {\n        \"id\": 9,\n        \"people\": {\n            \"id\": 7,\n            \"name\": \"Administrador\",\n            \"lastname\": \"Sistema\",\n            \"phone\": \"3000000000\",\n            \"birthdate\": \"1980-01-01\",\n            \"email\": \"admin@sistema.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"1111111112\"\n        },\n        \"user\": \"admin01\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 1,\n            \"rol\": \"admin\"\n        },\n        \"verify\": false\n    },\n    {\n        \"id\": 10,\n        \"people\": {\n            \"id\": 8,\n            \"name\": \"vendedor\",\n            \"lastname\": \"Sistema cardio\",\n            \"phone\": \"3000000002\",\n            \"birthdate\": \"1980-01-01\",\n            \"email\": \"vendedor@sistema.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"0101010101\"\n        },\n        \"user\": \"vendedor1\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 3,\n            \"rol\": \"vendedor\"\n        },\n        \"verify\": true\n    },\n    {\n        \"id\": 11,\n        \"people\": {\n            \"id\": 11,\n            \"name\": \"Andres\",\n            \"lastname\": \"iles\",\n            \"phone\": \"3227349082\",\n            \"birthdate\": \"2005-07-12\",\n            \"email\": \"bailess22@itp.edu.co\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"1127071568\"\n        },\n        \"user\": null,\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 2,\n            \"rol\": \"cliente\"\n        },\n        \"verify\": true\n    }\n]"
+						}
+					]
 				}
 			]
 		},
@@ -1216,7 +2429,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"price\":2500,\r\n    \"stock\":5,\r\n    \"image\":\"https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png\"\r\n}",
+									"raw": "{\r\n    \"price\":2500,\r\n    \"stock\":5,\r\n    \"image\":\"\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1438,7 +2651,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/product/one/2",
+							"raw": "http://localhost:8080/product/one/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1447,7 +2660,7 @@
 							"path": [
 								"product",
 								"one",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -3409,6 +4622,101 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "send Invoice To User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUxMDcwMzMyLCJleHAiOjE3NTEwNzIxMzJ9.eTNaug0ZotpohTkdMmWRWbTZsT5Umb3KNmkOcSRXYg0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/order/send/email/invoice/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"order",
+								"send",
+								"email",
+								"invoice",
+								"2"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "send Invoice To User-ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/order/send/email/invoice/12",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"order",
+										"send",
+										"email",
+										"invoice",
+										"12"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-ip3XpyAlv/i1hUQ5xOXGC1jPUrE\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 14:00:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": [\n        \"email enviado correctamente\"\n    ]\n}"
+						}
+					]
 				}
 			],
 			"description": "metodos de ordenes-facturas y sus relacionados"

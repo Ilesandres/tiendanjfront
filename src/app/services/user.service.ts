@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
+import { map, tap } from 'rxjs/operators';
 
 export interface UserInfo {
   id: number;
@@ -21,7 +22,7 @@ export interface People {
   dni: string;
   typeDni: {
     id: number;
-    type: string;
+    name: string;
   };
 }
 
@@ -31,6 +32,9 @@ export interface User {
   rol: string;
   verify: boolean;
   people: People;
+  verificationCode?: any;
+  token?: any;
+  datesendverify?: any;
 }
 
 export interface CreateUserRequest {
@@ -42,6 +46,22 @@ export interface CreateUserRequest {
     email?: string;
     typeDni: { id: number };
     dni: string;
+  };
+  user?: string;
+  password?: string;
+  rol?: { id: number };
+  verify?: boolean;
+}
+
+export interface UpdateUserRequest {
+  people?: {
+    name?: string;
+    lastname?: string;
+    phone?: string;
+    birthdate?: string;
+    email?: string;
+    typeDni?: { id: number };
+    dni?: string;
   };
   user?: string;
   password?: string;
@@ -104,16 +124,70 @@ export class UserService {
     return userRole ? roles.includes(userRole) : false;
   }
 
-  // Nuevos métodos para buscar y crear usuarios
-  searchUserByDni(dni: string): Observable<User> {
-    // Usar el endpoint correcto según Postman
+  // Métodos para obtener información del usuario desde el backend
+  getUserById(id: number): Observable<User> {
     const headers = this.getAuthHeaders();
-    return this.http.get<User>(`${this.apiUrl}/auth/user/info/dni/${dni}`, { headers });
+    return this.http.get<any>(`${this.apiUrl}/auth/user/info/id/${id}`, { headers }).pipe(
+      map((user: any) => ({
+        ...user,
+        rol: typeof user.rol === 'object' ? user.rol.rol : user.rol,
+
+      }
+    )),
+
+    );
   }
 
+  getUserByUsername(username: string): Observable<User> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any>(`${this.apiUrl}/auth/user/info/username/${username}`, { headers }).pipe(
+      map((user: any) => ({
+        ...user,
+        rol: typeof user.rol === 'object' ? user.rol.rol : user.rol
+      }))
+    );
+  }
+
+  getUserByEmail(email: string): Observable<User> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any>(`${this.apiUrl}/auth/user/info/email/${email}`, { headers }).pipe(
+      map((user: any) => ({
+        ...user,
+        rol: typeof user.rol === 'object' ? user.rol.rol : user.rol
+      }))
+    );
+  }
+
+  searchUserByDni(dni: string): Observable<User> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any>(`${this.apiUrl}/auth/user/info/dni/${dni}`, { headers }).pipe(
+      map((user: any) => ({
+        ...user,
+        rol: typeof user.rol === 'object' ? user.rol.rol : user.rol
+      }))
+    );
+  }
+
+  // Métodos para crear y actualizar usuarios
   createUser(userData: CreateUserRequest): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.post(`${this.apiUrl}/auth/register/user`, userData, { headers });
+  }
+
+  updateUser(userId: number, userData: UpdateUserRequest): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.apiUrl}/auth/update/user/${userId}`, userData, { headers });
+  }
+
+  // Métodos para bloquear/desbloquear usuarios (solo admin)
+  blockUser(userId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.patch(`${this.apiUrl}/auth/block/user/${userId}`, {}, { headers });
+  }
+
+  unblockUser(userId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.patch(`${this.apiUrl}/auth/unblock/user/${userId}`, {}, { headers });
   }
 
   private getAuthHeaders(): HttpHeaders {
