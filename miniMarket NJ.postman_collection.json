@@ -260,7 +260,7 @@
 					"name": "admin",
 					"item": [
 						{
-							"name": "block user-vendedor",
+							"name": "change-status user <admin>",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -284,38 +284,6 @@
 									"path": [
 										"auth",
 										"block",
-										"user",
-										"10"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "unblock-user-vendedor",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MDc3MzQxNiwiZXhwIjoxNzUwNzc1MjE2fQ.fB0Sa3VfbxKgOMq2fl_Zn0752WWUZrh5glJO7Xg5GTc",
-											"type": "string"
-										}
-									]
-								},
-								"method": "PATCH",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:8080/auth/unblock/user/10",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8080",
-									"path": [
-										"auth",
-										"unblock",
 										"user",
 										"10"
 									]
@@ -805,6 +773,259 @@
 					]
 				},
 				{
+					"name": "roles",
+					"item": [
+						{
+							"name": "all roles",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/rol",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"rol"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "all roles",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/rol",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"rol"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "102"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"66-pb977V/H8EWITrovZ8haDUF2tm8\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 19:01:31 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"rol\": \"admin\"\n    },\n    {\n        \"id\": 2,\n        \"rol\": \"cliente\"\n    },\n    {\n        \"id\": 4,\n        \"rol\": \"proveedor\"\n    },\n    {\n        \"id\": 3,\n        \"rol\": \"vendedor\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "rol by ID",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/rol/id/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"rol",
+										"id",
+										"1"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "rol by ID",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/rol/id/1",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"rol",
+												"id",
+												"1"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "22"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"16-QFIC4RdV7PUVFmDi9DzH5Oedud4\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 19:02:08 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 1,\n    \"rol\": \"admin\"\n}"
+								}
+							]
+						},
+						{
+							"name": "rol by name",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/rol/name/cliente",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"rol",
+										"name",
+										"cliente"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "rol by name",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/rol/name/cliente",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"rol",
+												"name",
+												"cliente"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "24"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"18-MlrnUAbyr4f5CVRlMRaVOewKtzI\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 28 Jun 2025 19:02:35 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 2,\n    \"rol\": \"cliente\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "update-user-<admin-seller-auth>",
 					"request": {
 						"auth": {
@@ -812,7 +1033,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUwNzczMDEyLCJleHAiOjE3NTA3NzQ4MTJ9.uZl7Ycp3mD4Ezrb4ehEDs2EqvQLpAcdIwPYJ2aqJCbY",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MTEzNzk5MSwiZXhwIjoxNzUxMTM5NzkxfQ.80rCP71r5on-9EH_j4Q0SDKuceE0HapmvxOj3jC1lQM",
 									"type": "string"
 								}
 							]
@@ -821,7 +1042,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"people\":{\r\n        \"name\":\"Administrador\"\r\n    }\r\n}",
+							"raw": "{\r\n    //opcional\r\n  \"people\": {\r\n    \"name\": \"Administrador\",\r\n    \"lastname\": \"Sistema\",\r\n    //optional-unique\r\n    \"phone\": \"3000000000\",\r\n    \"birthdate\": \"1980-01-01\",\r\n    //optional-unique\r\n    \"email\": \"admin@sistema.com\",\r\n    \"typeDni\": {\r\n      \"id\": 1\r\n    },\r\n    //unique\r\n    \"dni\": \"1111111112\"\r\n  },\r\n  //opcional\r\n  \"user\": \"admin01\",\r\n  //opcional\r\n  \"password\": \"Admin123!\",\r\n  //opcional\r\n  \"rol\": {\r\n    \"id\": 1\r\n  },\r\n  //opcional\r\n  \"verify\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -843,7 +1064,77 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "update-user-<admin-seller-auth>",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"people\": {\r\n    \"name\": \"Administrador\",\r\n    \"lastname\": \"Sistema\",\r\n    //optional-unique\r\n    \"phone\": \"3000000000\",\r\n    \"birthdate\": \"1980-01-01\",\r\n    //optional-unique\r\n    \"email\": \"admin@sistema.com\",\r\n    \"typeDni\": {\r\n      \"id\": 1\r\n    },\r\n    //unique\r\n    \"dni\": \"1111111112\"\r\n  },\r\n  //opcional\r\n  \"user\": \"admin01\",\r\n  //opcional\r\n  \"password\": \"Admin123!\",\r\n  //opcional\r\n  \"rol\": {\r\n    \"id\": 1\r\n  },\r\n  //opcional\r\n  \"verify\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/auth/update/user/9",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"update",
+										"user",
+										"9"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "302"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"12e-Ba/8XtJstYEKswhr15mncwTsl28\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 19:15:22 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 9,\n    \"people\": {\n        \"id\": 7,\n        \"name\": \"Administrador\",\n        \"lastname\": \"Sistema\",\n        \"phone\": \"3000000000\",\n        \"birthdate\": \"1980-01-01\",\n        \"email\": \"admin@sistema.com\",\n        \"typeDni\": {\n            \"id\": 1\n        },\n        \"dni\": \"1111111112\"\n    },\n    \"user\": \"admin01\",\n    \"verificationCode\": null,\n    \"token\": null,\n    \"datesendverify\": null,\n    \"rol\": {\n        \"id\": 1,\n        \"rol\": \"admin\"\n    },\n    \"verify\": false\n}"
+						}
+					]
 				},
 				{
 					"name": "user info by email<admin, seller>",
@@ -948,7 +1239,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUxMTE5MTcxLCJleHAiOjE3NTExMjA5NzF9.wW9Y4zv4YJGtaYgMyjzndf-FlawTO06_FkDGweO6CmA",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsInVzZXIiOiJ2ZW5kZWRvcjEiLCJyb2wiOiJ2ZW5kZWRvciIsInZlcmlmeSI6dHJ1ZSwiaWF0IjoxNzUxMTM3MDI3LCJleHAiOjE3NTExMzg4Mjd9.9ibrEiMibK37TwXa0587ktutBZfwFgova-jB40abG_M",
 									"type": "string"
 								}
 							]
@@ -1127,6 +1418,97 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"id\": 7,\n    \"people\": {\n        \"id\": 2,\n        \"name\": \"na\",\n        \"lastname\": \"ca\",\n        \"phone\": \"0000000\",\n        \"birthdate\": \"1990-01-01\",\n        \"email\": \"admin@admin.com\",\n        \"typeDni\": {\n            \"id\": 1,\n            \"name\": \"CC\"\n        },\n        \"dni\": \"0000000000\"\n    },\n    \"user\": \"admin\",\n    \"verificationCode\": null,\n    \"token\": null,\n    \"datesendverify\": null,\n    \"rol\": {\n        \"id\": 1,\n        \"rol\": \"admin\"\n    },\n    \"verify\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "list user <admin, seller>",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MTE0MjE0OCwiZXhwIjoxNzUxMTQzOTQ4fQ.xnYqo7PktXBjrFpAuZyeT317w_nyeDSbTRFUe5Z0c8Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/auth/users/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"users",
+								"list"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "list user <admin, seller>",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/auth/users/list",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"users",
+										"list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1555"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"613-PFFqWBrubMWYeduZFzjolpQDCyc\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 20:23:44 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 7,\n        \"people\": {\n            \"id\": 2,\n            \"name\": \"na\",\n            \"lastname\": \"ca\",\n            \"phone\": \"0000000\",\n            \"birthdate\": \"1990-01-01\",\n            \"email\": \"admin@admin.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"0000000000\"\n        },\n        \"user\": \"admin\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 1,\n            \"rol\": \"admin\"\n        },\n        \"verify\": true\n    },\n    {\n        \"id\": 8,\n        \"people\": {\n            \"id\": 3,\n            \"name\": \"Administrador\",\n            \"lastname\": \"Sistema\",\n            \"phone\": \"3000000000\",\n            \"birthdate\": \"1980-01-01\",\n            \"email\": \"ilesandres6@gmail.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"1111111111\"\n        },\n        \"user\": \"admin1\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 1,\n            \"rol\": \"admin\"\n        },\n        \"verify\": true\n    },\n    {\n        \"id\": 9,\n        \"people\": {\n            \"id\": 7,\n            \"name\": \"Administrador\",\n            \"lastname\": \"Sistema\",\n            \"phone\": \"3000000000\",\n            \"birthdate\": \"1980-01-01\",\n            \"email\": \"admin@sistema.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"1111111112\"\n        },\n        \"user\": \"admin01\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 1,\n            \"rol\": \"admin\"\n        },\n        \"verify\": false\n    },\n    {\n        \"id\": 10,\n        \"people\": {\n            \"id\": 8,\n            \"name\": \"vendedor\",\n            \"lastname\": \"Sistema cardio\",\n            \"phone\": \"3000000002\",\n            \"birthdate\": \"1980-01-01\",\n            \"email\": \"vendedor@sistema.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"0101010101\"\n        },\n        \"user\": \"vendedor1\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 3,\n            \"rol\": \"vendedor\"\n        },\n        \"verify\": true\n    },\n    {\n        \"id\": 11,\n        \"people\": {\n            \"id\": 11,\n            \"name\": \"Andres\",\n            \"lastname\": \"iles\",\n            \"phone\": \"3227349082\",\n            \"birthdate\": \"2005-07-12\",\n            \"email\": \"bailess22@itp.edu.co\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"1127071568\"\n        },\n        \"user\": null,\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 2,\n            \"rol\": \"cliente\"\n        },\n        \"verify\": true\n    }\n]"
 						}
 					]
 				}

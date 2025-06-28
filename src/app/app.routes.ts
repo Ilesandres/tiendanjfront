@@ -44,6 +44,12 @@ export const routes: Routes = [
     loadComponent: () => import('./admin/typedni/typedni.component').then(m => m.TypeDniComponent)
   },
   {
+    path: 'admin/users',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./admin/users/users.component').then(m => m.UsersComponent)
+  },
+  {
     path: 'products',
     canActivate: [authGuard],
     loadComponent: () => import('./products/list/list.component').then(m => m.ListComponent)
