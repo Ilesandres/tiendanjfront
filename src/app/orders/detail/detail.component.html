@@ -170,24 +170,107 @@
       </div>
 
       <!-- Shipment Info -->
-      <div class="info-card shipment-card" *ngIf="order.shipment">
+      <div class="info-card shipment-card">
         <div class="card-header">
           <i class="fas fa-shipping-fast"></i>
           <h3>Información de Envío</h3>
-        </div>
-        <div class="shipment-status">
-          <span class="status-badge status-{{ order.shipment.status.status }}">
-            {{ order.shipment.status.status }}
-          </span>
-        </div>
-        <div class="info-list">
-          <div class="info-item">
-            <span class="label">ID Envío:</span>
-            <span class="value">#{{ order.shipment.id }}</span>
+          <div class="card-actions" *ngIf="!editingShipment">
+            <button *ngIf="order.shipment" (click)="startEditingShipment()" class="btn btn-edit">
+              <i class="fas fa-edit"></i>
+              Editar
+            </button>
+            <button *ngIf="!order.shipment" (click)="startEditingShipment()" class="btn btn-primary">
+              <i class="fas fa-plus"></i>
+              Crear Envío
+            </button>
           </div>
-          <div class="info-item">
-            <span class="label">Detalles:</span>
-            <span class="value">{{ order.shipment.details || 'Sin detalles' }}</span>
+        </div>
+
+        <!-- Shipment Display -->
+        <div *ngIf="order.shipment && !editingShipment">
+          <div class="shipment-status">
+            <span class="status-badge status-{{ order.shipment.status.status }}">
+              {{ order.shipment.status.status }}
+            </span>
+          </div>
+          <div class="info-list">
+            <div class="info-item">
+              <span class="label">ID Envío:</span>
+              <span class="value">#{{ order.shipment.id }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Detalles:</span>
+              <span class="value">{{ order.shipment.details || 'Sin detalles' }}</span>
+            </div>
+            <div class="info-item" *ngIf="order.shipment.createdAt">
+              <span class="label">Creado:</span>
+              <span class="value">{{ order.shipment.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="info-item" *ngIf="order.shipment.updatedAt">
+              <span class="label">Actualizado:</span>
+              <span class="value">{{ order.shipment.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+          <div class="shipment-actions">
+            <button (click)="deleteShipment()" class="btn btn-delete">
+              <i class="fas fa-trash"></i>
+              Eliminar Envío
+            </button>
+          </div>
+        </div>
+
+        <!-- Shipment Form -->
+        <div *ngIf="editingShipment" class="shipment-form">
+          <form (ngSubmit)="saveShipment()">
+            <div class="form-group">
+              <label for="shipmentStatus">Estado del Envío:</label>
+              <select 
+                id="shipmentStatus" 
+                [(ngModel)]="shipmentForm.statusId" 
+                name="statusId"
+                class="form-control"
+                required>
+                <option value="">Selecciona un estado</option>
+                <option *ngFor="let status of shipmentStatuses" [value]="status.id">
+                  {{ status.status }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="shipmentDetails">Detalles del Envío:</label>
+              <textarea 
+                id="shipmentDetails" 
+                [(ngModel)]="shipmentForm.details" 
+                name="details"
+                class="form-control"
+                rows="3"
+                placeholder="Detalles adicionales del envío..."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" (click)="cancelEditingShipment()" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="savingShipment">
+                <i class="fas fa-spinner fa-spin" *ngIf="savingShipment"></i>
+                <i class="fas fa-save" *ngIf="!savingShipment"></i>
+                {{ savingShipment ? 'Guardando...' : 'Guardar Envío' }}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- No Shipment Message -->
+        <div *ngIf="!order.shipment && !editingShipment" class="no-shipment">
+          <div class="empty-state">
+            <i class="fas fa-shipping-fast"></i>
+            <p>No hay información de envío para esta orden</p>
+            <button (click)="startEditingShipment()" class="btn btn-primary">
+              <i class="fas fa-plus"></i>
+              Crear Envío
+            </button>
           </div>
         </div>
       </div>

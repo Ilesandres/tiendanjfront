@@ -27,9 +27,14 @@
           <span class="user-name">{{ userInfo?.user || 'Usuario' }}</span>
           <span class="user-role">{{ userInfo?.rol || 'Cliente' }}</span>
         </div>
-        <button (click)="logout()" class="btn btn-outline btn-sm">
-          🚪 Cerrar Sesión
-        </button>
+        <div class="user-actions">
+          <a routerLink="/profile" class="btn btn-outline btn-sm">
+            👤 Perfil
+          </a>
+          <button (click)="logout()" class="btn btn-outline btn-sm">
+            🚪 Cerrar Sesión
+          </button>
+        </div>
       </ng-container>
       
       <ng-template #loginButton>
