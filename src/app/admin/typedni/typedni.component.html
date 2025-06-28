@@ -1,0 +1,66 @@
+<div class="typedni-container">
+  <h1>Gestionar Tipos de DNI</h1>
+  
+  <!-- Formulario para crear/editar tipo de DNI -->
+  <div class="form-section">
+    <h3>{{ isEditing ? 'Editar' : 'Crear' }} Tipo de DNI</h3>
+    <form (ngSubmit)="onSubmit()" #typeDniForm="ngForm">
+      <div class="form-group">
+        <label for="typeDniName">Nombre del Tipo de DNI:</label>
+        <input 
+          type="text" 
+          id="typeDniName" 
+          name="typeDniName"
+          [(ngModel)]="formData.name" 
+          required
+          class="form-control"
+          placeholder="Ej: CC, CE, TI, etc."
+        >
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="!typeDniForm.form.valid">
+          {{ isEditing ? 'Actualizar' : 'Crear' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="cancelEdit()" *ngIf="isEditing">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Lista de tipos de DNI -->
+  <div class="list-section">
+    <h3>Tipos de DNI Existentes</h3>
+    
+    <div class="loading" *ngIf="loading">
+      <p>Cargando tipos de DNI...</p>
+    </div>
+
+    <div class="error" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <div class="typedni-grid" *ngIf="!loading && typeDnis.length > 0">
+      <div class="typedni-card" *ngFor="let typeDni of typeDnis">
+        <div class="typedni-info">
+          <h4>{{ typeDni.name }}</h4>
+          <p class="id">ID: {{ typeDni.id }}</p>
+        </div>
+        
+        <div class="typedni-actions">
+          <button class="btn-edit" (click)="editTypeDni(typeDni)">
+            Editar
+          </button>
+          <button *ngIf="userService.isAdmin()" class="btn-delete" (click)="deleteTypeDni(typeDni.id)">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && typeDnis.length === 0">
+      <p>No hay tipos de DNI creados. ¡Crea el primero!</p>
+    </div>
+  </div>
+</div> 

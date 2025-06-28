@@ -38,6 +38,18 @@ export const routes: Routes = [
     loadComponent: () => import('./admin/colors/colors.component').then(m => m.ColorsComponent)
   },
   {
+    path: 'admin/typedni',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./admin/typedni/typedni.component').then(m => m.TypeDniComponent)
+  },
+  {
+    path: 'admin/users',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./admin/users/users.component').then(m => m.UsersComponent)
+  },
+  {
     path: 'products',
     canActivate: [authGuard],
     loadComponent: () => import('./products/list/list.component').then(m => m.ListComponent)
@@ -78,10 +90,21 @@ export const routes: Routes = [
     data: { roles: ['admin', 'vendedor'] }
   },
   {
+    path: 'orders/edit/:id',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'vendedor'] },
+    loadComponent: () => import('./orders/edit/edit.component').then(m => m.EditOrderComponent)
+  },
+  {
     path: 'orders/:id',
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'vendedor'] },
     loadComponent: () => import('./orders/detail/detail.component').then(m => m.DetailComponent)
+  },
+  {
+    path: 'profile',
+    canActivate: [authGuard],
+    loadComponent: () => import('./profile/profile.component').then(m => m.ProfileComponent)
   },
   {
     path: '',

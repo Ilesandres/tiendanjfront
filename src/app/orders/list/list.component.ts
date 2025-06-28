@@ -357,8 +357,7 @@ export class ListComponent implements OnInit {
   }
 
   editOrder(id: number): void {
-    // TODO: Implementar edición de orden
-    console.log('Editar orden:', id);
+    this.router.navigate(['/orders', 'edit', id]);
   }
 
   createNewOrder(): void {

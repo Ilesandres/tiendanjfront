@@ -133,9 +133,9 @@ export class OrderService {
     return this.http.post(`${this.apiUrl}/payment/create`, payment, { headers });
   }
 
-  updatePayment(id: number, payment: { method?: { id: number }, status?: { id: number } }): Observable<any> {
+  updatePayment(paymentId: number, data: { method: { id: number }, status: { id: number } }) {
     const headers = this.getAuthHeaders();
-    return this.http.post(`${this.apiUrl}/payment/update/${id}`, payment, { headers });
+    return this.http.post(`${this.apiUrl}/payment/update/${paymentId}`, data, { headers });
   }
 
   deletePayment(id: number): Observable<any> {
@@ -203,14 +203,22 @@ export class OrderService {
   }
 
   // Product Orders
-  addProductToOrder(productOrder: { order: { id: number }, product: { id: number }, amount: number }): Observable<any> {
+  addProductToOrder(orderId: number, productId: number, amount: number) {
     const headers = this.getAuthHeaders();
-    return this.http.post(`${this.apiUrl}/productorder/add-product-to-order`, productOrder, { headers });
+    return this.http.post(`${this.apiUrl}/productorder/add-product-to-order`, {
+      order: { id: orderId },
+      product: { id: productId },
+      amount
+    }, { headers });
   }
 
-  updateProductFromOrder(id: number, productOrder: { order: { id: number }, product: { id: number }, amount: number }): Observable<any> {
+  updateProductOrder(productOrderId: number, orderId: number, productId: number, amount: number) {
     const headers = this.getAuthHeaders();
-    return this.http.post(`${this.apiUrl}/productorder/update-product-from-order/${id}`, productOrder, { headers });
+    return this.http.post(`${this.apiUrl}/productorder/update-product-from-order/${productOrderId}`, {
+      order: { id: orderId },
+      product: { id: productId },
+      amount
+    }, { headers });
   }
 
   getProductOrdersByOrderId(orderId: number): Observable<ProductOrder[]> {
@@ -218,9 +226,9 @@ export class OrderService {
     return this.http.get<ProductOrder[]>(`${this.apiUrl}/productorder/find-by-order-id/${orderId}`, { headers });
   }
 
-  deleteProductFromOrder(id: number): Observable<any> {
+  deleteProductFromOrder(productOrderId: number) {
     const headers = this.getAuthHeaders();
-    return this.http.delete(`${this.apiUrl}/productorder/delete-product-from-order/${id}`, { headers });
+    return this.http.delete(`${this.apiUrl}/productorder/delete-product-from-order/${productOrderId}`, { headers });
   }
 
   // Orders
@@ -347,8 +355,14 @@ export class OrderService {
 
   // Método para obtener estadísticas de órdenes - CORREGIDO
   getOrderStats(filters?: OrderFilters): Observable<any> {
-    // Por ahora, obtener todas las órdenes y calcular estadísticas en el frontend
-    return this.getAllOrders();
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/order/stats`, { headers });
+  }
+
+  // Send invoice email
+  sendInvoiceEmail(orderId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.apiUrl}/order/send/email/invoice/${orderId}`,{}, { headers });
   }
 
   private getAuthHeaders(): HttpHeaders {

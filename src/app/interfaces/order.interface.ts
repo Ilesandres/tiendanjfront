@@ -54,6 +54,18 @@ export interface ProductOrder {
     stock: number;
     active: boolean;
     image: string | null;
+    color?: {
+      id: number;
+      color: string;
+    };
+    spice?: {
+      id: number;
+      spice: string;
+    };
+    measure?: {
+      id: number;
+      measure: string;
+    };
     product: {
       id: number;
       product: string;

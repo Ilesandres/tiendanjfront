@@ -1,0 +1,107 @@
+<div class="edit-order-container" *ngIf="!loading && order">
+  <h2>Editar Orden #{{ order.id }}</h2>
+  
+  <!-- Alerta si no se puede editar -->
+  <div *ngIf="!canEdit" class="alert alert-warning">
+    <strong>⚠️ Orden no editable:</strong> Esta orden no se puede editar porque el pago ya está pagado.
+  </div>
+  
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+  <!-- Editar pago -->
+  <form [formGroup]="paymentForm" (ngSubmit)="updatePayment()" class="payment-form">
+    <h3>Pago</h3>
+    <label>Método de pago:</label>
+    <select formControlName="method">
+      <option *ngFor="let m of paymentMethods" [value]="m.id">{{ m.method }}</option>
+    </select>
+    <label>Estado de pago:</label>
+    <select formControlName="status">
+      <option *ngFor="let s of paymentStatuses" [value]="s.id">{{ s.status }}</option>
+    </select>
+    <button type="submit" [disabled]="paymentForm.invalid || !canEdit">Actualizar Pago</button>
+  </form>
+
+  <!-- Editar productos -->
+  <div class="products-section">
+    <h3>Productos en la orden</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Variación</th>
+          <th>Precio</th>
+          <th>Cantidad</th>
+          <th>Subtotal</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products">
+          <td>
+            <strong>{{ p.product.product.product }}</strong><br>
+            <small>Categoría: {{ p.product.product.category.category }}</small>
+          </td>
+          <td>
+            <div *ngIf="p.product.color && p.product.spice">
+              <strong>Color:</strong> {{ p.product.color.color }}<br>
+              <strong>Sabor:</strong> {{ p.product.spice.spice }}<br>
+              <strong>Medida:</strong> {{ p.product.measure?.measure || "N/A" }}
+            </div>
+            <small *ngIf="!p.product.color || !p.product.spice">Sin variaciones</small>
+          </td>
+          <td>${{ p.product.price | number:"1.0-0" }}</td>
+          <td>
+            <input #amountInput type="number" [value]="p.amount" min="1" 
+                   (change)="updateProductAmount(p, amountInput.valueAsNumber)"
+                   [disabled]="!canEdit">
+          </td>
+          <td>${{ (p.product.price * p.amount) | number:"1.0-0" }}</td>
+          <td>
+            <button (click)="deleteProduct(p)" [disabled]="!canEdit">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Agregar nueva variación -->
+    <form [formGroup]="addProductForm" (ngSubmit)="addProduct()" class="add-product-form" *ngIf="canEdit">
+      <h4>Agregar variación de producto</h4>
+      <div class="form-row">
+        <label>Producto:</label>
+        <select formControlName="productId" (change)="onProductChange($event)">
+          <option [ngValue]="null">Selecciona un producto</option>
+          <option *ngFor="let prod of allProducts" [value]="prod.id">{{ prod.product }}</option>
+        </select>
+      </div>
+      
+      <div class="form-row" *ngIf="selectedProductVariations.length > 0">
+        <label>Variación:</label>
+        <select formControlName="variationId">
+          <option [ngValue]="null">Selecciona una variación</option>
+          <option *ngFor="let variation of selectedProductVariations" [value]="variation.id">
+            {{ (variation.color && variation.color.color) || "Sin color" }} - {{ (variation.spice && variation.spice.spice) || "Sin sabor" }} 
+            (Stock: {{ variation.stock }}) - ${{ variation.price }}
+          </option>
+        </select>
+      </div>
+      
+      <div class="form-row">
+        <label>Cantidad:</label>
+        <input type="number" formControlName="amount" min="1" placeholder="Cantidad">
+      </div>
+      
+      <button type="submit" [disabled]="addProductForm.invalid">Agregar Variación</button>
+    </form>
+  </div>
+
+  <div class="actions-container">
+    <button class="btn btn-secondary" (click)="goBack()">
+      <span>←</span> Volver al detalle
+    </button>
+    <button class="btn btn-outline" (click)="goToList()">
+      <span>📋</span> Ver todas las órdenes
+    </button>
+  </div>
+</div>
+<div *ngIf="loading" class="loading">Cargando...</div>

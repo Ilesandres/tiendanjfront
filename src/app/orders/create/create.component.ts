@@ -281,7 +281,7 @@ export class CreateComponent implements OnInit {
 
       console.log(`Adding product ${index + 1}/${totalProducts}:`, productOrderData);
 
-      this.orderService.addProductToOrder(productOrderData).subscribe({
+      this.orderService.addProductToOrder(orderId, item.variation.id, item.quantity).subscribe({
         next: (response) => {
           productsAdded++;
           console.log(`Product ${index + 1} added successfully:`, response);
