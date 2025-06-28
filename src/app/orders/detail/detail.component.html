@@ -5,6 +5,27 @@
       <i class="fas fa-arrow-left"></i>
       Volver a Órdenes
     </button>
+    
+    <!-- Send Invoice Button -->
+    <div class="header-actions" *ngIf="order && !loading">
+      <button 
+        (click)="sendInvoice()" 
+        [disabled]="!isOrderPaid() || !hasCustomerEmail() || sendingInvoice"
+        class="btn btn-primary send-invoice-btn"
+        [class.disabled]="!isOrderPaid() || !hasCustomerEmail()"
+        [class.loading]="sendingInvoice">
+        <i class="fas fa-envelope" *ngIf="!sendingInvoice"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="sendingInvoice"></i>
+        {{ sendingInvoice ? 'Enviando ✉️...' : 'Enviar Factura ✉️✉️' }}
+      </button>
+      
+      <!-- Success message -->
+      <div *ngIf="invoiceSent" class="success-message">
+        <i class="fas fa-check-circle"></i>
+        Factura enviada exitosamente
+      </div>
+    </div>
+    
     <div class="header-content">
       <h1>Orden #{{ order?.id }}</h1>
       <div class="order-meta">

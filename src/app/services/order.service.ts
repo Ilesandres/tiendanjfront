@@ -355,8 +355,14 @@ export class OrderService {
 
   // Método para obtener estadísticas de órdenes - CORREGIDO
   getOrderStats(filters?: OrderFilters): Observable<any> {
-    // Por ahora, obtener todas las órdenes y calcular estadísticas en el frontend
-    return this.getAllOrders();
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/order/stats`, { headers });
+  }
+
+  // Send invoice email
+  sendInvoiceEmail(orderId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.apiUrl}/order/send/email/invoice/${orderId}`,{}, { headers });
   }
 
   private getAuthHeaders(): HttpHeaders {
