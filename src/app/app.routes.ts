@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
+import { RenderMode } from '@angular/ssr';
 
 export const routes: Routes = [
   {
@@ -10,7 +11,10 @@ export const routes: Routes = [
   {
     path: 'admin',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'vendedor'] },
+    data: { 
+      roles: ['admin', 'vendedor'],
+      renderMode: 'ssr'
+     },
     loadComponent: () => import('./admin/admin.component').then(m => m.AdminComponent)
   },
   {
@@ -63,13 +67,17 @@ export const routes: Routes = [
   {
     path: 'products/edit/:id',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'vendedor'] },
+    data: { 
+      roles: ['admin', 'vendedor']
+     },
     loadComponent: () => import('./products/edit/edit.component').then(m => m.EditComponent)
   },
   {
     path: 'products/variations/edit/:id',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'vendedor'] },
+    data: {
+      roles: ['admin', 'vendedor']
+     },
     loadComponent: () => import('./products/variations/edit/edit.component').then(m => m.EditVariationComponent)
   },
   {
@@ -87,18 +95,25 @@ export const routes: Routes = [
     path: 'orders/create',
     loadComponent: () => import('./orders/create/create.component').then(m => m.CreateComponent),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'vendedor'] }
+    data: { 
+      roles: ['admin', 'vendedor'],
+      renderMode: 'ssr'
+     }
   },
   {
     path: 'orders/edit/:id',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'vendedor'] },
+    data: { 
+      roles: ['admin', 'vendedor']
+     },
     loadComponent: () => import('./orders/edit/edit.component').then(m => m.EditOrderComponent)
   },
   {
     path: 'orders/:id',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'vendedor'] },
+    data: { 
+      roles: ['admin', 'vendedor']
+     },
     loadComponent: () => import('./orders/detail/detail.component').then(m => m.DetailComponent)
   },
   {

@@ -2,9 +2,11 @@
   "name": "tienda-njfront",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
+    "ng": " ng",
+    "prestart": "node scripts/generate-env.js",
     "start": "ng serve",
-    "build": "ng build",
+    "prebuild": "node scripts/generate-env.js",
+    "build": " ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:tiendaNjfront": "node dist/tienda-njfront/server/server.mjs"
