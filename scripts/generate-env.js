@@ -13,6 +13,9 @@ if (fs.existsSync(envPath)) {
       envVars[key.trim()] = value.trim();
     }
   });
+  console.log('archivo .env leido correctamente');
+}else{
+  console.log('archivo .env no encontrado');
 }
 
 // Valores por defecto
