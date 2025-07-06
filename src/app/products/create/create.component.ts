@@ -85,7 +85,8 @@ export class CreateComponent implements OnInit {
       spice: [''],
       measure: [''],
       color: [''],
-      imageUrl: ['']
+      image: ['', [Validators.maxLength(254)]],
+      description: ['', [Validators.maxLength(254)]]
     });
   }
 
@@ -213,7 +214,7 @@ export class CreateComponent implements OnInit {
       };
 
       if (this.productForm.get('category')?.value) {
-        productData.category = this.productForm.get('category')?.value;
+        productData.category = { id: this.productForm.get('category')?.value };
       }
 
       const createdProduct = await this.productService.createProductAsync(productData);
@@ -267,8 +268,12 @@ export class CreateComponent implements OnInit {
         variationData.color = { id: this.variationForm.get('color')?.value };
       }
 
-      if (this.variationForm.get('imageUrl')?.value) {
-        variationData.image = this.variationForm.get('imageUrl')?.value;
+      if (this.variationForm.get('image')?.value) {
+        variationData.image = this.variationForm.get('image')?.value;
+      }
+
+      if (this.variationForm.get('description')?.value) {
+        variationData.description = this.variationForm.get('description')?.value;
       }
 
       await this.productService.createVariationAsync(variationData);
@@ -292,5 +297,25 @@ export class CreateComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/products']);
+  }
+
+  onImageInput(event: any): void {
+    // Este método se ejecuta cada vez que el usuario escribe en el campo de imagen
+    // La validación ya está manejada por el FormControl
+  }
+
+  getImageLength(): number {
+    const imageValue = this.variationForm.get('image')?.value;
+    return imageValue ? imageValue.length : 0;
+  }
+
+  onDescriptionInput(event: any): void {
+    // Este método se ejecuta cada vez que el usuario escribe en el campo de descripción
+    // La validación ya está manejada por el FormControl
+  }
+
+  getDescriptionLength(): number {
+    const descriptionValue = this.variationForm.get('description')?.value;
+    return descriptionValue ? descriptionValue.length : 0;
   }
 }

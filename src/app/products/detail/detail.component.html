@@ -1,73 +1,130 @@
 <div class="container">
-  <div *ngIf="loading" class="loading">
-    <div class="spinner"></div>
-    <p>Cargando producto...</p>
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Cargando producto...</p>
+    </div>
   </div>
 
-  <div *ngIf="error" class="alert alert-error">
-    {{ error }}
-  </div>
-
-  <div *ngIf="!loading && !error && product" class="product-detail">
-    <!-- Header con navegación -->
-    <div class="detail-header">
-      <button (click)="goBack()" class="btn btn-outline">
+  <!-- Error State -->
+  <div *ngIf="error" class="error-container">
+    <div class="error-content">
+      <div class="error-icon">⚠️</div>
+      <h3>Error</h3>
+      <p>{{ error }}</p>
+      <button (click)="goBack()" class="btn btn-primary">
         ← Volver a Productos
       </button>
-      <h1>{{ product.product }}</h1>
-      
-      <!-- Botones de gestión del producto (solo admin/seller) -->
-      <div *ngIf="canEdit()" class="product-actions">
-        <button (click)="editProduct()" class="btn btn-outline">
-          ✏️ Editar Producto
-        </button>
-        <button (click)="toggleProductStatus()" class="btn btn-warning">
-          {{ product.active ? '🚫 Deshabilitar' : '✅ Habilitar' }}
-        </button>
-        <button *ngIf="isAdmin()" (click)="deleteProduct()" class="btn btn-danger">
-          🗑️ Eliminar Producto
-        </button>
+    </div>
+  </div>
+
+  <!-- Product Detail -->
+  <div *ngIf="!loading && !error && product" class="product-detail">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="hero-background"></div>
+      <div class="hero-content">
+        <div class="breadcrumb">
+          <button (click)="goBack()" class="btn btn-ghost">
+            <i class="fas fa-arrow-left"></i>
+            Volver a Productos
+          </button>
+        </div>
+        
+        <div class="hero-info">
+          <div class="product-badge" [class]="product.active ? 'badge-active' : 'badge-inactive'">
+            {{ product.active ? 'Activo' : 'Inactivo' }}
+          </div>
+          <h1 class="product-title">{{ product.product }}</h1>
+          <p class="product-category">
+            <i class="fas fa-tag"></i>
+            {{ product.category?.category || 'Sin categoría' }}
+          </p>
+        </div>
+
+        <!-- Admin Actions -->
+        <div *ngIf="canEdit()" class="admin-actions">
+          <button (click)="editProduct()" class="btn btn-outline">
+            <i class="fas fa-edit"></i>
+            Editar
+          </button>
+          <button (click)="goToAllVariations()" class="btn btn-outline">
+            <i class="fas fa-list"></i>
+            Ver Todas
+          </button>
+          <button (click)="toggleProductStatus()" class="btn btn-warning">
+            <i class="fas" [class.fa-ban]="product.active" [class.fa-check]="!product.active"></i>
+            {{ product.active ? 'Deshabilitar' : 'Habilitar' }}
+          </button>
+          <button *ngIf="isAdmin()" (click)="deleteProduct()" class="btn btn-danger">
+            <i class="fas fa-trash"></i>
+            Eliminar
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Información del producto -->
-    <div class="product-content">
-      <div class="product-gallery">
-        <div class="main-image">
-          <img 
-            [src]="getProductImage(product)" 
-            [alt]="product.product" 
-            class="product-image"
-            (error)="onImageError($event)"
-          >
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Product Gallery -->
+      <div class="gallery-section">
+        <div class="gallery-container">
+          <div class="main-gallery">
+            <img 
+              [src]="getProductImage(product)" 
+              [alt]="product.product" 
+              class="main-image"
+              (error)="onImageError($event)"
+            >
+            <div class="image-overlay">
+              <div class="image-info">
+                <i class="fas fa-image"></i>
+                <span>Imagen del producto</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="product-info">
-        <div class="product-header">
-          <h2>{{ product.product }}</h2>
-          <span class="product-status" [class]="product.active ? 'status-active' : 'status-inactive'">
-            {{ product.active ? 'Activo' : 'Inactivo' }}
-          </span>
-        </div>
-
-        <div class="product-category">
-          <strong>Categoría:</strong> {{ product.category?.category || 'Sin categoría' }}
-        </div>
-
-        <!-- Variaciones del producto -->
-        <div *ngIf="variations && variations.length > 0" class="variations-section">
-          <h3>Variaciones Disponibles</h3>
-          
-          <!-- Loading state for variations -->
-          <div *ngIf="loadingVariations" class="variations-loading">
-            <div class="spinner"></div>
-            <p>Cargando variaciones...</p>
+      <!-- Variations Section -->
+      <div class="variations-section">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-cubes"></i>
+            <h2>Variaciones del Producto</h2>
           </div>
-          
-          <!-- Variations grid -->
-          <div *ngIf="!loadingVariations" class="variations-grid">
-            <div *ngFor="let variation of variations" class="variation-card">
+          <div class="section-stats">
+            <span class="stat-item">
+              <i class="fas fa-layer-group"></i>
+              {{ getTotalVariations() }} variaciones
+            </span>
+            <span class="stat-item">
+              <i class="fas fa-check-circle"></i>
+              {{ getActiveVariations() }} activas
+            </span>
+          </div>
+        </div>
+
+        <!-- Loading Variations -->
+        <div *ngIf="loadingVariations" class="variations-loading">
+          <div class="loading-cards">
+            <div class="skeleton-card" *ngFor="let item of [1,2,3]">
+              <div class="skeleton-image"></div>
+              <div class="skeleton-content">
+                <div class="skeleton-title"></div>
+                <div class="skeleton-text"></div>
+                <div class="skeleton-text"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Variations Grid -->
+        <div *ngIf="!loadingVariations && variations && variations.length > 0" class="variations-grid">
+          <div *ngFor="let variation of variations" class="variation-card" [class.inactive]="!variation.active">
+            <!-- Card Header -->
+            <div class="card-header">
               <div class="variation-image">
                 <img 
                   [src]="getVariationImage(variation)" 
@@ -75,71 +132,108 @@
                   class="variation-img"
                   (error)="onImageError($event)"
                 >
+                <div class="image-overlay">
+                  <div class="overlay-content">
+                    <i class="fas fa-eye"></i>
+                  </div>
+                </div>
               </div>
               
-              <div class="variation-content">
-                <div class="variation-header">
-                  <span class="variation-spice">{{ variation.spice.spice || 'Sin sabor' }}</span>
-                  <span class="variation-price">${{ variation.price | number }}</span>
-                </div>
-                
-                <div class="variation-details">
-                  <div class="variation-item">
-                    <span class="label">Stock:</span>
-                    <span class="value" [class]="variation.stock > 0 ? 'in-stock' : 'out-of-stock'">
-                      {{ variation.stock }} unidades
-                    </span>
-                  </div>
-                  
-                  <div class="variation-item">
-                    <span class="label">Medida:</span>
-                    <span class="value">{{ variation.measure?.measure || 'Sin medida' }}</span>
-                  </div>
-                  
-                  <div class="variation-item">
-                    <span class="label">Color:</span>
-                    <span class="value">{{ variation.color?.color || 'Sin color' }}</span>
-                  </div>
-                </div>
-                
-                <div class="variation-status" [class]="variation.active ? 'status-active' : 'status-inactive'">
+              <div class="variation-badges">
+                <span class="status-badge" [class]="variation.active ? 'badge-active' : 'badge-inactive'">
                   {{ variation.active ? 'Disponible' : 'No disponible' }}
-                </div>
-                
-                <!-- Botones de gestión de variaciones (solo admin/seller) -->
-                <div *ngIf="canEdit()" class="variation-actions">
-                  <button (click)="editVariation(variation.id)" class="btn btn-sm btn-outline">
-                    ✏️ Editar
-                  </button>
-                  <button (click)="toggleVariationStatus(variation.id)" class="btn btn-sm btn-warning">
-                    {{ variation.active ? '🚫 Deshabilitar' : '✅ Habilitar' }}
-                  </button>
-                  <button *ngIf="isAdmin()" (click)="deleteVariation(variation.id)" class="btn btn-sm btn-danger">
-                    🗑️ Eliminar
-                  </button>
+                </span>
+                <span class="stock-badge" [class]="variation.stock > 0 ? 'badge-stock' : 'badge-out'">
+                  {{ variation.stock > 0 ? 'En stock' : 'Sin stock' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Card Content -->
+            <div class="card-content">
+              <div class="variation-title">
+                <h3>{{ variation.spice.spice || 'Sin sabor' }}</h3>
+                <div class="price-tag">
+                  <span class="currency">$</span>
+                  <span class="amount">{{ variation.price | number:'1.0-2' }}</span>
                 </div>
               </div>
+
+              <div class="variation-details">
+                <div class="detail-item">
+                  <i class="fas fa-boxes"></i>
+                  <span class="label">Stock:</span>
+                  <span class="value" [class]="variation.stock > 0 ? 'in-stock' : 'out-of-stock'">
+                    {{ variation.stock }} unidades
+                  </span>
+                </div>
+                
+                <div class="detail-item" *ngIf="variation.measure">
+                  <i class="fas fa-ruler"></i>
+                  <span class="label">Medida:</span>
+                  <span class="value">{{ variation.measure.measure }}</span>
+                </div>
+                
+                <div class="detail-item" *ngIf="variation.color">
+                  <i class="fas fa-palette"></i>
+                  <span class="label">Color:</span>
+                  <span class="value">{{ variation.color.color }}</span>
+                </div>
+              </div>
+
+              <div *ngIf="variation.description" class="variation-description">
+                <p>{{ variation.description }}</p>
+              </div>
+            </div>
+
+            <!-- Card Actions -->
+            <div *ngIf="canEdit()" class="card-actions">
+              <button (click)="editVariation(variation.id)" class="btn btn-sm btn-outline">
+                <i class="fas fa-edit"></i>
+                Editar
+              </button>
+              <button (click)="toggleVariationStatus(variation.id)" class="btn btn-sm btn-warning">
+                <i class="fas" [class.fa-ban]="variation.active" [class.fa-check]="!variation.active"></i>
+                {{ variation.active ? 'Deshabilitar' : 'Habilitar' }}
+              </button>
+              <button *ngIf="isAdmin()" (click)="deleteVariation(variation.id)" class="btn btn-sm btn-danger">
+                <i class="fas fa-trash"></i>
+                Eliminar
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- Sin variaciones -->
-        <div *ngIf="!loadingVariations && (!variations || variations.length === 0)" class="no-variations">
-          <div class="empty-icon">📦</div>
-          <h3>Sin variaciones</h3>
-          <p>Este producto no tiene variaciones configuradas</p>
+        <!-- No Variations -->
+        <div *ngIf="!loadingVariations && (!variations || variations.length === 0)" class="empty-variations">
+          <div class="empty-content">
+            <div class="empty-icon">
+              <i class="fas fa-box-open"></i>
+            </div>
+            <h3>Sin variaciones</h3>
+            <p>Este producto no tiene variaciones configuradas</p>
+            <button (click)="goToAllVariations()" class="btn btn-primary">
+              <i class="fas fa-plus"></i>
+              Crear Variación
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Producto no encontrado -->
-  <div *ngIf="!loading && !error && !product" class="empty-state">
-    <div class="empty-icon">❌</div>
-    <h3>Producto no encontrado</h3>
-    <p>El producto que buscas no existe o ha sido eliminado</p>
-    <button (click)="goBack()" class="btn btn-primary">
-      ← Volver a Productos
-    </button>
+  <!-- Product Not Found -->
+  <div *ngIf="!loading && !error && !product" class="not-found">
+    <div class="not-found-content">
+      <div class="not-found-icon">
+        <i class="fas fa-search"></i>
+      </div>
+      <h3>Producto no encontrado</h3>
+      <p>El producto que buscas no existe o ha sido eliminado</p>
+      <button (click)="goBack()" class="btn btn-primary">
+        <i class="fas fa-arrow-left"></i>
+        Volver a Productos
+      </button>
+    </div>
   </div>
 </div>

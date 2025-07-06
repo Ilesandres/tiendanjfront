@@ -52,6 +52,14 @@ export interface UpdateUserRequest {
   verify?: boolean;
 }
 
+export interface UserFilters {
+  name?: string;
+  lastname?: string;
+  email?: string;
+  dni?: string;
+  user?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -120,5 +128,11 @@ export class UserManagementService {
   getAllUsers(): Observable<User[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<User[]>(`${this.apiUrl}/auth/users/list`, { headers });
+  }
+
+  // Get users by filters
+  getUsersByFilters(filters: UserFilters): Observable<User[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<User[]>(`${this.apiUrl}/user/filters`, filters, { headers });
   }
 } 

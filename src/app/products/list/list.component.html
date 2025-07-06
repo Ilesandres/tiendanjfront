@@ -6,19 +6,145 @@
 
   <!-- Filtros -->
   <div class="filters-section">
-    <div class="form-group">
-      <label for="category" class="form-label">Filtrar por categoría</label>
-      <select 
-        id="category" 
-        class="form-control"
-        [(ngModel)]="selectedCategory"
-        (change)="onCategoryChange()"
-      >
-        <option [value]="null">Todas las categorías</option>
-        <option *ngFor="let category of categories" [value]="category.id">
-          {{ category.category }}
-        </option>
-      </select>
+    <!-- Botón para mostrar/ocultar filtros -->
+    <div class="filters-toggle">
+      <button (click)="toggleFilters()" class="btn btn-outline">
+        <span *ngIf="!showFilters">🔍 Mostrar Filtros</span>
+        <span *ngIf="showFilters">🔽 Ocultar Filtros</span>
+      </button>
+    </div>
+
+    <!-- Panel de filtros (colapsable) -->
+    <div class="filters-panel" [class.show]="showFilters">
+      <h3>🔍 Filtros de Búsqueda</h3>
+      
+      <div class="filters-grid">
+        <!-- Categoría -->
+        <div class="form-group">
+          <label for="category" class="form-label">Categoría</label>
+          <select 
+            id="category" 
+            class="form-control"
+            [(ngModel)]="filters.category"
+            (change)="onFilterChange()"
+          >
+            <option [value]="null">Todas las categorías</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{ category.category }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Nombre -->
+        <div class="form-group">
+          <label for="name" class="form-label">Nombre del producto</label>
+          <input 
+            type="text" 
+            id="name" 
+            class="form-control"
+            [(ngModel)]="filters.name"
+            (input)="onFilterChange()"
+            placeholder="Buscar por nombre..."
+          >
+        </div>
+
+        <!-- Estado del producto -->
+        <div class="form-group">
+          <label for="active" class="form-label">Estado del producto</label>
+          <select 
+            id="active" 
+            class="form-control"
+            [(ngModel)]="filters.active"
+            (change)="onFilterChange()"
+          >
+            <option [value]="null">Todos</option>
+            <option [value]="true">Activos</option>
+            <option [value]="false">Inactivos</option>
+          </select>
+        </div>
+
+        <!-- Variaciones activas -->
+        <div class="form-group">
+          <label for="variationActive" class="form-label">Variaciones activas</label>
+          <select 
+            id="variationActive" 
+            class="form-control"
+            [(ngModel)]="filters.variationActive"
+            (change)="onFilterChange()"
+          >
+            <option [value]="null">Todos</option>
+            <option value="true">Con variaciones activas</option>
+            <option value="false">Sin variaciones activas</option>
+          </select>
+        </div>
+
+        <!-- Precio mínimo -->
+        <div class="form-group">
+          <label for="minPrice" class="form-label">Precio mínimo</label>
+          <input 
+            type="number" 
+            id="minPrice" 
+            class="form-control"
+            [(ngModel)]="filters.minPrice"
+            (input)="onFilterChange()"
+            placeholder="0"
+            min="0"
+          >
+        </div>
+
+        <!-- Precio máximo -->
+        <div class="form-group">
+          <label for="maxPrice" class="form-label">Precio máximo</label>
+          <input 
+            type="number" 
+            id="maxPrice" 
+            class="form-control"
+            [(ngModel)]="filters.maxPrice"
+            (input)="onFilterChange()"
+            placeholder="1000000"
+            min="0"
+          >
+        </div>
+
+        <!-- Sabor/Especia -->
+        <div class="form-group">
+          <label for="spice" class="form-label">Sabor/Especia</label>
+          <select 
+            id="spice" 
+            class="form-control"
+            [(ngModel)]="filters.spice"
+            (change)="onFilterChange()"
+          >
+            <option [value]="null">Todos los sabores</option>
+            <option *ngFor="let spice of spices" [value]="spice.id">
+              {{ spice.spice }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Medida -->
+        <div class="form-group">
+          <label for="measure" class="form-label">Unidad de medida</label>
+          <select 
+            id="measure" 
+            class="form-control"
+            [(ngModel)]="filters.measure"
+            (change)="onFilterChange()"
+          >
+            <option [value]="null">Todas las medidas</option>
+            <option *ngFor="let measure of measures" [value]="measure.id">
+              {{ measure.measure }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Botón limpiar filtros -->
+      <div class="filters-actions">
+        <button (click)="clearFilters()" class="btn btn-outline">
+          🗑️ Limpiar Filtros
+        </button>
+      </div>
     </div>
   </div>
 

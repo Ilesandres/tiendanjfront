@@ -26,6 +26,7 @@ export interface Product {
   active: boolean;
   image?: string;
   variationProducts?: ProductVariation[];
+  variation?: any[]; // Campo que viene del backend con las variaciones
 }
 
 export interface ProductVariation {
@@ -37,23 +38,36 @@ export interface ProductVariation {
   measure?: Measure;
   color?: Color;
   image?: string;
+  description?: string;
   active: boolean;
 }
 
 export interface ProductFilters {
-  category?: Category;
+  category?: {
+    id: number;
+    category?: string;
+    active?: boolean;
+  };
   name?: string;
-  variationActive?: boolean;
+  variationActive?: string; // "true" o "false" como string
   active?: boolean;
   minPrice?: number;
   maxPrice?: number;
-  spice?: Spice;
-  measure?: Measure;
+  spice?: {
+    id: number;
+    spice?: string;
+  };
+  measure?: {
+    id: number;
+    measure?: string;
+  };
 }
 
 export interface CreateProductRequest {
   product: string;
-  category?: number;
+  category?: {
+    id: number;
+  };
 }
 
 export interface UpdateProductRequest {
@@ -72,17 +86,19 @@ export interface CreateVariationRequest {
   product: {
     id: number;
   };
-  measure: {
+  measure?: {
     id: number;
   };
-  color: {
+  color?: {
     id: number;
   };
   image?: string;
+  description?: string;
 }
 
 export interface UpdateVariationRequest {
   price?: number;
   stock?: number;
   image?: string;
+  description?: string;
 } 

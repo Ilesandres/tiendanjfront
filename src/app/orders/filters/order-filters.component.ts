@@ -73,9 +73,17 @@ export class OrderFiltersComponent implements OnInit {
       endDate: [''],
       userId: [''],
       userDni: [''],
+      user: [''],
+      date: [''],
+      total: [''],
+      paymentMethod: [''],
       paymentStatus: [''],
-      shipmentStatus: [''],
-      orderType: [''],
+      shipment: [''],
+      typeOrder: [''],
+      statusShipment: [''],
+      statusPayment: [''],
+      statusPaymentMethod: [''],
+      status: [''],
       minTotal: [''],
       maxTotal: [''],
       productId: [''],
@@ -96,7 +104,7 @@ export class OrderFiltersComponent implements OnInit {
   applyFilters(): void {
     const formValue = this.filtersForm.value;
     
-    // Preparar filtros
+    // Preparar filtros básicos
     const filters: OrderFilters = {
       dateRange: formValue.dateRange,
       sortBy: formValue.sortBy,
@@ -105,14 +113,24 @@ export class OrderFiltersComponent implements OnInit {
       limit: formValue.limit
     };
 
-    // Agregar filtros opcionales solo si tienen valor
+    // Agregar filtros exactamente como los espera el endpoint del JSON
+    if (formValue.user) filters.user = formValue.user;
+    if (formValue.status) filters.status = formValue.status;
+    if (formValue.date) filters.date = formValue.date;
+    if (formValue.total) filters.total = parseFloat(formValue.total);
+    if (formValue.paymentMethod) filters.paymentMethod = formValue.paymentMethod;
+    if (formValue.paymentStatus) filters.paymentStatus = parseInt(formValue.paymentStatus);
+    if (formValue.shipment) filters.shipment = formValue.shipment;
+    if (formValue.typeOrder) filters.typeOrder = formValue.typeOrder;
+    if (formValue.statusShipment) filters.statusShipment = formValue.statusShipment;
+    if (formValue.statusPayment) filters.statusPayment = formValue.statusPayment;
+    if (formValue.statusPaymentMethod) filters.statusPaymentMethod = formValue.statusPaymentMethod;
+    if (formValue.userDni) filters.userDni = formValue.userDni;
+    if (formValue.userId) filters.userId = parseInt(formValue.userId);
+
+    // Filtros adicionales para el frontend (no van al backend)
     if (formValue.startDate) filters.startDate = formValue.startDate;
     if (formValue.endDate) filters.endDate = formValue.endDate;
-    if (formValue.userId) filters.userId = parseInt(formValue.userId);
-    if (formValue.userDni) filters.userDni = formValue.userDni;
-    if (formValue.paymentStatus) filters.paymentStatus = parseInt(formValue.paymentStatus);
-    if (formValue.shipmentStatus) filters.shipmentStatus = parseInt(formValue.shipmentStatus);
-    if (formValue.orderType) filters.orderType = parseInt(formValue.orderType);
     if (formValue.minTotal) filters.minTotal = parseFloat(formValue.minTotal);
     if (formValue.maxTotal) filters.maxTotal = parseFloat(formValue.maxTotal);
     if (formValue.productId) filters.productId = parseInt(formValue.productId);
@@ -134,9 +152,17 @@ export class OrderFiltersComponent implements OnInit {
       endDate: '',
       userId: '',
       userDni: '',
+      user: '',
+      date: '',
+      total: '',
+      paymentMethod: '',
       paymentStatus: '',
-      shipmentStatus: '',
-      orderType: '',
+      shipment: '',
+      typeOrder: '',
+      statusShipment: '',
+      statusPayment: '',
+      statusPaymentMethod: '',
+      status: '',
       minTotal: '',
       maxTotal: '',
       productId: '',
