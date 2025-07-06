@@ -33,6 +33,97 @@
         Limpiar
       </button>
     </div>
+    
+    <!-- Advanced Filters Toggle -->
+    <div class="advanced-filters-toggle">
+      <button (click)="toggleAdvancedFilters()" class="btn btn-outline">
+        <i class="fas" [class.fa-filter]="!showAdvancedFilters" [class.fa-times]="showAdvancedFilters"></i>
+        {{ showAdvancedFilters ? 'Ocultar' : 'Mostrar' }} Filtros Avanzados
+      </button>
+    </div>
+  </div>
+
+  <!-- Advanced Filters Section -->
+  <div *ngIf="showAdvancedFilters" class="advanced-filters-section">
+    <h3>Filtros Avanzados</h3>
+    <div class="filters-form">
+      <div class="form-row">
+        <div class="form-col">
+          <label for="filterName">Nombre</label>
+          <input 
+            type="text" 
+            id="filterName" 
+            [(ngModel)]="advancedFilters.name" 
+            class="form-control"
+            placeholder="Buscar por nombre..."
+          >
+        </div>
+        
+        <div class="form-col">
+          <label for="filterLastname">Apellido</label>
+          <input 
+            type="text" 
+            id="filterLastname" 
+            [(ngModel)]="advancedFilters.lastname" 
+            class="form-control"
+            placeholder="Buscar por apellido..."
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-col">
+          <label for="filterEmail">Email</label>
+          <input 
+            type="email" 
+            id="filterEmail" 
+            [(ngModel)]="advancedFilters.email" 
+            class="form-control"
+            placeholder="Buscar por email..."
+          >
+        </div>
+        
+        <div class="form-col">
+          <label for="filterDni">DNI</label>
+          <input 
+            type="text" 
+            id="filterDni" 
+            [(ngModel)]="advancedFilters.dni" 
+            class="form-control"
+            placeholder="Buscar por DNI..."
+            maxlength="10"
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-col">
+          <label for="filterUser">Usuario</label>
+          <input 
+            type="text" 
+            id="filterUser" 
+            [(ngModel)]="advancedFilters.user" 
+            class="form-control"
+            placeholder="Buscar por usuario..."
+          >
+        </div>
+        
+        <div class="form-col">
+          <!-- Empty column for alignment -->
+        </div>
+      </div>
+
+      <div class="filters-actions">
+        <button (click)="applyAdvancedFilters()" [disabled]="loading" class="btn btn-primary">
+          <i class="fas fa-search"></i>
+          Aplicar Filtros
+        </button>
+        <button (click)="clearAdvancedFilters()" [disabled]="loading" class="btn btn-secondary">
+          <i class="fas fa-times"></i>
+          Limpiar Filtros
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Create User Button -->
@@ -91,7 +182,24 @@
                 id="phone" 
                 formControlName="phone" 
                 class="form-control"
+                placeholder="1234567890"
+                maxlength="10"
+                (input)="onPhoneInput($event)"
+                [class.invalid]="userForm.get('people.phone')?.invalid && userForm.get('people.phone')?.touched"
               >
+              <div class="character-counter">
+                <small [class.text-warning]="getPhoneLength() >= 8" [class.text-success]="isPhoneComplete()">
+                  {{ getPhoneLength() }}/10 dígitos
+                </small>
+              </div>
+              <div *ngIf="userForm.get('people.phone')?.invalid && userForm.get('people.phone')?.touched" class="error-message">
+                <div *ngIf="userForm.get('people.phone')?.errors?.['phoneLength']">
+                  El teléfono debe tener exactamente 10 dígitos (tiene {{ userForm.get('people.phone')?.errors?.['phoneLength'].actual }})
+                </div>
+                <div *ngIf="userForm.get('people.phone')?.errors?.['phoneFormat']">
+                  El teléfono solo debe contener números
+                </div>
+              </div>
             </div>
             
             <div class="form-col">
@@ -127,10 +235,26 @@
                 id="dni" 
                 formControlName="dni" 
                 class="form-control"
+                placeholder="1234567890"
+                maxlength="10"
+                (input)="onDniInput($event)"
                 [class.invalid]="userForm.get('people.dni')?.invalid && userForm.get('people.dni')?.touched"
               >
+              <div class="character-counter">
+                <small [class.text-warning]="getDniLength() >= 8" [class.text-success]="isDniComplete()">
+                  {{ getDniLength() }}/10 dígitos
+                </small>
+              </div>
               <div *ngIf="userForm.get('people.dni')?.invalid && userForm.get('people.dni')?.touched" class="error-message">
-                DNI es requerido y debe tener al menos 8 caracteres
+                <div *ngIf="userForm.get('people.dni')?.errors?.['required']">
+                  DNI es requerido
+                </div>
+                <div *ngIf="userForm.get('people.dni')?.errors?.['dniLength']">
+                  El DNI debe tener exactamente 10 dígitos (tiene {{ userForm.get('people.dni')?.errors?.['dniLength'].actual }})
+                </div>
+                <div *ngIf="userForm.get('people.dni')?.errors?.['dniFormat']">
+                  El DNI solo debe contener números
+                </div>
               </div>
             </div>
           </div>

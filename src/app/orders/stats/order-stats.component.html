@@ -10,6 +10,16 @@
       </div>
     </div>
     
+    <!-- Estadísticas de hoy -->
+    <div class="stat-card today">
+      <div class="stat-icon">📅</div>
+      <div class="stat-content">
+        <h3>Hoy</h3>
+        <p class="stat-value">{{ formatCurrency(todaySales) }}</p>
+        <small>{{ todayOrders }} órdenes</small>
+      </div>
+    </div>
+    
     <div class="stat-card">
       <div class="stat-icon">📦</div>
       <div class="stat-content">
@@ -45,6 +55,47 @@
         <h3>Canceladas</h3>
         <p class="stat-value">{{ cancelledOrders }}</p>
         <small>{{ formatPercentage(cancelledOrders, totalOrders) }}</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estadísticas de hoy -->
+  <div class="today-stats" *ngIf="todayOrders > 0">
+    <h4>📅 Estadísticas de Hoy</h4>
+    <div class="today-stats-grid">
+      <div class="today-stat-item">
+        <div class="today-stat-icon">📦</div>
+        <div class="today-stat-content">
+          <h5>Órdenes Totales</h5>
+          <p class="today-stat-value">{{ todayOrders }}</p>
+        </div>
+      </div>
+      
+      <div class="today-stat-item">
+        <div class="today-stat-icon">✅</div>
+        <div class="today-stat-content">
+          <h5>Completadas</h5>
+          <p class="today-stat-value">{{ todayCompletedOrders }}</p>
+          <small>{{ formatPercentage(todayCompletedOrders, todayOrders) }}</small>
+        </div>
+      </div>
+      
+      <div class="today-stat-item">
+        <div class="today-stat-icon">⏳</div>
+        <div class="today-stat-content">
+          <h5>Pendientes</h5>
+          <p class="today-stat-value">{{ todayPendingOrders }}</p>
+          <small>{{ formatPercentage(todayPendingOrders, todayOrders) }}</small>
+        </div>
+      </div>
+      
+      <div class="today-stat-item">
+        <div class="today-stat-icon">💰</div>
+        <div class="today-stat-content">
+          <h5>Ventas</h5>
+          <p class="today-stat-value">{{ formatCurrency(todaySales) }}</p>
+          <small *ngIf="todayOrders > 0">Promedio: {{ formatCurrency(todaySales / todayOrders) }}</small>
+        </div>
       </div>
     </div>
   </div>

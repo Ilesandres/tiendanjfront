@@ -1,23 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 
-// Leer el archivo .env
-const envPath = path.join(__dirname, '..', '.env');
-let envVars = {};
-
-if (fs.existsSync(envPath)) {
-  const envContent = fs.readFileSync(envPath, 'utf8');
-  envContent.split('\n').forEach(line => {
-    const [key, value] = line.split('=');
-    if (key && value) {
-      envVars[key.trim()] = value.trim();
-    }
-  });
+// Cargar variables de entorno desde .env en desarrollo
+if (process.env.NODE_ENV !== 'production') {
+  try {
+    require('dotenv').config();
+    console.log('📁 Variables de entorno cargadas desde .env');
+  } catch (error) {
+    console.log('⚠️  No se pudo cargar dotenv, usando process.env');
+  }
 }
 
-// Valores por defecto
-const devApiUrl = envVars.API_URL || 'http://localhost:8080';
-const prodApiUrl = envVars.API_URL_PROD || envVars.API_URL || 'http://localhost:8080';
+// Leer variables desde process.env (funciona en desarrollo y producción)
+const devApiUrl = process.env.API_URL || 'http://localhost:8080';
+const prodApiUrl = process.env.API_URL_PROD || process.env.API_URL || 'http://localhost:8080';
+
+console.log(`📡 API_URL: ${devApiUrl}`);
+console.log(`📡 API_URL_PROD: ${prodApiUrl}`);
 
 // Contenido de los archivos
 const devEnv = `export const environment = {
@@ -36,4 +35,4 @@ const prodEnv = `export const environment = {
 fs.writeFileSync(path.join(__dirname, '../src/environments/environment.ts'), devEnv);
 fs.writeFileSync(path.join(__dirname, '../src/environments/environment.prod.ts'), prodEnv);
 
-console.log('Archivos de environment generados correctamente.');
+console.log('✅ Archivos de environment generados correctamente.');

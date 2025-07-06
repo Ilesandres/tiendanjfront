@@ -300,24 +300,44 @@ export class OrderService {
 
   // Métodos de filtrado avanzado - CORREGIDOS para usar endpoints reales
   getOrdersWithFilters(filters: OrderFilters): Observable<Order[]> {
-    // Si hay filtros específicos, usar los endpoints correspondientes
-    if (filters.userId) {
-      return this.getOrdersByUserId(filters.userId);
+    const headers = this.getAuthHeaders();
+    
+    // Preparar filtros para el endpoint del backend según el JSON
+    const backendFilters: any = {};
+    
+    // Mapear filtros exactamente como están en el endpoint del JSON
+    if (filters.user) backendFilters.user = filters.user;
+    if (filters.status) backendFilters.status = filters.status;
+    if (filters.date) backendFilters.date = filters.date;
+    if (filters.total) backendFilters.total = filters.total;
+    if (filters.paymentMethod) backendFilters.paymentMethod = filters.paymentMethod;
+    if (filters.paymentStatus) backendFilters.paymentStatus = filters.paymentStatus;
+    if (filters.shipment) backendFilters.shipment = filters.shipment;
+    if (filters.typeOrder) backendFilters.typeOrder = filters.typeOrder;
+    if (filters.statusShipment) backendFilters.statusShipment = filters.statusShipment;
+    if (filters.statusPayment) backendFilters.statusPayment = filters.statusPayment;
+    if (filters.statusPaymentMethod) backendFilters.statusPaymentMethod = filters.statusPaymentMethod;
+    if (filters.userDni) backendFilters.dni = filters.userDni;
+    if (filters.userId) backendFilters.id = filters.userId;
+    
+    // Si no hay filtros específicos, obtener todas las órdenes
+    if (Object.keys(backendFilters).length === 0) {
+      return this.getAllOrders();
     }
     
-    if (filters.userDni) {
-      return this.getOrdersByUserDni(filters.userDni);
-    }
-    
-    // Por defecto, obtener todas las órdenes y filtrar en el frontend
-    return this.getAllOrders();
+    // Usar el endpoint de filtros del backend
+    return this.http.post<Order[]>(`${this.apiUrl}/order/filters`, backendFilters, { headers });
   }
 
   // Método para buscar órdenes - CORREGIDO
   searchOrders(searchTerm: string, filters?: OrderFilters): Observable<Order[]> {
-    // Por ahora, obtener todas las órdenes y filtrar en el frontend
-    // En el futuro se puede implementar búsqueda en el backend
-    return this.getAllOrders();
+    // Usar el endpoint de filtros para búsqueda
+    const searchFilters: OrderFilters = {
+      user: searchTerm, // Buscar por usuario
+      ...filters
+    };
+    
+    return this.getOrdersWithFilters(searchFilters);
   }
 
   // Método auxiliar para calcular rangos de fecha
@@ -355,8 +375,8 @@ export class OrderService {
 
   // Método para obtener estadísticas de órdenes - CORREGIDO
   getOrderStats(filters?: OrderFilters): Observable<any> {
-    const headers = this.getAuthHeaders();
-    return this.http.get(`${this.apiUrl}/order/stats`, { headers });
+    // Por ahora, calcular estadísticas en el frontend ya que no hay endpoint de stats
+    return this.getAllOrders();
   }
 
   // Send invoice email

@@ -12,6 +12,9 @@
       </a>
       
       <ng-container *ngIf="isAuthenticated() && (isAdmin() || isSeller())">
+        <a routerLink="/products/variations" routerLinkActive="active" class="navbar-link">
+          🔄 Variaciones
+        </a>
         <a routerLink="/orders" routerLinkActive="active" class="navbar-link">
           📋 Ventas
         </a>

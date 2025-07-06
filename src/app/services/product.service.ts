@@ -89,7 +89,7 @@ export class ProductService {
 
   deleteColor(id: number): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.delete(`${this.apiUrl}/color/delte/${id}`, { headers });
+    return this.http.delete(`${this.apiUrl}/color/delete/${id}`, { headers });
   }
 
   // Spices
@@ -166,7 +166,7 @@ export class ProductService {
   }
 
   getProductsWithFilters(filters: ProductFilters): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/product/filters`, { params: filters as any });
+    return this.http.post<Product[]>(`${this.apiUrl}/product/filters`, filters);
   }
 
   createProduct(product: CreateProductRequest): Observable<any> {

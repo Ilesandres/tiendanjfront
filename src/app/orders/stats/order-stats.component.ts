@@ -31,6 +31,12 @@ export class OrderStatsComponent implements OnInit {
   
   // Estadísticas por mes
   monthlyStats: { [key: string]: { orders: number; sales: number } } = {};
+  
+  // Estadísticas de hoy
+  todaySales = 0;
+  todayOrders = 0;
+  todayCompletedOrders = 0;
+  todayPendingOrders = 0;
 
   ngOnInit(): void {
     this.calculateStats();
@@ -91,6 +97,33 @@ export class OrderStatsComponent implements OnInit {
       this.monthlyStats[monthKey].orders++;
       this.monthlyStats[monthKey].sales += Number(order.total) || 0;
     });
+    
+    // Calcular estadísticas de hoy
+    this.calculateTodayStats(ordersToAnalyze);
+  }
+
+  calculateTodayStats(orders: Order[]): void {
+    const today = new Date();
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+    const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+    
+    // Filtrar órdenes de hoy
+    const todayOrders = orders.filter(order => {
+      const orderDate = new Date(order.createdAt);
+      return orderDate >= todayStart && orderDate <= todayEnd;
+    });
+    
+    // Calcular estadísticas de hoy
+    this.todayOrders = todayOrders.length;
+    this.todaySales = todayOrders.reduce((sum, order) => Number(sum) + Number(order.total || 0), 0);
+    this.todayCompletedOrders = todayOrders.filter(order => 
+      order.payment?.status?.status?.toLowerCase().includes('completado') ||
+      order.payment?.status?.status?.toLowerCase().includes('pagado')
+    ).length;
+    this.todayPendingOrders = todayOrders.filter(order => 
+      order.payment?.status?.status?.toLowerCase().includes('pendiente') ||
+      !order.payment?.status?.status
+    ).length;
   }
 
   // Métodos de utilidad

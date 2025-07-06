@@ -1511,6 +1511,140 @@
 							"body": "[\n    {\n        \"id\": 7,\n        \"people\": {\n            \"id\": 2,\n            \"name\": \"na\",\n            \"lastname\": \"ca\",\n            \"phone\": \"0000000\",\n            \"birthdate\": \"1990-01-01\",\n            \"email\": \"admin@admin.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"0000000000\"\n        },\n        \"user\": \"admin\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 1,\n            \"rol\": \"admin\"\n        },\n        \"verify\": true\n    },\n    {\n        \"id\": 8,\n        \"people\": {\n            \"id\": 3,\n            \"name\": \"Administrador\",\n            \"lastname\": \"Sistema\",\n            \"phone\": \"3000000000\",\n            \"birthdate\": \"1980-01-01\",\n            \"email\": \"ilesandres6@gmail.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"1111111111\"\n        },\n        \"user\": \"admin1\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 1,\n            \"rol\": \"admin\"\n        },\n        \"verify\": true\n    },\n    {\n        \"id\": 9,\n        \"people\": {\n            \"id\": 7,\n            \"name\": \"Administrador\",\n            \"lastname\": \"Sistema\",\n            \"phone\": \"3000000000\",\n            \"birthdate\": \"1980-01-01\",\n            \"email\": \"admin@sistema.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"1111111112\"\n        },\n        \"user\": \"admin01\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 1,\n            \"rol\": \"admin\"\n        },\n        \"verify\": false\n    },\n    {\n        \"id\": 10,\n        \"people\": {\n            \"id\": 8,\n            \"name\": \"vendedor\",\n            \"lastname\": \"Sistema cardio\",\n            \"phone\": \"3000000002\",\n            \"birthdate\": \"1980-01-01\",\n            \"email\": \"vendedor@sistema.com\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"0101010101\"\n        },\n        \"user\": \"vendedor1\",\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 3,\n            \"rol\": \"vendedor\"\n        },\n        \"verify\": true\n    },\n    {\n        \"id\": 11,\n        \"people\": {\n            \"id\": 11,\n            \"name\": \"Andres\",\n            \"lastname\": \"iles\",\n            \"phone\": \"3227349082\",\n            \"birthdate\": \"2005-07-12\",\n            \"email\": \"bailess22@itp.edu.co\",\n            \"typeDni\": {\n                \"id\": 1,\n                \"name\": \"CC\"\n            },\n            \"dni\": \"1127071568\"\n        },\n        \"user\": null,\n        \"verificationCode\": null,\n        \"token\": null,\n        \"datesendverify\": null,\n        \"rol\": {\n            \"id\": 2,\n            \"rol\": \"cliente\"\n        },\n        \"verify\": true\n    }\n]"
 						}
 					]
+				},
+				{
+					"name": "info user byDni",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MTE0MjE0OCwiZXhwIjoxNzUxMTQzOTQ4fQ.xnYqo7PktXBjrFpAuZyeT317w_nyeDSbTRFUe5Z0c8Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/auth/user/info/dni/1127071568",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"user",
+								"info",
+								"dni",
+								"1127071568"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "info user byDni",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/auth/user/info/dni/1127071568",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"user",
+										"info",
+										"dni",
+										"1127071568"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "321"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"141-hAtXpdqXbVOCUP0oYSIIpUIPgRM\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 20:36:20 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 11,\n    \"people\": {\n        \"id\": 11,\n        \"name\": \"Andres\",\n        \"lastname\": \"iles\",\n        \"phone\": \"3227349082\",\n        \"birthdate\": \"2005-07-12\",\n        \"email\": \"bailess22@itp.edu.co\",\n        \"typeDni\": {\n            \"id\": 1,\n            \"name\": \"CC\"\n        },\n        \"dni\": \"1127071568\"\n    },\n    \"user\": null,\n    \"password\": null,\n    \"verificationCode\": null,\n    \"token\": null,\n    \"datesendverify\": null,\n    \"rol\": {\n        \"id\": 2,\n        \"rol\": \"cliente\"\n    },\n    \"verify\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "users by Filters, <admin, seller>",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MTgxMTQ0OSwiZXhwIjoxNzUxODEzMjQ5fQ.zjV-vDAjTbrjXvkhzqW1nfrNs6Tl7PhtuI5X2E8Q6DU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    //opcional\r\n    \"name\":\"\",\r\n    //optional\r\n    \"lastname\":\"\",\r\n    //optional\r\n    \"email\":\"\",\r\n    //optional\r\n    \"dni\":\"\",\r\n    //optional\r\n    \"user\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/filters",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"filters"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2343,7 +2477,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"spice\":{\r\n        \"id\":1\r\n    },\r\n    \"price\":5000,\r\n    \"stock\":12,\r\n    \"product\":{\r\n        \"id\":1\r\n    },\r\n    \"measure\":{\r\n        \"id\":1\r\n    },\r\n    \"color\":{\r\n        \"id\":1\r\n    },\r\n    //optional\r\n    \"image\":null\r\n    \r\n}",
+									"raw": "{\r\n    \"spice\":{\r\n        \"id\":1\r\n    },\r\n    \"price\":5000,\r\n    \"stock\":12,\r\n    \"product\":{\r\n        \"id\":1\r\n    },\r\n    \"measure\":{\r\n        \"id\":1\r\n    },\r\n    \"color\":{\r\n        \"id\":1\r\n    },\r\n    //optional\r\n    \"image\":null,\r\n    //optional\r\n    \"description\":\"produc_prueba\"\r\n    \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2413,7 +2547,7 @@
 							"response": []
 						},
 						{
-							"name": "update variation",
+							"name": "update variation<admin, seller>",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -2429,7 +2563,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"price\":2500,\r\n    \"stock\":5,\r\n    \"image\":\"\"\r\n}",
+									"raw": "{\r\n    \"price\":2500,\r\n    \"stock\":5,\r\n    \"image\":\"\",\r\n     //optional\r\n    \"description\":\"produc_prueba\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2581,7 +2715,7 @@
 					]
 				},
 				{
-					"name": "create",
+					"name": "create<admin, seller>",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -2597,7 +2731,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"product\":\"lecha\",\r\n    //opcional\r\n    \"category\":4\r\n}",
+							"raw": "{\r\n    \"product\":\"lecha\",\r\n    //opcional\r\n    \"category\":{\r\n        \"id\":4\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2715,7 +2849,7 @@
 					"response": []
 				},
 				{
-					"name": "with filters",
+					"name": "with filters, <admin, seller>",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -4717,6 +4851,45 @@
 							"body": "{\n    \"message\": [\n        \"email enviado correctamente\"\n    ]\n}"
 						}
 					]
+				},
+				{
+					"name": "oders by filters, <admin, seller>",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlciI6ImFkbWluIiwicm9sIjoiYWRtaW4iLCJ2ZXJpZnkiOnRydWUsImlhdCI6MTc1MTgxMTQ0OSwiZXhwIjoxNzUxODEzMjQ5fQ.zjV-vDAjTbrjXvkhzqW1nfrNs6Tl7PhtuI5X2E8Q6DU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":\"admin\",\r\n    //optional\r\n    \"status\":\"\",\r\n    //optional\r\n    \"date\":\"\",\r\n    //optional\r\n    \"total\":\"\",\r\n    //optional\r\n    \"paymentMethod\":\"\",\r\n    //optional\r\n    \"paymentStatus\":\"\",\r\n    //optional\r\n    \"shipment\":\"\",\r\n    //optional\r\n    \"typeOrder\":\"\",\r\n    //optional\r\n    \"statusShipment\":\"\",\r\n    //optional\r\n    \"statusPayment\":\"\",\r\n    //optional\r\n    \"statusPaymentMethod\":\"\",\r\n    //optional\r\n    \"dni\":\"\",\r\n    //optional\r\n    \"id\":\"\"\r\n    //optional\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/order/filters",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"order",
+								"filters"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"description": "metodos de ordenes-facturas y sus relacionados"
