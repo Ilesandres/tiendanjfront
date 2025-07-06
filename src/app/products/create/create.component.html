@@ -207,22 +207,64 @@
 
               <!-- URL de Imagen -->
               <div class="col-md-6 mb-3">
-                <label for="imageUrl" class="form-label">URL de Imagen (Opcional)</label>
+                <label for="image" class="form-label">URL de Imagen (Opcional)</label>
                 <input 
                   type="url" 
                   class="form-control" 
-                  id="imageUrl"
-                  formControlName="imageUrl"
+                  id="image"
+                  formControlName="image"
                   placeholder="https://ejemplo.com/imagen.jpg"
+                  maxlength="254"
+                  [class.is-invalid]="variationForm.get('image')?.invalid && variationForm.get('image')?.touched"
+                  (input)="onImageInput($event)"
                 >
+                <div class="character-counter">
+                  <small [class.text-warning]="getImageLength() >= 240" [class.text-danger]="getImageLength() >= 254">
+                    {{ getImageLength() }}/254 caracteres
+                  </small>
+                </div>
+                <div *ngIf="getImageLength() >= 254" class="alert alert-warning alert-sm">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  ¡Has alcanzado el límite máximo de caracteres!
+                </div>
+                <div *ngIf="variationForm.get('image')?.invalid && variationForm.get('image')?.touched" class="text-danger">
+                  <small *ngIf="variationForm.get('image')?.errors?.['maxlength']">La URL de la imagen no puede tener más de 254 caracteres</small>
+                </div>
+              </div>
+
+              <!-- Descripción -->
+              <div class="col-md-6 mb-3">
+                <label for="description" class="form-label">Descripción (Opcional)</label>
+                <textarea 
+                  class="form-control" 
+                  id="description"
+                  formControlName="description"
+                  placeholder="Descripción del producto..."
+                  rows="3"
+                  maxlength="254"
+                  [class.is-invalid]="variationForm.get('description')?.invalid && variationForm.get('description')?.touched"
+                  (input)="onDescriptionInput($event)"
+                ></textarea>
+                <div class="character-counter">
+                  <small [class.text-warning]="getDescriptionLength() >= 240" [class.text-danger]="getDescriptionLength() >= 254">
+                    {{ getDescriptionLength() }}/254 caracteres
+                  </small>
+                </div>
+                <div *ngIf="getDescriptionLength() >= 254" class="alert alert-warning alert-sm">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  ¡Has alcanzado el límite máximo de caracteres!
+                </div>
+                <div *ngIf="variationForm.get('description')?.invalid && variationForm.get('description')?.touched" class="text-danger">
+                  <small *ngIf="variationForm.get('description')?.errors?.['maxlength']">La descripción no puede tener más de 254 caracteres</small>
+                </div>
               </div>
             </div>
 
             <!-- Preview de imagen -->
-            <div *ngIf="variationForm.get('imageUrl')?.value" class="mb-3">
+            <div *ngIf="variationForm.get('image')?.value" class="mb-3">
               <label class="form-label">Vista Previa:</label>
               <div class="image-preview">
-                <img [src]="variationForm.get('imageUrl')?.value" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                <img [src]="variationForm.get('image')?.value" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
               </div>
             </div>
 

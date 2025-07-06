@@ -27,6 +27,11 @@ export class ListComponent implements OnInit {
   totalSales = 0;
   completedOrders = 0;
   pendingOrders = 0;
+  
+  // Estadísticas de hoy
+  todaySales = 0;
+  todayOrders = 0;
+  todayCompletedOrders = 0;
 
   // Paginación
   currentPage = 1;
@@ -74,14 +79,35 @@ export class ListComponent implements OnInit {
 
   onSearchChanged(searchTerm: string): void {
     this.searchTerm = searchTerm;
-    this.applyFilters();
+    
+    if (searchTerm) {
+      // Usar el endpoint de búsqueda
+      this.loading = true;
+      this.orderService.searchOrders(searchTerm, this.currentFilters).subscribe({
+        next: (orders) => {
+          this.orders = orders;
+          this.filteredOrders = orders;
+          this.totalItems = orders.length;
+          this.currentPage = 1;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = 'Error al buscar órdenes';
+          this.loading = false;
+          this.errorFilter.handle(err);
+        }
+      });
+    } else {
+      // Si no hay término de búsqueda, aplicar filtros normales
+      this.applyFilters();
+    }
   }
 
   applyFilters(): void {
     this.loading = true;
     
-    // Obtener todas las órdenes y filtrar en el frontend
-    this.orderService.getAllOrders().subscribe({
+    // Usar el endpoint de filtros del backend
+    this.orderService.getOrdersWithFilters(this.currentFilters).subscribe({
       next: (orders) => {
         this.orders = orders;
         this.filteredOrders = this.applyFrontendFilters(orders);
@@ -217,7 +243,6 @@ export class ListComponent implements OnInit {
     return filtered;
   }
 
-  // Método auxiliar para calcular rangos de fecha
   private calculateDateRange(range: string): { startDate: string; endDate: string } {
     const now = new Date();
     let startDate = new Date();
@@ -251,7 +276,6 @@ export class ListComponent implements OnInit {
   }
 
   calculateStats(): void {
-    // Calcular estadísticas basadas en órdenes filtradas
     this.totalSales = this.filteredOrders.reduce((sum, order) => Number(sum) + Number(order.total || 0), 0);
     
     this.completedOrders = this.filteredOrders.filter(order => 
@@ -265,6 +289,29 @@ export class ListComponent implements OnInit {
     ).length;
 
     this.totalItems = this.filteredOrders.length;
+    
+    // Calcular estadísticas de hoy
+    this.calculateTodayStats();
+  }
+
+  calculateTodayStats(): void {
+    const today = new Date();
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+    const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+    
+    // Filtrar órdenes de hoy
+    const todayOrders = this.filteredOrders.filter(order => {
+      const orderDate = new Date(order.createdAt);
+      return orderDate >= todayStart && orderDate <= todayEnd;
+    });
+    
+    // Calcular estadísticas de hoy
+    this.todayOrders = todayOrders.length;
+    this.todaySales = todayOrders.reduce((sum, order) => Number(sum) + Number(order.total || 0), 0);
+    this.todayCompletedOrders = todayOrders.filter(order => 
+      order.payment?.status?.status?.toLowerCase().includes('completado') ||
+      order.payment?.status?.status?.toLowerCase().includes('pagado')
+    ).length;
   }
 
   getStatusClass(status: string | undefined): string {

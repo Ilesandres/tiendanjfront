@@ -23,7 +23,8 @@ export class EditVariationComponent implements OnInit {
   formData = {
     price: 0,
     stock: 0,
-    image: ''
+    image: '',
+    description: ''
   };
 
   constructor(
@@ -58,6 +59,7 @@ export class EditVariationComponent implements OnInit {
         this.formData.price = variation.price;
         this.formData.stock = variation.stock;
         this.formData.image = variation.image || '';
+        this.formData.description = variation.description || '';
         this.loading = false;
         
         // Log para debugging
@@ -81,15 +83,20 @@ export class EditVariationComponent implements OnInit {
     this.saving = true;
     this.error = null;
 
-    // Se pueden actualizar price, stock e imageUrl
+    // Se pueden actualizar price, stock, image y description
     const updateData: UpdateVariationRequest = {
       price: this.formData.price,
       stock: this.formData.stock
     };
 
-    // Solo incluir imageUrl si se ha modificado
+    // Solo incluir image si se ha modificado
     if (this.formData.image && this.formData.image !== this.variation.image) {
       updateData.image = this.formData.image;
+    }
+
+    // Solo incluir description si se ha modificado
+    if (this.formData.description !== this.variation.description) {
+      updateData.description = this.formData.description;
     }
 
     this.productService.updateVariation(this.variation.id, updateData).subscribe({
@@ -136,5 +143,23 @@ export class EditVariationComponent implements OnInit {
 
   canEdit(): boolean {
     return this.isAdmin() || this.isSeller();
+  }
+
+  onImageInput(event: any): void {
+    // Este método se ejecuta cada vez que el usuario escribe en el campo de imagen
+    // La validación ya está manejada por el ngModel
+  }
+
+  getImageLength(): number {
+    return this.formData.image ? this.formData.image.length : 0;
+  }
+
+  onDescriptionInput(event: any): void {
+    // Este método se ejecuta cada vez que el usuario escribe en el campo de descripción
+    // La validación ya está manejada por el ngModel
+  }
+
+  getDescriptionLength(): number {
+    return this.formData.description ? this.formData.description.length : 0;
   }
 } 

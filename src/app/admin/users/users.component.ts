@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserManagementService, User, CreateUserRequest, UpdateUserRequest } from '../../services/user-management.service';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { UserManagementService, User, CreateUserRequest, UpdateUserRequest, UserFilters } from '../../services/user-management.service';
 import { TypeDniService, TypeDni } from '../../services/typedni.service';
 import { RolService, Rol } from '../../services/rol.service';
 import { ErrorFiltersService } from '../../interceptors/error.filters';
@@ -34,6 +34,48 @@ export class UsersComponent implements OnInit {
   // Search
   searchTerm = '';
   searchType = 'dni'; // dni, email, username
+  
+  // Advanced filters
+  showAdvancedFilters = false;
+  advancedFilters: UserFilters = {
+    name: '',
+    lastname: '',
+    email: '',
+    dni: '',
+    user: ''
+  };
+
+  // Validación personalizada para teléfono (10 dígitos sin espacios)
+  private phoneValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null; // Campo opcional
+    
+    const phone = control.value.toString().replace(/\s/g, ''); // Remover espacios
+    if (phone.length !== 10) {
+      return { phoneLength: { required: 10, actual: phone.length } };
+    }
+    
+    if (!/^\d{10}$/.test(phone)) {
+      return { phoneFormat: true };
+    }
+    
+    return null;
+  }
+
+  // Validación personalizada para DNI (10 dígitos sin espacios)
+  private dniValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null; // Campo requerido, se maneja con Validators.required
+    
+    const dni = control.value.toString().replace(/\s/g, ''); // Remover espacios
+    if (dni.length !== 10) {
+      return { dniLength: { required: 10, actual: dni.length } };
+    }
+    
+    if (!/^\d{10}$/.test(dni)) {
+      return { dniFormat: true };
+    }
+    
+    return null;
+  }
 
   constructor(
     private userService: UserManagementService,
@@ -46,13 +88,13 @@ export class UsersComponent implements OnInit {
       people: this.fb.group({
         name: ['', [Validators.required, Validators.minLength(2)]],
         lastname: ['', [Validators.required, Validators.minLength(2)]],
-        phone: [''],
+        phone: ['', [this.phoneValidator.bind(this)]],
         birthdate: [''],
         email: ['', [Validators.email]],
         typeDni: this.fb.group({
           id: ['', Validators.required]
         }),
-        dni: ['', [Validators.required, Validators.minLength(8)]]
+        dni: ['', [Validators.required, this.dniValidator.bind(this)]]
       }),
       user: [''],
       password: [''],
@@ -171,6 +213,62 @@ export class UsersComponent implements OnInit {
     this.searchTerm = '';
     this.error = '';
     this.success = '';
+    this.loadInitialUsers();
+  }
+
+  // Toggle advanced filters
+  toggleAdvancedFilters(): void {
+    this.showAdvancedFilters = !this.showAdvancedFilters;
+    if (!this.showAdvancedFilters) {
+      this.clearAdvancedFilters();
+    }
+  }
+
+  // Apply advanced filters
+  applyAdvancedFilters(): void {
+    this.loading = true;
+    this.error = '';
+    this.success = '';
+
+    // Remove empty filters
+    const filters: UserFilters = {};
+    Object.keys(this.advancedFilters).forEach(key => {
+      const value = this.advancedFilters[key as keyof UserFilters];
+      if (value && value.toString().trim() !== '') {
+        filters[key as keyof UserFilters] = value;
+      }
+    });
+
+    this.userService.getUsersByFilters(filters).subscribe({
+      next: (users: User[]) => {
+        this.users = users;
+        this.loading = false;
+        if (users.length === 0) {
+          this.error = 'No se encontraron usuarios con los filtros especificados.';
+        } else {
+          this.success = `Se encontraron ${users.length} usuario(s) con los filtros aplicados.`;
+          setTimeout(() => this.success = '', 4000);
+        }
+      },
+      error: (err: any) => {
+        this.loading = false;
+        this.error = 'Error al aplicar los filtros. Verifique su conexión e intente nuevamente.';
+        console.error('Error applying filters:', err);
+        this.errorFilter.handle(err);
+        setTimeout(() => this.error = '', 5000);
+      }
+    });
+  }
+
+  // Clear advanced filters
+  clearAdvancedFilters(): void {
+    this.advancedFilters = {
+      name: '',
+      lastname: '',
+      email: '',
+      dni: '',
+      user: ''
+    };
     this.loadInitialUsers();
   }
 
@@ -389,5 +487,45 @@ export class UsersComponent implements OnInit {
   // Get status text
   getStatusText(user: User): string {
     return user.verify ? 'Activo' : 'Bloqueado';
+  }
+
+  // Formatear teléfono automáticamente
+  onPhoneInput(event: any): void {
+    let value = event.target.value.replace(/\D/g, ''); // Solo números
+    if (value.length > 10) {
+      value = value.substring(0, 10);
+    }
+    event.target.value = value;
+  }
+
+  // Formatear DNI automáticamente
+  onDniInput(event: any): void {
+    let value = event.target.value.replace(/\D/g, ''); // Solo números
+    if (value.length > 10) {
+      value = value.substring(0, 10);
+    }
+    event.target.value = value;
+  }
+
+  // Obtener longitud del teléfono
+  getPhoneLength(): number {
+    const phoneValue = this.userForm.get('people.phone')?.value;
+    return phoneValue ? phoneValue.toString().replace(/\s/g, '').length : 0;
+  }
+
+  // Obtener longitud del DNI
+  getDniLength(): number {
+    const dniValue = this.userForm.get('people.dni')?.value;
+    return dniValue ? dniValue.toString().replace(/\s/g, '').length : 0;
+  }
+
+  // Verificar si el teléfono está completo
+  isPhoneComplete(): boolean {
+    return this.getPhoneLength() === 10;
+  }
+
+  // Verificar si el DNI está completo
+  isDniComplete(): boolean {
+    return this.getDniLength() === 10;
   }
 } 

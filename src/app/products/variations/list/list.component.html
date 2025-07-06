@@ -1,0 +1,130 @@
+<div class="container">
+  <div class="page-header">
+    <div class="header-content">
+      <button (click)="goBack()" class="btn btn-outline">
+        ← Volver a Productos
+      </button>
+      <h1>📦 Todas las Variaciones</h1>
+      <p>Gestiona todas las variaciones de productos del sistema</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando variaciones...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <!-- Lista de variaciones -->
+  <div *ngIf="!loading && !error" class="variations-container">
+    <!-- Estadísticas -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-number">{{ totalVariations }}</div>
+        <div class="stat-label">Total Variaciones</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ activeVariations }}</div>
+        <div class="stat-label">Activas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ variationsWithStock }}</div>
+        <div class="stat-label">Con Stock</div>
+      </div>
+    </div>
+
+    <!-- Grid de variaciones -->
+    <div *ngIf="variations.length > 0" class="variations-grid">
+      <div *ngFor="let variation of variations" class="variation-card">
+        <div class="variation-image">
+          <img 
+            [src]="getVariationImage(variation)" 
+            [alt]="variation.product.product + ' - ' + variation.spice.spice" 
+            class="variation-img"
+            (error)="onImageError($event)"
+          >
+          <div class="variation-status-badge" [class]="variation.active ? 'status-active' : 'status-inactive'">
+            {{ variation.active ? 'Activa' : 'Inactiva' }}
+          </div>
+        </div>
+        
+        <div class="variation-content">
+          <div class="variation-header">
+            <h3 class="variation-title">{{ variation.product.product }}</h3>
+            <span class="variation-price">${{ variation.price | number }}</span>
+          </div>
+          
+          <div class="variation-details">
+            <div class="variation-item">
+              <span class="label">Sabor:</span>
+              <span class="value">{{ variation.spice.spice }}</span>
+            </div>
+            
+            <div class="variation-item">
+              <span class="label">Stock:</span>
+              <span class="value" [class]="variation.stock > 0 ? 'in-stock' : 'out-of-stock'">
+                {{ variation.stock }} unidades
+              </span>
+            </div>
+            
+            <div class="variation-item">
+              <span class="label">Medida:</span>
+              <span class="value">{{ variation.measure?.measure || 'Sin medida' }}</span>
+            </div>
+            
+            <div class="variation-item">
+              <span class="label">Color:</span>
+              <span class="value">{{ variation.color?.color || 'Sin color' }}</span>
+            </div>
+            
+            <div *ngIf="variation.description" class="variation-item">
+              <span class="label">Descripción: </span>
+              <span class="value description"> {{ variation.description || 'Sin descripción' }}</span>
+            </div>
+          </div>
+          
+          <!-- Botones de gestión -->
+          <div *ngIf="canEdit()" class="variation-actions">
+            <button (click)="goToProductDetail(variation.product.id)" class="btn btn-sm btn-outline">
+              👁️ Ver Producto
+            </button>
+            <button (click)="editVariation(variation.id)" class="btn btn-sm btn-primary">
+              ✏️ Editar
+            </button>
+            <button (click)="toggleVariationStatus(variation.id)" class="btn btn-sm btn-warning">
+              {{ variation.active ? '🚫 Deshabilitar' : '✅ Habilitar' }}
+            </button>
+            <button *ngIf="isAdmin()" (click)="deleteVariation(variation.id)" class="btn btn-sm btn-danger">
+              🗑️ Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sin variaciones -->
+    <div *ngIf="variations.length === 0" class="empty-state">
+      <div class="empty-icon">📦</div>
+      <h3>No hay variaciones</h3>
+      <p>No se encontraron variaciones de productos en el sistema</p>
+      <button (click)="goBack()" class="btn btn-primary">
+        ← Volver a Productos
+      </button>
+    </div>
+  </div>
+
+  <!-- Sin permisos -->
+  <div *ngIf="!canEdit()" class="no-permissions">
+    <div class="empty-icon">🚫</div>
+    <h3>Sin permisos</h3>
+    <p>No tienes permisos para ver todas las variaciones</p>
+    <button (click)="goBack()" class="btn btn-primary">
+      ← Volver
+    </button>
+  </div>
+</div> 

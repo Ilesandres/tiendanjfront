@@ -19,7 +19,6 @@ export class DetailComponent implements OnInit {
   loadingVariations = false;
   error: string | null = null;
 
-  // URL del placeholder para imágenes
   private readonly placeholderImage = 'https://placehold.co/400x200?text=Producto';
 
   constructor(
@@ -53,7 +52,6 @@ export class DetailComponent implements OnInit {
       next: (product) => {
         this.product = product;
         this.loading = false;
-        // Cargar las variaciones del producto
         this.loadProductVariations(id);
       },
       error: (err) => {
@@ -75,7 +73,6 @@ export class DetailComponent implements OnInit {
     
     this.productService.getVariationsByProductId(productId).subscribe({
       next: (variations) => {
-        console.log('Variaciones cargadas:', variations);
         this.variations = variations;
         this.loadingVariations = false;
       },
@@ -88,32 +85,26 @@ export class DetailComponent implements OnInit {
   }
 
   getProductImage(product: Product): string {
-    // Si no hay imagen o está vacía, usar placeholder
     if (!product.image || product.image.trim() === '') {
       return this.placeholderImage;
     }
     
-    // Si hay imagen, usarla
     return product.image;
   }
 
   getVariationImage(variation: ProductVariation): string {
-    // Si la variación tiene imagen, usarla
     if (variation.image && variation.image.trim() !== '') {
       return variation.image;
     }
     
-    // Si no, usar la imagen del producto
     if (this.product && this.product.image && this.product.image.trim() !== '') {
       return this.product.image;
     }
     
-    // Finalmente, usar placeholder
     return this.placeholderImage;
   }
 
   onImageError(event: any): void {
-    // Si la imagen falla al cargar, usar placeholder
     event.target.src = this.placeholderImage;
   }
 
@@ -121,7 +112,10 @@ export class DetailComponent implements OnInit {
     this.router.navigate(['/products']);
   }
 
-  // Métodos de autorización
+  goToAllVariations(): void {
+    this.router.navigate(['/products/variations']);
+  }
+
   isAdmin(): boolean {
     return this.userService.isAdmin();
   }
@@ -134,7 +128,6 @@ export class DetailComponent implements OnInit {
     return this.isAdmin() || this.isSeller();
   }
 
-  // Métodos de gestión de productos
   editProduct(): void {
     if (this.product) {
       this.router.navigate(['/products/edit', this.product.id]);
@@ -159,7 +152,6 @@ export class DetailComponent implements OnInit {
     if (this.product) {
       this.productService.changeProductStatus(this.product.id).subscribe({
         next: () => {
-          // Recargar el producto
           this.loadProduct(this.product!.id);
         },
         error: (err) => {
@@ -169,8 +161,6 @@ export class DetailComponent implements OnInit {
       });
     }
   }
-
-  // Métodos de gestión de variaciones
   editVariation(variationId: number): void {
     this.router.navigate(['/products/variations/edit', variationId]);
   }
@@ -179,7 +169,6 @@ export class DetailComponent implements OnInit {
     if (confirm('¿Estás seguro de que quieres eliminar esta variación?')) {
       this.productService.deleteVariation(variationId).subscribe({
         next: () => {
-          // Recargar las variaciones
           if (this.product) {
             this.loadProductVariations(this.product.id);
           }
@@ -195,7 +184,6 @@ export class DetailComponent implements OnInit {
   toggleVariationStatus(variationId: number): void {
     this.productService.changeVariationStatus(variationId).subscribe({
       next: () => {
-        // Recargar las variaciones
         if (this.product) {
           this.loadProductVariations(this.product.id);
         }
@@ -210,7 +198,6 @@ export class DetailComponent implements OnInit {
   updateVariationStock(variationId: number, newStock: number): void {
     this.productService.updateVariationStock(variationId, { stock: newStock }).subscribe({
       next: () => {
-        // Recargar las variaciones
         if (this.product) {
           this.loadProductVariations(this.product.id);
         }
@@ -220,5 +207,14 @@ export class DetailComponent implements OnInit {
         console.error('Error updating variation stock:', err);
       }
     });
+  }
+
+  // Métodos para estadísticas de variaciones
+  getTotalVariations(): number {
+    return this.variations?.length || 0;
+  }
+
+  getActiveVariations(): number {
+    return this.variations?.filter(v => v.active)?.length || 0;
   }
 }
