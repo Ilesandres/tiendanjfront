@@ -66,7 +66,7 @@ export class CreateComponent implements OnInit {
     });
 
     this.productSearchForm = this.fb.group({
-      searchTerm: ['', Validators.required]
+      searchTerm: ['']
     });
   }
 
@@ -76,6 +76,17 @@ export class CreateComponent implements OnInit {
     this.loadTypeOrders();
     this.loadProducts();
     this.userService.getUserInfo();
+
+    // Búsqueda interactiva de productos
+    this.productSearchForm.get('searchTerm')?.valueChanges.subscribe((searchTerm: string) => {
+      if (!searchTerm || searchTerm.trim() === '') {
+        this.products = this.allProducts;
+        return;
+      }
+      this.products = this.allProducts.filter(product =>
+        product.product.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
   }
 
   // Load Data Methods
@@ -173,15 +184,24 @@ export class CreateComponent implements OnInit {
     if (this.productSearchForm.valid) {
       this.searchingProducts = true;
       const searchTerm = this.productSearchForm.get('searchTerm')?.value;
-      
+      if (!searchTerm || searchTerm.trim() === '') {
+        this.products = this.allProducts;
+        this.searchingProducts = false;
+        return;
+      }
       // Filtrar productos por nombre sobre allProducts
       const filteredProducts = this.allProducts.filter(product => 
         product.product.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      
       this.products = filteredProducts;
       this.searchingProducts = false;
     }
+  }
+
+  // Limpiar filtro de productos y mostrar todos
+  clearProductFilter(): void {
+    this.productSearchForm.get('searchTerm')?.setValue('');
+    this.products = this.allProducts;
   }
 
   // Cart Methods

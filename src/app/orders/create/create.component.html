@@ -77,6 +77,9 @@
               <span *ngIf="searchingProducts" class="spinner-small"></span>
               🔍 Buscar
             </button>
+            <button type="button" class="btn btn-outline-secondary" (click)="clearProductFilter()" [disabled]="searchingProducts">
+              🧹 Limpiar
+            </button>
           </div>
         </div>
       </form>
@@ -85,6 +88,7 @@
     <!-- Lista de productos -->
     <div class="products-grid">
       <div *ngFor="let product of products" class="product-card">
+        <div *ngIf="product.active">
         <div class="product-image">
           <img 
             [src]="getProductImage(product)" 
@@ -101,10 +105,17 @@
           <!-- Variaciones del producto -->
           <div class="product-variations" *ngIf="product.variationProducts && product.variationProducts.length > 0">
             <div *ngFor="let variation of product.variationProducts" class="variation-item">
-              <div class="variation-info">
-                <span class="variation-spice">{{ variation.spice.spice }}</span>
-                <span class="variation-price">${{ variation.price | number }}</span>
-                <span class="variation-stock">{{ variation.stock }} disponibles</span>
+              <div *ngIf="variation.active">
+              <div class="variation-info-grid">
+                <div class="variation-image">
+                  <img [src]="variation.image || 'https://placehold.co/300x200?text=variation'" [alt]="variation.description" class="variation-img">
+                </div>
+                <div><strong>Color:</strong> {{ variation.color?.color || 'Sin color' }}</div>
+                <div><strong>Sabor:</strong> {{ variation.spice.spice || 'Sin sabor' }}</div>
+                <div><strong>Precio:</strong> ${{ variation.price | number }}</div>
+                <div><strong>Stock:</strong> {{ variation.stock }} disponibles</div>
+                <div><strong>Medida:</strong> {{ variation.measure?.measure || 'Sin medida' }}</div>
+                <div><strong>Descripción:</strong> {{ variation.description || 'Sin descripción' }}</div>
               </div>
               <div class="variation-actions">
                 <input 
@@ -122,6 +133,7 @@
                 >
                   ➕ Agregar
                 </button>
+                </div>
               </div>
             </div>
           </div>
