@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserService, UserInfo } from '../../services/user.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -11,8 +12,9 @@ import { UserService, UserInfo } from '../../services/user.service';
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive]
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   userInfo: UserInfo | null = null;
+  private authSubscription: Subscription | null = null;
 
   constructor(
     private authService: AuthService,
@@ -21,9 +23,27 @@ export class NavbarComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Solo obtener información del usuario si está autenticado
+    // Suscribirse a los cambios de autenticación
+    this.authSubscription = this.authService.authStatus$.subscribe(isAuthenticated => {
+      this.updateUserInfo();
+    });
+
+    // Obtener información inicial del usuario si está autenticado
+    this.updateUserInfo();
+  }
+
+  ngOnDestroy(): void {
+    // Limpiar la suscripción al destruir el componente
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+  }
+
+  private updateUserInfo(): void {
     if (this.isAuthenticated()) {
       this.userInfo = this.userService.getUserInfo();
+    } else {
+      this.userInfo = null;
     }
   }
 

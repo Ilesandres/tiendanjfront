@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
-import { map, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
+import { ErrorFiltersService } from '../interceptors/error.filters';
 
 export interface UserInfo {
   id: number;
@@ -77,7 +78,8 @@ export class UserService {
 
   constructor(
     private authService: AuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private errorFilter: ErrorFiltersService
   ) { }
 
   getUserInfo(): UserInfo | null {
@@ -88,13 +90,25 @@ export class UserService {
 
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return {
+
+      // Asegurar que el rol se obtenga correctamente
+      let rol = 'cliente'; // default
+      if (payload.rol) {
+        rol = payload.rol;
+      } else if (payload.role) {
+        rol = payload.role;
+      }
+
+      const userInfo = {
         id: payload.id,
         user: payload.user,
-        rol: payload.rol,
+        rol: rol,
         verify: payload.verify
       };
+
+      return userInfo;
     } catch (error) {
+      console.error('Error decoding JWT token:', error);
       return null;
     }
   }
@@ -133,7 +147,7 @@ export class UserService {
         rol: typeof user.rol === 'object' ? user.rol.rol : user.rol,
 
       }
-    )),
+      )),
 
     );
   }
@@ -159,13 +173,24 @@ export class UserService {
   }
 
   searchUserByDni(dni: string): Observable<User> {
-    const headers = this.getAuthHeaders();
-    return this.http.get<any>(`${this.apiUrl}/auth/user/info/dni/${dni}`, { headers }).pipe(
-      map((user: any) => ({
-        ...user,
-        rol: typeof user.rol === 'object' ? user.rol.rol : user.rol
-      }))
-    );
+    try {
+      const headers = this.getAuthHeaders();
+      return this.http.get<any>(`${this.apiUrl}/auth/user/info/dni/${dni}`, { headers }).pipe(
+        map((user: any) => ({
+          ...user,
+          rol: typeof user.rol === 'object' ? user.rol.rol : user.rol
+        })),
+        catchError((err: any) => {
+          this.errorFilter.handle(err);
+          throw err;
+        })
+      );
+    } catch (error) {
+      console.error('Error searching user by DNI:', error);
+      this.errorFilter.handle(error as HttpErrorResponse);
+      throw error;
+    }
+
   }
 
   // Métodos para crear y actualizar usuarios
