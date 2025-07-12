@@ -227,6 +227,11 @@ export class ProductService {
     return this.http.post(`${this.apiUrl}/variationproduct/change-stock/${id}`, stock, { headers });
   }
 
+  searchVariationsByDescription(description: string): Observable<ProductVariation[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<ProductVariation[]>(`${this.apiUrl}/variationproduct/findbydescription/${encodeURIComponent(description)}`, { headers:headers});
+  }
+
   // Convenience methods for component use
   async getCategories(): Promise<Category[]> {
     try {

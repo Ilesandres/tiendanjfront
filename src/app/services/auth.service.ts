@@ -1,9 +1,10 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { LoginRequest, LoginResponse, RegisterUserRequest, UpdateUserRequest } from '../interfaces/auth.interface';
 import { environment } from '../../environments/environment';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,15 +12,32 @@ import { environment } from '../../environments/environment';
 export class AuthService {
   private apiUrl = environment.apiUrl;
   private tokenKey = 'auth_token';
+  private authStatusSubject = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) { }
+  ) {
+    // Inicializar el estado de autenticación
+    this.authStatusSubject.next(this.isAuthenticated());
+  }
+
+  // Observable para detectar cambios de autenticación
+  get authStatus$(): Observable<boolean> {
+    return this.authStatusSubject.asObservable();
+  }
 
   // Login
   login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials);
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
+      tap(response => {
+        // El backend devuelve acces_token
+        if (response.acces_token) {
+          this.setToken(response.acces_token);
+          this.authStatusSubject.next(true);
+        }
+      })
+    );
   }
 
   // Register user
@@ -46,6 +64,7 @@ export class AuthService {
   setToken(token: string): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.tokenKey, token);
+      this.authStatusSubject.next(true);
     }
   }
 
@@ -59,6 +78,7 @@ export class AuthService {
   removeToken(): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(this.tokenKey);
+      this.authStatusSubject.next(false);
     }
   }
 

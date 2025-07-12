@@ -7,6 +7,7 @@ import { ProductService } from '../../services/product.service';
 import { UserService, User } from '../../services/user.service';
 import { Order, PaymentMethod, PaymentStatus, TypeOrder } from '../../interfaces/order.interface';
 import { Product } from '../../interfaces/product.interface';
+import Swal from 'sweetalert2';
 
 interface CartItem {
   product: Product;
@@ -21,7 +22,14 @@ interface CartItem {
   templateUrl: './create.component.html',
   styleUrl: './create.component.css',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [
+    CommonModule,
+     FormsModule, 
+     ReactiveFormsModule,
+    ],
+    providers:[
+      
+    ]
 })
 export class CreateComponent implements OnInit {
   orderForm: FormGroup;
@@ -37,6 +45,16 @@ export class CreateComponent implements OnInit {
   selectedUser: User | null = null;
   cartItems: CartItem[] = [];
   
+  // Pagination
+  currentPage = 1;
+  itemsPerPage = 10;
+  totalItems = 0;
+  totalPages = 0;
+  itemsPerPageOptions = [5, 10, 15, 20, 25];
+  
+  // Math object for template
+  Math = Math;
+  
   // UI States
   loading = false;
   searchingUser = false;
@@ -48,12 +66,17 @@ export class CreateComponent implements OnInit {
   subtotal = 0;
   total = 0;
 
+  // Estado para mostrar el dialog de alerta de stock
+  showStockDialog = false;
+  stockDialogMessage = '';
+
   constructor(
     private fb: FormBuilder,
     private orderService: OrderService,
     private productService: ProductService,
     private userService: UserService,
     private router: Router
+    
   ) {
     this.orderForm = this.fb.group({
       paymentMethod: ['', Validators.required],
@@ -66,7 +89,7 @@ export class CreateComponent implements OnInit {
     });
 
     this.productSearchForm = this.fb.group({
-      searchTerm: ['', Validators.required]
+      searchTerm: ['']
     });
   }
 
@@ -76,6 +99,19 @@ export class CreateComponent implements OnInit {
     this.loadTypeOrders();
     this.loadProducts();
     this.userService.getUserInfo();
+
+    // Búsqueda interactiva de productos
+    this.productSearchForm.get('searchTerm')?.valueChanges.subscribe((searchTerm: string) => {
+      if (!searchTerm || searchTerm.trim() === '') {
+        this.products = this.allProducts;
+        this.updatePagination();
+        return;
+      }
+      this.products = this.allProducts.filter(product =>
+        product.product.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      this.updatePagination();
+    });
   }
 
   // Load Data Methods
@@ -120,13 +156,13 @@ export class CreateComponent implements OnInit {
     this.productService.getAllProducts().subscribe({
       next: (products: any[]) => {
         console.log(products)
-        // Adaptar la estructura para que cada producto tenga variationProducts
         const adapted = products.map(prod => ({
           ...prod,
           variationProducts: prod.variation || []
         }));
         this.allProducts = adapted;
         this.products = adapted;
+        this.updatePagination();
         console.log('Products loaded:', adapted);
       },
       error: (err: any) => {
@@ -135,7 +171,54 @@ export class CreateComponent implements OnInit {
     });
   }
 
-  // User Search Methods
+  updatePagination(): void {
+    this.totalItems = this.products.length;
+    this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+    this.currentPage = 1; // Reset to first page when data changes
+  }
+
+  getPaginatedProducts(): Product[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.products.slice(startIndex, endIndex);
+  }
+
+  onPageChange(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  onItemsPerPageChange(): void {
+    this.currentPage = 1; 
+    this.updatePagination();
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxVisiblePages = 5;
+    
+    if (this.totalPages <= maxVisiblePages) {
+      
+      for (let i = 1; i <= this.totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+      
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+    }
+    
+    return pages;
+  }
+
   searchUser(): void {
     if (this.userSearchForm.valid) {
       this.searchingUser = true;
@@ -144,13 +227,11 @@ export class CreateComponent implements OnInit {
 
       this.userService.searchUserByDni(dni).subscribe({
         next: (user: User) => {
-          // Usuario encontrado
           this.selectedUser = user;
           this.searchingUser = false;
           console.log('User found:', this.selectedUser);
         },
         error: (err: any) => {
-          // Usuario no encontrado, mostrar formulario para crear
           this.userNotFound = true;
           this.showUserForm = true;
           this.searchingUser = false;
@@ -161,39 +242,55 @@ export class CreateComponent implements OnInit {
   }
 
   createUser(): void {
-    // Aquí implementarías la creación del usuario
-    // Por ahora solo simulamos
     this.showUserForm = false;
     this.userNotFound = false;
-    // TODO: Implementar creación de usuario
   }
 
-  // Product Search Methods
   searchProducts(): void {
     if (this.productSearchForm.valid) {
       this.searchingProducts = true;
       const searchTerm = this.productSearchForm.get('searchTerm')?.value;
-      
-      // Filtrar productos por nombre sobre allProducts
+      if (!searchTerm || searchTerm.trim() === '') {
+        this.products = this.allProducts;
+        this.updatePagination();
+        this.searchingProducts = false;
+        return;
+      }
       const filteredProducts = this.allProducts.filter(product => 
         product.product.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      
       this.products = filteredProducts;
+      this.updatePagination();
       this.searchingProducts = false;
     }
   }
 
-  // Cart Methods
+  clearProductFilter(): void {
+    this.productSearchForm.get('searchTerm')?.setValue('');
+    this.products = this.allProducts;
+    this.updatePagination();
+  }
+
   addToCart(product: Product, variation: any, quantity: number = 1): void {
     const existingItem = this.cartItems.find(item => 
       item.product.id === product.id && item.variation.id === variation.id
     );
 
     if (existingItem) {
+      console.log('variation.stock', variation.stock);
+      if (variation.stock - quantity < 0) {
+        console.log('No hay suficiente stock disponible para agregar más de este producto.');
+        this.openStockDialog('No hay suficiente stock disponible para agregar más de este producto.');
+        return;
+      }
       existingItem.quantity += quantity;
       existingItem.subtotal = existingItem.quantity * existingItem.price;
     } else {
+      if (variation.stock < quantity) {
+        console.log('No hay suficiente stock disponible para agregar este producto 1212.');
+        this.openStockDialog('No hay suficiente stock disponible para agregar este producto.');
+        return;
+      }
       const cartItem: CartItem = {
         product,
         variation,
@@ -204,11 +301,26 @@ export class CreateComponent implements OnInit {
       this.cartItems.push(cartItem);
     }
 
+    variation.stock -= quantity;
     this.calculateTotals();
     console.log('Product added to cart:', product.product, variation.spice.spice, quantity);
   }
 
+  openStockDialog(message: string): void {
+    Swal.fire({
+      icon: 'error',
+      title: 'Sin stock',
+      text: message,
+      confirmButtonColor: '#d32f2f',
+      timer: 2000,
+      timerProgressBar: true,
+      showConfirmButton: false
+    });
+  }
+
   removeFromCart(index: number): void {
+    const item = this.cartItems[index];
+    item.variation.stock += item.quantity;
     this.cartItems.splice(index, 1);
     this.calculateTotals();
   }
@@ -216,24 +328,41 @@ export class CreateComponent implements OnInit {
   updateQuantity(index: number, quantity: string): void {
     const qty = parseInt(quantity);
     if (qty > 0) {
-      this.cartItems[index].quantity = qty;
-      this.cartItems[index].subtotal = qty * this.cartItems[index].price;
+      const item = this.cartItems[index];
+      const diff = qty - item.quantity;
+      if (item.variation.stock - diff < 0) {
+        this.openStockDialog('No hay suficiente stock disponible para esta cantidad.');
+        return;
+      }
+      item.variation.stock -= diff;
+      item.quantity = qty;
+      item.subtotal = qty * item.price;
       this.calculateTotals();
+    }
+  }
+
+  onQuantityInputChange(input: HTMLInputElement, variation: any): void {
+    const value = parseInt(input.value, 10);
+    if (isNaN(value) || value < 1) {
+      input.value = '1';
+      return;
+    }
+    if (value > variation.stock) {
+      input.value = variation.stock > 0 ? variation.stock.toString() : '1';
+      this.openStockDialog('No hay suficiente stock disponible para esa cantidad.');
     }
   }
 
   calculateTotals(): void {
     this.subtotal = this.cartItems.reduce((sum, item) => sum + item.subtotal, 0);
-    this.total = this.subtotal; // Aquí podrías agregar impuestos, descuentos, etc.
+    this.total = this.subtotal; 
   }
 
-  // Order Creation - FLUJO CORREGIDO
   createOrder(): void {
     if (this.orderForm.valid && this.selectedUser && this.cartItems.length > 0) {
       this.loading = true;
       console.log('Starting order creation process...');
 
-      // Paso 1: Crear la orden sin productos
       const orderData = {
         user: { id: this.selectedUser?.id },
         payment: {
@@ -249,7 +378,6 @@ export class CreateComponent implements OnInit {
         next: (order: Order) => {
           console.log('Order created successfully:', order);
           
-          // Paso 2: Agregar productos a la orden
           this.addProductsToOrder(order.id);
         },
         error: (err: any) => {
@@ -275,7 +403,7 @@ export class CreateComponent implements OnInit {
     this.cartItems.forEach((item, index) => {
       const productOrderData = {
         order: { id: orderId },
-        product: { id: item.variation.id }, // Usar el ID de la variación, no del producto principal
+        product: { id: item.variation.id }, 
         amount: item.quantity
       };
 
@@ -305,7 +433,6 @@ export class CreateComponent implements OnInit {
   finalizeOrder(orderId: number): void {
     console.log('Finalizing order:', orderId);
     
-    // Actualizar el total de la orden
     this.orderService.updateOrderTotal(orderId, { total: this.total }).subscribe({
       next: (response) => {
         console.log('Order total updated:', response);
@@ -320,7 +447,6 @@ export class CreateComponent implements OnInit {
     });
   }
 
-  // Utility Methods
   canCreateOrder(): boolean {
     return this.orderForm.valid && 
            this.selectedUser !== null && 

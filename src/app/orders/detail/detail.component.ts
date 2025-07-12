@@ -6,6 +6,7 @@ import { OrderService } from '../../services/order.service';
 import { ShipmentService, Shipment } from '../../services/shipment.service';
 import { StatusShipmentService, StatusShipment } from '../../services/statusshipment.service';
 import { ErrorFiltersService } from '../../interceptors/error.filters';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-detail',
@@ -30,13 +31,45 @@ export class DetailComponent implements OnInit {
   };
   savingShipment = false;
 
+  // Product management
+  availableProducts: any[] = [];
+  filteredProducts: any[] = [];
+  productInput = '';
+  showProductDropdown = false;
+  productInputRef: any;
+  addingProduct = false;
+  addingProductLoading = false;
+  productForm = {
+    productId: 0,
+    amount: 1
+  };
+  editingProduct: any = null;
+  editingProductForm = {
+    amount: 1
+  };
+  deletingProduct = false;
+
+  // Voucher management
+  addingVoucher = false;
+  addingVoucherLoading = false;
+  voucherForm = {
+    value: 0
+  };
+  editingVoucher: any = null;
+  editingVoucherForm = {
+    value: 0
+  };
+  deletingVoucher = false;
+  voucherRestante = 0;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private orderService: OrderService,
     private shipmentService: ShipmentService,
     private statusShipmentService: StatusShipmentService,
-    private errorFilter: ErrorFiltersService
+    private errorFilter: ErrorFiltersService,
+    private productService: ProductService
   ) { }
 
   ngOnInit(): void {
@@ -44,6 +77,7 @@ export class DetailComponent implements OnInit {
     if (id) {
       this.loadOrder(parseInt(id));
       this.loadShipmentStatuses();
+      this.loadAvailableProducts();
     }
   }
 
@@ -54,6 +88,8 @@ export class DetailComponent implements OnInit {
     this.orderService.getOrderById(id).subscribe({
       next: (order: any) => {
         this.order = order;
+        console.log("order ", this.order);
+        this.updateVoucherRestante();
         this.loading = false;
       },
       error: (err) => {
@@ -62,6 +98,17 @@ export class DetailComponent implements OnInit {
         this.errorFilter.handle(err);
       }
     });
+  }
+
+  updateVoucherRestante(): void {
+    if (!this.order || !this.order.payment) {
+      this.voucherRestante = 0;
+      return;
+    }
+    const total = Number(this.order.total) || 0;
+    const vouchers: any[] = Array.isArray(this.order.payment.vouchers) ? this.order.payment.vouchers : [];
+    const abonado = vouchers.reduce((sum: number, v: any) => sum + Number(v.value || 0), 0);
+    this.voucherRestante = Math.max(total - abonado, 0);
   }
 
   loadShipmentStatuses(): void {
@@ -73,6 +120,22 @@ export class DetailComponent implements OnInit {
         console.error('Error loading shipment statuses:', err);
       }
     });
+  }
+
+  loadAvailableProducts(): void {
+    this.productService.getAllVariations().subscribe({
+      next: (products) => {
+        this.availableProducts = products.filter(p => p.active && p.product?.active);
+      },
+      error: (err) => {
+        console.error('Error loading products:', err);
+      }
+    });
+  }
+
+  // Check if order is pending
+  isOrderPending(): boolean {
+    return this.order?.payment?.status?.status?.toLowerCase() === 'pendiente';
   }
 
   // Check if order is paid
@@ -112,6 +175,254 @@ export class DetailComponent implements OnInit {
       error: (err) => {
         this.sendingInvoice = false;
         this.error = 'Error al enviar la factura por email';
+        this.errorFilter.handle(err);
+      }
+    });
+  }
+
+  // Product management methods
+  startAddingProduct(): void {
+    this.addingProduct = true;
+    this.productForm = {
+      productId: 0,
+      amount: 1
+    };
+    this.productInput = '';
+    this.filteredProducts = [...this.availableProducts];
+    this.showProductDropdown = false;
+    setTimeout(() => {
+      if (this.productInputRef) {
+        this.productInputRef.focus();
+      }
+    }, 0);
+  }
+
+  onProductInputFocus(): void {
+    this.showProductDropdown = true;
+    this.filteredProducts = this.filterProducts(this.productInput);
+  }
+
+  onProductInputBlur(): void {
+    setTimeout(() => {
+      this.showProductDropdown = false;
+    }, 150); // Espera para permitir click en la lista
+  }
+
+  onProductInputChange(): void {
+    this.filteredProducts = this.filterProducts(this.productInput);
+    this.showProductDropdown = true;
+  }
+
+  filterProducts(query: string): any[] {
+    if (!query || query.trim() === '') {
+      return [...this.availableProducts];
+    }
+    const q = query.trim().toLowerCase();
+    return this.availableProducts.filter(p =>
+      (p.product?.product || '').toLowerCase().includes(q) ||
+      (p.description || '').toLowerCase().includes(q)
+    );
+  }
+
+  selectProduct(product: any): void {
+    this.productForm.productId = product.id;
+    this.productInput = `${product.product?.product || ''}${product.description ? ' - ' + product.description : ''}`;
+    this.showProductDropdown = false;
+  }
+
+  clearProductInput(): void {
+    this.productInput = '';
+    this.productForm.productId = 0;
+    this.filteredProducts = [...this.availableProducts];
+    this.showProductDropdown = true;
+    if (this.productInputRef) {
+      this.productInputRef.focus();
+    }
+  }
+
+  cancelAddingProduct(): void {
+    this.addingProduct = false;
+    this.productForm = {
+      productId: 0,
+      amount: 1
+    };
+  }
+
+  addProduct(): void {
+    if (!this.productForm.productId || this.productForm.amount < 1) {
+      this.error = 'Debe seleccionar un producto y especificar una cantidad válida';
+      return;
+    }
+    this.addingProductLoading = true;
+    this.error = null;
+    this.orderService.addProductToOrder(this.order.id, this.productForm.productId, this.productForm.amount).subscribe({
+      next: () => {
+        this.loadOrder(this.order.id);
+        this.cancelAddingProduct();
+        this.addingProductLoading = false;
+      },
+      error: (err) => {
+        this.error = 'Error al agregar el producto';
+        this.errorFilter.handle(err);
+        this.addingProductLoading = false;
+      }
+    });
+  }
+
+  startEditingProduct(productOrder: any): void {
+    this.editingProduct = productOrder;
+    this.editingProductForm.amount = productOrder.amount;
+  }
+
+  cancelEditingProduct(): void {
+    this.editingProduct = null;
+    this.editingProductForm.amount = 1;
+  }
+
+  updateProduct(): void {
+    if (!this.editingProduct || this.editingProductForm.amount < 1) {
+      this.error = 'Cantidad inválida';
+      return;
+    }
+
+    this.orderService.updateProductOrder(
+      this.editingProduct.id, 
+      this.order.id, 
+      this.editingProduct.product.id, 
+      this.editingProductForm.amount
+    ).subscribe({
+      next: () => {
+        this.loadOrder(this.order.id);
+        this.cancelEditingProduct();
+      },
+      error: (err) => {
+        this.error = 'Error al actualizar el producto';
+        this.errorFilter.handle(err);
+      }
+    });
+  }
+
+  deleteProduct(productOrder: any): void {
+    if (!confirm('¿Estás seguro de que quieres eliminar este producto de la orden?')) {
+      return;
+    }
+
+    this.deletingProduct = true;
+    this.error = null;
+
+    this.orderService.deleteProductFromOrder(productOrder.id).subscribe({
+      next: () => {
+        this.deletingProduct = false;
+        this.loadOrder(this.order.id);
+      },
+      error: (err) => {
+        this.deletingProduct = false;
+        this.error = 'Error al eliminar el producto';
+        this.errorFilter.handle(err);
+      }
+    });
+  }
+
+  // Voucher management methods
+  startAddingVoucher(): void {
+    this.addingVoucher = true;
+    this.voucherForm.value = 0;
+  }
+
+  cancelAddingVoucher(): void {
+    this.addingVoucher = false;
+    this.voucherForm.value = 0;
+  }
+
+  addVoucher(): void {
+    if (!this.voucherForm.value || this.voucherForm.value <= 0) {
+      this.error = 'Debe especificar un valor válido para el voucher';
+      return;
+    }
+    if (this.voucherForm.value > this.voucherRestante) {
+      this.error = 'El valor del abono no puede ser mayor a lo que falta para completar el pago.';
+      return;
+    }
+    this.addingVoucherLoading = true;
+    this.error = null;
+    const voucherData = {
+      payment: {
+        id: this.order.payment.id
+      },
+      value: this.voucherForm.value
+    };
+    this.orderService.createVoucher(voucherData).subscribe({
+      next: () => {
+        this.loadOrder(this.order.id);
+        this.cancelAddingVoucher();
+        this.addingVoucherLoading = false;
+      },
+      error: (err) => {
+        this.error = 'Error al crear el voucher';
+        this.errorFilter.handle(err);
+        this.addingVoucherLoading = false;
+      }
+    });
+  }
+
+  startEditingVoucher(voucher: any): void {
+    this.editingVoucher = voucher;
+    this.editingVoucherForm.value = voucher.value;
+  }
+
+  cancelEditingVoucher(): void {
+    this.editingVoucher = null;
+    this.editingVoucherForm.value = 0;
+  }
+
+  updateVoucher(): void {
+    if (!this.editingVoucher || this.editingVoucherForm.value <= 0) {
+      this.error = 'Debe especificar un valor válido para el voucher';
+      return;
+    }
+    // Calcular el total abonado sin el voucher actual
+    const total = Number(this.order.total) || 0;
+    const vouchers: any[] = Array.isArray(this.order.payment.vouchers) ? this.order.payment.vouchers : [];
+    const abonadoSinActual = vouchers.filter((v: any) => v.id !== this.editingVoucher.id).reduce((sum: number, v: any) => sum + Number(v.value || 0), 0);
+    const restante = Math.max(total - abonadoSinActual, 0);
+    if (this.editingVoucherForm.value > restante) {
+      this.error = 'El valor del abono no puede ser mayor a lo que falta para completar el pago.';
+      return;
+    }
+    const voucherData = {
+      payment: {
+        id: this.order.payment.id
+      },
+      value: this.editingVoucherForm.value
+    };
+    this.orderService.updateVoucher(this.editingVoucher.id, voucherData).subscribe({
+      next: () => {
+        this.loadOrder(this.order.id);
+        this.cancelEditingVoucher();
+      },
+      error: (err) => {
+        this.error = 'Error al actualizar el voucher';
+        this.errorFilter.handle(err);
+      }
+    });
+  }
+
+  deleteVoucher(voucher: any): void {
+    if (!confirm('¿Estás seguro de que quieres eliminar este voucher?')) {
+      return;
+    }
+
+    this.deletingVoucher = true;
+    this.error = null;
+
+    this.orderService.deleteVoucher(voucher.id).subscribe({
+      next: () => {
+        this.deletingVoucher = false;
+        this.loadOrder(this.order.id);
+      },
+      error: (err) => {
+        this.deletingVoucher = false;
+        this.error = 'Error al eliminar el voucher';
         this.errorFilter.handle(err);
       }
     });

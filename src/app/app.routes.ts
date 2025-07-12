@@ -130,6 +130,10 @@ export const routes: Routes = [
     loadComponent: () => import('./profile/profile.component').then(m => m.ProfileComponent)
   },
   {
+    path: 'theme-demo',
+    loadComponent: () => import('./shared/theme-demo/theme-demo.component').then(m => m.ThemeDemoComponent)
+  },
+  {
     path: '',
     redirectTo: '/products',
     pathMatch: 'full'
