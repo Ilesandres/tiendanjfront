@@ -7,6 +7,7 @@ import { ProductService } from '../../services/product.service';
 import { UserService, User } from '../../services/user.service';
 import { Order, PaymentMethod, PaymentStatus, TypeOrder } from '../../interfaces/order.interface';
 import { Product } from '../../interfaces/product.interface';
+import Swal from 'sweetalert2';
 
 interface CartItem {
   product: Product;
@@ -21,7 +22,14 @@ interface CartItem {
   templateUrl: './create.component.html',
   styleUrl: './create.component.css',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [
+    CommonModule,
+     FormsModule, 
+     ReactiveFormsModule,
+    ],
+    providers:[
+      
+    ]
 })
 export class CreateComponent implements OnInit {
   orderForm: FormGroup;
@@ -37,6 +45,16 @@ export class CreateComponent implements OnInit {
   selectedUser: User | null = null;
   cartItems: CartItem[] = [];
   
+  // Pagination
+  currentPage = 1;
+  itemsPerPage = 10;
+  totalItems = 0;
+  totalPages = 0;
+  itemsPerPageOptions = [5, 10, 15, 20, 25];
+  
+  // Math object for template
+  Math = Math;
+  
   // UI States
   loading = false;
   searchingUser = false;
@@ -48,12 +66,17 @@ export class CreateComponent implements OnInit {
   subtotal = 0;
   total = 0;
 
+  // Estado para mostrar el dialog de alerta de stock
+  showStockDialog = false;
+  stockDialogMessage = '';
+
   constructor(
     private fb: FormBuilder,
     private orderService: OrderService,
     private productService: ProductService,
     private userService: UserService,
     private router: Router
+    
   ) {
     this.orderForm = this.fb.group({
       paymentMethod: ['', Validators.required],
@@ -81,11 +104,13 @@ export class CreateComponent implements OnInit {
     this.productSearchForm.get('searchTerm')?.valueChanges.subscribe((searchTerm: string) => {
       if (!searchTerm || searchTerm.trim() === '') {
         this.products = this.allProducts;
+        this.updatePagination();
         return;
       }
       this.products = this.allProducts.filter(product =>
         product.product.toLowerCase().includes(searchTerm.toLowerCase())
       );
+      this.updatePagination();
     });
   }
 
@@ -138,12 +163,64 @@ export class CreateComponent implements OnInit {
         }));
         this.allProducts = adapted;
         this.products = adapted;
+        this.updatePagination();
         console.log('Products loaded:', adapted);
       },
       error: (err: any) => {
         console.error('Error loading products:', err);
       }
     });
+  }
+
+  // Pagination Methods
+  updatePagination(): void {
+    this.totalItems = this.products.length;
+    this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+    this.currentPage = 1; // Reset to first page when data changes
+  }
+
+  getPaginatedProducts(): Product[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.products.slice(startIndex, endIndex);
+  }
+
+  onPageChange(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  onItemsPerPageChange(): void {
+    this.currentPage = 1; // Reset to first page when changing items per page
+    this.updatePagination();
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxVisiblePages = 5;
+    
+    if (this.totalPages <= maxVisiblePages) {
+      // Show all pages if total is less than max visible
+      for (let i = 1; i <= this.totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Show pages around current page
+      let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+      
+      // Adjust if we're near the end
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+    }
+    
+    return pages;
   }
 
   // User Search Methods
@@ -186,6 +263,7 @@ export class CreateComponent implements OnInit {
       const searchTerm = this.productSearchForm.get('searchTerm')?.value;
       if (!searchTerm || searchTerm.trim() === '') {
         this.products = this.allProducts;
+        this.updatePagination();
         this.searchingProducts = false;
         return;
       }
@@ -194,6 +272,7 @@ export class CreateComponent implements OnInit {
         product.product.toLowerCase().includes(searchTerm.toLowerCase())
       );
       this.products = filteredProducts;
+      this.updatePagination();
       this.searchingProducts = false;
     }
   }
@@ -202,6 +281,7 @@ export class CreateComponent implements OnInit {
   clearProductFilter(): void {
     this.productSearchForm.get('searchTerm')?.setValue('');
     this.products = this.allProducts;
+    this.updatePagination();
   }
 
   // Cart Methods
@@ -211,9 +291,21 @@ export class CreateComponent implements OnInit {
     );
 
     if (existingItem) {
+      // Solo permitir agregar si hay stock suficiente
+      console.log('variation.stock', variation.stock);
+      if (variation.stock - quantity < 0) {
+        console.log('No hay suficiente stock disponible para agregar más de este producto.');
+        this.openStockDialog('No hay suficiente stock disponible para agregar más de este producto.');
+        return;
+      }
       existingItem.quantity += quantity;
       existingItem.subtotal = existingItem.quantity * existingItem.price;
     } else {
+      if (variation.stock < quantity) {
+        console.log('No hay suficiente stock disponible para agregar este producto 1212.');
+        this.openStockDialog('No hay suficiente stock disponible para agregar este producto.');
+        return;
+      }
       const cartItem: CartItem = {
         product,
         variation,
@@ -224,11 +316,29 @@ export class CreateComponent implements OnInit {
       this.cartItems.push(cartItem);
     }
 
+    // Restar stock local
+    variation.stock -= quantity;
     this.calculateTotals();
     console.log('Product added to cart:', product.product, variation.spice.spice, quantity);
   }
 
+  // Dialog de stock insuficiente usando SweetAlert2
+  openStockDialog(message: string): void {
+    Swal.fire({
+      icon: 'error',
+      title: 'Sin stock',
+      text: message,
+      confirmButtonColor: '#d32f2f',
+      timer: 2000,
+      timerProgressBar: true,
+      showConfirmButton: false
+    });
+  }
+
   removeFromCart(index: number): void {
+    // Restaurar stock local al eliminar del carrito
+    const item = this.cartItems[index];
+    item.variation.stock += item.quantity;
     this.cartItems.splice(index, 1);
     this.calculateTotals();
   }
@@ -236,9 +346,29 @@ export class CreateComponent implements OnInit {
   updateQuantity(index: number, quantity: string): void {
     const qty = parseInt(quantity);
     if (qty > 0) {
-      this.cartItems[index].quantity = qty;
-      this.cartItems[index].subtotal = qty * this.cartItems[index].price;
+      const item = this.cartItems[index];
+      const diff = qty - item.quantity;
+      // Solo permitir si hay stock suficiente
+      if (item.variation.stock - diff < 0) {
+        this.openStockDialog('No hay suficiente stock disponible para esta cantidad.');
+        return;
+      }
+      item.variation.stock -= diff;
+      item.quantity = qty;
+      item.subtotal = qty * item.price;
       this.calculateTotals();
+    }
+  }
+
+  onQuantityInputChange(input: HTMLInputElement, variation: any): void {
+    const value = parseInt(input.value, 10);
+    if (isNaN(value) || value < 1) {
+      input.value = '1';
+      return;
+    }
+    if (value > variation.stock) {
+      input.value = variation.stock > 0 ? variation.stock.toString() : '1';
+      this.openStockDialog('No hay suficiente stock disponible para esa cantidad.');
     }
   }
 
