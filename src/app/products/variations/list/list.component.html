@@ -9,6 +9,35 @@
     </div>
   </div>
 
+  <!-- Autocompletado de productos -->
+  <div class="search-section">
+    <input
+      type="text"
+      class="search-input"
+      [(ngModel)]="productSearch"
+      (input)="onProductSearchChange()"
+      (focus)="onInputFocus()"
+      (blur)="onInputBlur()"
+      [disabled]="!!selectedProduct"
+      autocomplete="off"
+    >
+    <ul *ngIf="autocompleteOpen" class="autocomplete-list">
+      <li *ngFor="let product of filteredProducts" (mousedown)="selectProduct(product)">
+        <ng-container *ngIf="productSearch; else noHighlight">
+          <span>
+            <ng-container *ngFor="let part of product.product | highlight:productSearch">
+              <span [ngClass]="{'match': part.match}">{{ part.text }}</span>
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #noHighlight>{{ product.product }}</ng-template>
+      </li>
+    </ul>
+    <button (click)="clearProductSearch()" class="btn btn-outline search-btn" *ngIf="selectedProduct || productSearch">
+      Limpiar
+    </button>
+  </div>
+
   <!-- Loading -->
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>

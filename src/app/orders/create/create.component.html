@@ -57,11 +57,11 @@
   </div>
 
   <!-- Selección de Productos -->
-  <div class="section" *ngIf="selectedUser">
+  <div class="section products-section" *ngIf="selectedUser">
     <h2>📦 Productos</h2>
     
     <!-- Búsqueda de productos -->
-    <div class="product-search">
+    <div class="product-search-container">
       <form [formGroup]="productSearchForm" (ngSubmit)="searchProducts()" class="search-form">
         <div class="form-group">
           <label for="searchTerm" class="form-label">Buscar Productos</label>
@@ -77,55 +77,199 @@
               <span *ngIf="searchingProducts" class="spinner-small"></span>
               🔍 Buscar
             </button>
+            <button type="button" class="btn btn-outline-secondary" (click)="clearProductFilter()" [disabled]="searchingProducts">
+              🧹 Limpiar
+            </button>
           </div>
         </div>
       </form>
     </div>
 
+    <!-- Controles de paginación -->
+    <div class="pagination-controls">
+      <div class="pagination-info">
+        <span class="pagination-text">
+          Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, totalItems) }} de {{ totalItems }} productos
+        </span>
+      </div>
+      
+      <div class="pagination-settings">
+        <label for="itemsPerPage" class="items-per-page-label">Productos por página:</label>
+        <select 
+          id="itemsPerPage" 
+          [(ngModel)]="itemsPerPage" 
+          (change)="onItemsPerPageChange()"
+          class="items-per-page-select"
+        >
+          <option *ngFor="let option of itemsPerPageOptions" [value]="option">
+            {{ option }}
+          </option>
+        </select>
+      </div>
+    </div>
+
     <!-- Lista de productos -->
-    <div class="products-grid">
-      <div *ngFor="let product of products" class="product-card">
-        <div class="product-image">
-          <img 
-            [src]="getProductImage(product)" 
-            [alt]="product.product" 
-            class="product-img"
-            (error)="onImageError($event)"
-          >
-        </div>
-        
-        <div class="product-info">
-          <h3 class="product-name">{{ product.product }}</h3>
-          <p class="product-category">{{ product.category?.category || 'Sin categoría' }}</p>
-          
-          <!-- Variaciones del producto -->
-          <div class="product-variations" *ngIf="product.variationProducts && product.variationProducts.length > 0">
-            <div *ngFor="let variation of product.variationProducts" class="variation-item">
-              <div class="variation-info">
-                <span class="variation-spice">{{ variation.spice.spice }}</span>
-                <span class="variation-price">${{ variation.price | number }}</span>
-                <span class="variation-stock">{{ variation.stock }} disponibles</span>
+    <div class="products-container">
+      <div class="products-grid">
+        <div *ngFor="let product of getPaginatedProducts()" class="product-card">
+          <div *ngIf="product.active" class="product-card-content">
+            <!-- Imagen del producto -->
+            <div class="product-image-container">
+              <img 
+                [src]="getProductImage(product)" 
+                [alt]="product.product" 
+                class="product-img"
+                (error)="onImageError($event)"
+              >
+            </div>
+            
+            <!-- Información del producto -->
+            <div class="product-info-container">
+              <div class="product-header">
+                <h3 class="product-name">{{ product.product }}</h3>
+                <span class="product-category-badge">{{ product.category?.category || 'Sin categoría' }}</span>
               </div>
-              <div class="variation-actions">
-                <input 
-                  type="number" 
-                  min="1" 
-                  max="{{ variation.stock }}"
-                  value="1"
-                  class="quantity-input"
-                  #quantityInput
-                >
-                <button 
-                  (click)="addToCart(product, variation, +quantityInput.value)"
-                  class="btn btn-success"
-                  [disabled]="variation.stock === 0 || !variation.active"
-                >
-                  ➕ Agregar
-                </button>
+              
+              <!-- Variaciones del producto -->
+              <div class="product-variations-container" *ngIf="product.variationProducts && product.variationProducts.length > 0">
+                <h4 class="variations-title">Variaciones disponibles:</h4>
+                <div class="variations-grid">
+                  <div *ngFor="let variation of product.variationProducts" class="variation-card">
+                    <div *ngIf="variation.active" class="variation-card-content">
+                      <!-- Imagen de la variación -->
+                      <div class="variation-image-container">
+                        <img 
+                          [src]="variation.image || 'https://placehold.co/300x200?text=variation'" 
+                          [alt]="variation.description" 
+                          class="variation-img"
+                        >
+                      </div>
+                      
+                      <!-- Información de la variación -->
+                      <div class="variation-details">
+                        <div class="variation-specs">
+                          <div class="spec-item">
+                            <span class="spec-label">Color:</span>
+                            <span class="spec-value">{{ variation.color?.color || 'Sin color' }}</span>
+                          </div>
+                          <div class="spec-item">
+                            <span class="spec-label">Sabor:</span>
+                            <span class="spec-value">{{ variation.spice.spice || 'Sin sabor' }}</span>
+                          </div>
+                          <div class="spec-item">
+                            <span class="spec-label">Medida:</span>
+                            <span class="spec-value">{{ variation.measure?.measure || 'Sin medida' }}</span>
+                          </div>
+                          <div class="spec-item">
+                            <span class="spec-label">Stock:</span>
+                            <span class="spec-value stock-available" [class.stock-low]="variation.stock <= 5" [class.stock-out]="variation.stock === 0">
+                              {{ variation.stock }} disponibles
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div class="variation-description">
+                          <p>{{ variation.description || 'Sin descripción' }}</p>
+                        </div>
+                        
+                        <div class="variation-pricing">
+                          <div class="price-display">
+                            <span class="price-amount">${{ variation.price | number }}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Acciones de la variación -->
+                      <div class="variation-actions-container">
+                        <div class="quantity-selector">
+                          <label class="quantity-label">Cantidad:</label>
+                          <input 
+                            type="number" 
+                            min="1" 
+                            max="{{ variation.stock }}"
+                            value="1"
+                            class="quantity-input"
+                            #quantityInput
+                          >
+                        </div>
+                        <button 
+                          (click)="addToCart(product, variation, +quantityInput.value)"
+                          class="btn btn-success add-to-cart-btn"
+                          [disabled]="variation.stock === 0 || !variation.active"
+                        >
+                          <span class="btn-icon">➕</span>
+                          <span class="btn-text">Agregar al carrito</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Paginación -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <div class="pagination">
+        <!-- Botón Anterior -->
+        <button 
+          (click)="onPageChange(currentPage - 1)" 
+          [disabled]="currentPage === 1"
+          class="pagination-btn pagination-prev"
+          title="Página anterior"
+        >
+          ← Anterior
+        </button>
+
+        <!-- Números de página -->
+        <div class="pagination-numbers">
+          <!-- Primera página -->
+          <button 
+            *ngIf="currentPage > 3 && totalPages > 5"
+            (click)="onPageChange(1)" 
+            class="pagination-btn pagination-number"
+          >
+            1
+          </button>
+          
+          <!-- Separador -->
+          <span *ngIf="currentPage > 3 && totalPages > 5" class="pagination-separator">...</span>
+
+          <!-- Números de página -->
+          <button 
+            *ngFor="let page of getPageNumbers()" 
+            (click)="onPageChange(page)" 
+            [class.active]="page === currentPage"
+            class="pagination-btn pagination-number"
+          >
+            {{ page }}
+          </button>
+
+          <!-- Separador -->
+          <span *ngIf="currentPage < totalPages - 2 && totalPages > 5" class="pagination-separator">...</span>
+
+          <!-- Última página -->
+          <button 
+            *ngIf="currentPage < totalPages - 2 && totalPages > 5"
+            (click)="onPageChange(totalPages)" 
+            class="pagination-btn pagination-number"
+          >
+            {{ totalPages }}
+          </button>
+        </div>
+
+        <!-- Botón Siguiente -->
+        <button 
+          (click)="onPageChange(currentPage + 1)" 
+          [disabled]="currentPage === totalPages"
+          class="pagination-btn pagination-next"
+          title="Página siguiente"
+        >
+          Siguiente →
+        </button>
       </div>
     </div>
   </div>

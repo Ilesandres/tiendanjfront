@@ -4,8 +4,8 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  token: string;
-  user: {
+  acces_token: string;
+  user?: {
     id: number;
     user: string;
     rol: string;
