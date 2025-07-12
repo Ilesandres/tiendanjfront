@@ -674,17 +674,22 @@
 }
 
 .invoice-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-  padding: 24px 32px;
-  margin: 16px auto 0 auto;
-  max-width: 420px;
-  min-width: 260px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.invoice-card p,
+.invoice-card li,
+.invoice-card h2,
+.invoice-card h3,
+.invoice-card h4,
+.invoice-card h5,
+.invoice-card h6,
+.invoice-card span,
+.invoice-card strong,
+.invoice-card em {
+  color: var(--text-primary) !important;
 }
 
 .invoice-card h2 {
@@ -1019,6 +1024,15 @@ textarea.form-control {
   font-size: 16px;
 }
 
+.product-form label {
+  color: var(--text-primary) !important;
+}
+
+.product-form input::placeholder, .form-control::placeholder {
+  color: var(--text-secondary) !important;
+  opacity: 1 !important;
+}
+
 .product-item {
   background-color: #fff;
   border: 1px solid #e9ecef;
@@ -1348,29 +1362,19 @@ textarea.form-control {
 }
 
 .autocomplete-list {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 60px;
-  z-index: 10;
-  background: #fff;
-  border: 1px solid #e9ecef;
-  border-radius: 0 0 8px 8px;
-  max-height: 220px;
-  overflow-y: auto;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 4px 16px var(--shadow-sm) !important;
+  list-style: none !important;
 }
 .autocomplete-list li {
-  padding: 10px 16px;
-  cursor: pointer;
-  transition: background 0.2s;
-  font-size: 15px;
+  color: var(--text-primary) !important;
+  list-style: none !important;
 }
 .autocomplete-list li:hover {
-  background: #f1f3f6;
+  background: var(--light-color) !important;
+  color: var(--primary-color) !important;
 }
 
 /* Warning Text */
@@ -1477,4 +1481,201 @@ textarea.form-control {
   .products-list {
     grid-template-columns: 1fr;
   }
+}
+
+/* MODO OSCURO GLOBAL PARA DETALLE DE ORDEN */
+
+.order-detail-container {
+  background: var(--background-color) !important;
+}
+
+.header, .info-card, .summary-stats, .stat-item, .voucher-item, .product-item, .total-section, .empty-state, .error, .loading, .products-section, .products-card, .voucher-form, .voucher-edit-form, .product-form {
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+.card-header {
+  background: var(--primary-color) !important;
+  color: #fff !important;
+}
+
+.header h1 {
+  color: var(--primary-color) !important;
+  background: none !important;
+  -webkit-text-fill-color: unset !important;
+}
+
+.order-meta, .order-date, .stat-label, .label, .voucher-id, .voucher-date, .product-category, .price-label, .quantity-label, .subtotal-label, .empty-state, .error, .form-group label {
+  color: var(--text-secondary) !important;
+}
+
+.value, .stat-value, .voucher-value, .product-details h4, .total-label, .total-value, .price, .quantity, .subtotal {
+  color: var(--text-primary) !important;
+}
+
+.total-value, .order-total, .btn-primary, .btn-edit, .btn-delete {
+  background: var(--primary-color) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+.btn-outline {
+  background: transparent !important;
+  color: var(--primary-color) !important;
+  border: 1.5px solid var(--primary-color) !important;
+}
+
+.btn-outline:hover {
+  background: var(--primary-color) !important;
+  color: #fff !important;
+}
+
+.form-control {
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px var(--primary-color)33 !important;
+}
+
+.invoice-card, .invoice-card * {
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.status-badge, .status-pendiente, .status-pagado, .status-enviado, .status-active, .status-inactive {
+  background: var(--light-color) !important;
+  color: var(--primary-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.status-pagado {
+  color: var(--success-color) !important;
+}
+.status-pendiente {
+  color: var(--warning-color) !important;
+}
+.status-inactive {
+  color: var(--danger-color) !important;
+}
+
+.avatar {
+  background: var(--primary-color) !important;
+  color: #fff !important;
+}
+
+.product-category, .badge, .badge-category, .badge-measure, .badge-color, .badge-spice {
+  background: var(--light-color) !important;
+  color: var(--text-secondary) !important;
+  border: none !important;
+}
+
+.products-list, .product-item {
+  background: transparent !important;
+}
+
+.product-item {
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.product-item:hover {
+  background: var(--light-color) !important;
+}
+
+.product-image {
+  background: var(--light-color) !important;
+}
+
+.price-info, .quantity-info, .subtotal-info {
+  background: var(--light-color) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.price, .quantity, .subtotal {
+  color: var(--text-primary) !important;
+}
+
+.price-label, .quantity-label, .subtotal-label {
+  color: var(--text-secondary) !important;
+}
+
+.product-details h4, .product-category {
+  color: var(--text-primary) !important;
+}
+
+.product-category {
+  background: var(--light-color) !important;
+  color: var(--text-secondary) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color) !important;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-color) !important;
+}
+
+.shipment-form {
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.form-group label {
+  color: var(--text-secondary) !important;
+}
+
+.form-control, .shipment-form select, .shipment-form textarea {
+  background: var(--light-color) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.form-control:focus, .shipment-form select:focus, .shipment-form textarea:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px var(--primary-color)33 !important;
+}
+
+.form-actions .btn-secondary {
+  background: var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border: none !important;
+}
+
+.form-actions .btn-primary {
+  background: var(--primary-color) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+.voucher-form, .voucher-edit-form, .voucher-item {
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.voucher-form h4, .voucher-header, .voucher-display {
+  color: var(--text-primary) !important;
+}
+
+.voucher-id, .voucher-date {
+  color: var(--text-secondary) !important;
+}
+
+.voucher-value {
+  color: var(--success-color) !important;
+}
+
+.product-form h4 {
+  color: var(--text-primary) !important;
 }

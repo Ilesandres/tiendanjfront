@@ -199,6 +199,49 @@
   justify-content: flex-end;
 }
 
+.order-card, .stat-card {
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.order-info h3, .stat-value, .customer-info p, .payment-info p, .order-type-info p, .order-total h4, .total-amount {
+  color: var(--text-primary) !important;
+}
+
+.order-date, .customer-dni, .payment-status, .products-count, .stat-content h3, .customer-info h4, .payment-info h4, .order-type-info h4 {
+  color: var(--text-secondary) !important;
+}
+
+.order-card, .order-card * {
+  color: var(--text-primary) !important;
+}
+
+.order-card h4, .order-card .order-date, .order-card .customer-dni, .order-card .payment-status, .order-card .products-count, .order-card .stat-content h3 {
+  color: var(--text-secondary) !important;
+}
+
+.order-card .total-amount {
+  color: var(--success-color) !important;
+}
+
+.order-card .invoice-html, .order-card .customer-email, .order-card .shipment-details {
+  color: var(--text-primary) !important;
+}
+
+.order-card .status-badge.status-completed {
+  background-color: #dcfce7;
+  color: #166534;
+}
+.order-card .status-badge.status-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+.order-card .status-badge.status-cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .page-header {

@@ -442,3 +442,17 @@
     padding: 10px 12px;
   }
 } 
+
+.stat-card, .variation-card, .empty-state, .no-permissions {
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.variation-title, .stat-number, .variation-price, .label, .value {
+  color: var(--text-primary) !important;
+}
+
+.stat-label, .value.description, .empty-state p, .no-permissions p {
+  color: var(--text-secondary) !important;
+} 
