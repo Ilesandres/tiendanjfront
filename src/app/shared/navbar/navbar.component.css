@@ -1,10 +1,11 @@
 .navbar {
-  background: white;
+  background: var(--card-background);
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 100;
+  transition: var(--transition);
 }
 
 .navbar .container {
@@ -91,6 +92,57 @@
   font-size: 0.75rem;
 }
 
+/* Theme Toggle Switch */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 1rem;
+}
+
+.theme-toggle-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.theme-switch {
+  position: relative;
+  width: 3rem;
+  height: 1.5rem;
+  background-color: var(--border-color);
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  outline: none;
+}
+
+.theme-switch::before {
+  content: '';
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: white;
+  border-radius: 50%;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-switch.dark::before {
+  transform: translateX(1.5rem);
+}
+
+.theme-switch:hover {
+  background-color: var(--primary-color);
+}
+
+.theme-switch.dark {
+  background-color: var(--primary-color);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .navbar .container {
@@ -120,5 +172,10 @@
   .user-actions .btn {
     width: 100%;
     justify-content: center;
+  }
+  
+  .theme-toggle {
+    margin-left: 0;
+    margin-top: 0.5rem;
   }
 }

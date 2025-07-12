@@ -11,6 +11,10 @@
         📦 Productos
       </a>
       
+      <a routerLink="/theme-demo" routerLinkActive="active" class="navbar-link">
+        🎨 Demo Tema
+      </a>
+      
       <ng-container *ngIf="isAuthenticated() && (isAdmin() || isSeller())">
         <a routerLink="/products/variations" routerLinkActive="active" class="navbar-link">
           🔄 Variaciones
@@ -25,6 +29,17 @@
     </div>
     
     <div class="navbar-user">
+      <!-- Theme Toggle -->
+      <div class="theme-toggle">
+        <span class="theme-toggle-label">{{ currentTheme === 'light' ? '☀️' : '🌙' }}</span>
+        <button 
+          class="theme-switch" 
+          [class.dark]="currentTheme === 'dark'"
+          (click)="toggleTheme()"
+          [attr.aria-label]="'Cambiar a modo ' + (currentTheme === 'light' ? 'oscuro' : 'claro')"
+        ></button>
+      </div>
+      
       <ng-container *ngIf="isAuthenticated(); else loginButton">
         <div class="user-info">
           <span class="user-name">{{ userInfo?.user || 'Usuario' }}</span>

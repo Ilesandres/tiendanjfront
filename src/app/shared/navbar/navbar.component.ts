@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserService, UserInfo } from '../../services/user.service';
+import { ThemeService, Theme } from '../../services/theme.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -14,11 +15,14 @@ import { Subscription } from 'rxjs';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   userInfo: UserInfo | null = null;
+  currentTheme: Theme = 'light';
   private authSubscription: Subscription | null = null;
+  private themeSubscription: Subscription | null = null;
 
   constructor(
     private authService: AuthService,
     private userService: UserService,
+    private themeService: ThemeService,
     private router: Router
   ) { }
 
@@ -26,6 +30,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     // Suscribirse a los cambios de autenticación
     this.authSubscription = this.authService.authStatus$.subscribe(isAuthenticated => {
       this.updateUserInfo();
+    });
+
+    // Suscribirse a los cambios de tema
+    this.themeSubscription = this.themeService.theme$.subscribe(theme => {
+      this.currentTheme = theme;
     });
 
     // Obtener información inicial del usuario si está autenticado
@@ -36,6 +45,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     // Limpiar la suscripción al destruir el componente
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
+    }
+    if (this.themeSubscription) {
+      this.themeSubscription.unsubscribe();
     }
   }
 
@@ -62,5 +74,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   logout(): void {
     this.authService.removeToken();
     this.router.navigate(['/auth/login']);
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
   }
 }
