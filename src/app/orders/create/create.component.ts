@@ -156,7 +156,6 @@ export class CreateComponent implements OnInit {
     this.productService.getAllProducts().subscribe({
       next: (products: any[]) => {
         console.log(products)
-        // Adaptar la estructura para que cada producto tenga variationProducts
         const adapted = products.map(prod => ({
           ...prod,
           variationProducts: prod.variation || []
@@ -172,7 +171,6 @@ export class CreateComponent implements OnInit {
     });
   }
 
-  // Pagination Methods
   updatePagination(): void {
     this.totalItems = this.products.length;
     this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
@@ -192,7 +190,7 @@ export class CreateComponent implements OnInit {
   }
 
   onItemsPerPageChange(): void {
-    this.currentPage = 1; // Reset to first page when changing items per page
+    this.currentPage = 1; 
     this.updatePagination();
   }
 
@@ -201,16 +199,14 @@ export class CreateComponent implements OnInit {
     const maxVisiblePages = 5;
     
     if (this.totalPages <= maxVisiblePages) {
-      // Show all pages if total is less than max visible
+      
       for (let i = 1; i <= this.totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Show pages around current page
       let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
       let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
       
-      // Adjust if we're near the end
       if (endPage - startPage + 1 < maxVisiblePages) {
         startPage = Math.max(1, endPage - maxVisiblePages + 1);
       }
@@ -223,7 +219,6 @@ export class CreateComponent implements OnInit {
     return pages;
   }
 
-  // User Search Methods
   searchUser(): void {
     if (this.userSearchForm.valid) {
       this.searchingUser = true;
@@ -232,13 +227,11 @@ export class CreateComponent implements OnInit {
 
       this.userService.searchUserByDni(dni).subscribe({
         next: (user: User) => {
-          // Usuario encontrado
           this.selectedUser = user;
           this.searchingUser = false;
           console.log('User found:', this.selectedUser);
         },
         error: (err: any) => {
-          // Usuario no encontrado, mostrar formulario para crear
           this.userNotFound = true;
           this.showUserForm = true;
           this.searchingUser = false;
@@ -249,14 +242,10 @@ export class CreateComponent implements OnInit {
   }
 
   createUser(): void {
-    // Aquí implementarías la creación del usuario
-    // Por ahora solo simulamos
     this.showUserForm = false;
     this.userNotFound = false;
-    // TODO: Implementar creación de usuario
   }
 
-  // Product Search Methods
   searchProducts(): void {
     if (this.productSearchForm.valid) {
       this.searchingProducts = true;
@@ -267,7 +256,6 @@ export class CreateComponent implements OnInit {
         this.searchingProducts = false;
         return;
       }
-      // Filtrar productos por nombre sobre allProducts
       const filteredProducts = this.allProducts.filter(product => 
         product.product.toLowerCase().includes(searchTerm.toLowerCase())
       );
@@ -277,21 +265,18 @@ export class CreateComponent implements OnInit {
     }
   }
 
-  // Limpiar filtro de productos y mostrar todos
   clearProductFilter(): void {
     this.productSearchForm.get('searchTerm')?.setValue('');
     this.products = this.allProducts;
     this.updatePagination();
   }
 
-  // Cart Methods
   addToCart(product: Product, variation: any, quantity: number = 1): void {
     const existingItem = this.cartItems.find(item => 
       item.product.id === product.id && item.variation.id === variation.id
     );
 
     if (existingItem) {
-      // Solo permitir agregar si hay stock suficiente
       console.log('variation.stock', variation.stock);
       if (variation.stock - quantity < 0) {
         console.log('No hay suficiente stock disponible para agregar más de este producto.');
@@ -316,13 +301,11 @@ export class CreateComponent implements OnInit {
       this.cartItems.push(cartItem);
     }
 
-    // Restar stock local
     variation.stock -= quantity;
     this.calculateTotals();
     console.log('Product added to cart:', product.product, variation.spice.spice, quantity);
   }
 
-  // Dialog de stock insuficiente usando SweetAlert2
   openStockDialog(message: string): void {
     Swal.fire({
       icon: 'error',
@@ -336,7 +319,6 @@ export class CreateComponent implements OnInit {
   }
 
   removeFromCart(index: number): void {
-    // Restaurar stock local al eliminar del carrito
     const item = this.cartItems[index];
     item.variation.stock += item.quantity;
     this.cartItems.splice(index, 1);
@@ -348,7 +330,6 @@ export class CreateComponent implements OnInit {
     if (qty > 0) {
       const item = this.cartItems[index];
       const diff = qty - item.quantity;
-      // Solo permitir si hay stock suficiente
       if (item.variation.stock - diff < 0) {
         this.openStockDialog('No hay suficiente stock disponible para esta cantidad.');
         return;
@@ -374,16 +355,14 @@ export class CreateComponent implements OnInit {
 
   calculateTotals(): void {
     this.subtotal = this.cartItems.reduce((sum, item) => sum + item.subtotal, 0);
-    this.total = this.subtotal; // Aquí podrías agregar impuestos, descuentos, etc.
+    this.total = this.subtotal; 
   }
 
-  // Order Creation - FLUJO CORREGIDO
   createOrder(): void {
     if (this.orderForm.valid && this.selectedUser && this.cartItems.length > 0) {
       this.loading = true;
       console.log('Starting order creation process...');
 
-      // Paso 1: Crear la orden sin productos
       const orderData = {
         user: { id: this.selectedUser?.id },
         payment: {
@@ -399,7 +378,6 @@ export class CreateComponent implements OnInit {
         next: (order: Order) => {
           console.log('Order created successfully:', order);
           
-          // Paso 2: Agregar productos a la orden
           this.addProductsToOrder(order.id);
         },
         error: (err: any) => {
@@ -425,7 +403,7 @@ export class CreateComponent implements OnInit {
     this.cartItems.forEach((item, index) => {
       const productOrderData = {
         order: { id: orderId },
-        product: { id: item.variation.id }, // Usar el ID de la variación, no del producto principal
+        product: { id: item.variation.id }, 
         amount: item.quantity
       };
 
@@ -455,7 +433,6 @@ export class CreateComponent implements OnInit {
   finalizeOrder(orderId: number): void {
     console.log('Finalizing order:', orderId);
     
-    // Actualizar el total de la orden
     this.orderService.updateOrderTotal(orderId, { total: this.total }).subscribe({
       next: (response) => {
         console.log('Order total updated:', response);
@@ -470,7 +447,6 @@ export class CreateComponent implements OnInit {
     });
   }
 
-  // Utility Methods
   canCreateOrder(): boolean {
     return this.orderForm.valid && 
            this.selectedUser !== null && 
