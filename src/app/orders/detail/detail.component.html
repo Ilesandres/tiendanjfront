@@ -31,6 +31,9 @@
       <div class="order-meta">
         <span class="order-date">{{ order?.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
         <span class="order-total">Total: ${{ order?.total | number }}</span>
+        <span class="order-status" [class]="'status-' + (order?.payment?.status?.status?.toLowerCase())">
+          {{ order?.payment?.status?.status }}
+        </span>
       </div>
     </div>
   </div>
@@ -135,6 +138,15 @@
         <div class="card-header">
           <i class="fas fa-credit-card"></i>
           <h3>Información de Pago</h3>
+          <div class="voucher-restante-info" style="margin-left:auto;">
+            <span><b>Falta para completar el pago:</b> ${{ voucherRestante | number }}</span>
+          </div>
+          <div class="card-actions" *ngIf="isOrderPending()">
+            <button (click)="startAddingVoucher()" class="btn btn-primary">
+              <i class="fas fa-plus"></i>
+              Agregar Abono
+            </button>
+          </div>
         </div>
         <div class="payment-status">
           <span class="status-badge status-{{ order.payment.status.status }}">
@@ -152,17 +164,104 @@
           </div>
         </div>
 
+        <!-- Add Voucher Form -->
+        <div *ngIf="addingVoucher" class="voucher-form">
+          <h4><i class="fas fa-plus"></i> Agregar Abono</h4>
+          <div class="voucher-restante-info">
+            <span><b>Falta para completar el pago:</b> ${{ voucherRestante | number }}</span>
+          </div>
+          <form (ngSubmit)="addVoucher()">
+            <div class="form-group">
+              <label for="voucherValue">Valor del Abono:</label>
+              <input 
+                type="number" 
+                id="voucherValue" 
+                [(ngModel)]="voucherForm.value" 
+                name="value"
+                class="form-control"
+                min="0"
+                step="0.01"
+                placeholder="Ingrese el valor del abono"
+                required>
+              <div *ngIf="voucherForm.value > voucherRestante && voucherForm.value > 0" class="warning-text">
+                <i class="fas fa-exclamation-triangle"></i>
+                El valor ingresado excede el monto faltante para completar el pago.
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" (click)="cancelAddingVoucher()" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="addingVoucherLoading || voucherForm.value > voucherRestante">
+                <i class="fas fa-spinner fa-spin" *ngIf="addingVoucherLoading"></i>
+                <i class="fas fa-save" *ngIf="!addingVoucherLoading"></i>
+                {{ addingVoucherLoading ? 'Guardando...' : 'Guardar Abono' }}
+              </button>
+            </div>
+          </form>
+        </div>
+
         <!-- Vouchers -->
         <div *ngIf="order.payment.vouchers && order.payment.vouchers.length > 0" class="vouchers-section">
           <h4><i class="fas fa-ticket-alt"></i> Vouchers/Abonos</h4>
           <div class="vouchers-list">
             <div *ngFor="let voucher of order.payment.vouchers" class="voucher-item">
-              <div class="voucher-header">
-                <span class="voucher-id">#{{ voucher.id }}</span>
-                <span class="voucher-value">${{ voucher.value | number }}</span>
+              <!-- Edit Voucher Form -->
+              <div *ngIf="editingVoucher?.id === voucher.id" class="voucher-edit-form">
+                <form (ngSubmit)="updateVoucher()">
+                  <div class="voucher-restante-info">
+                    <span><b>Falta para completar el pago:</b> ${{ voucherRestante | number }}</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="editVoucherValue">Valor del Abono:</label>
+                    <input 
+                      type="number" 
+                      id="editVoucherValue" 
+                      [(ngModel)]="editingVoucherForm.value" 
+                      name="value"
+                      class="form-control"
+                      min="0"
+                      step="0.01"
+                      required>
+                    <div *ngIf="editingVoucherForm.value > voucherRestante && editingVoucherForm.value > 0" class="warning-text">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      El valor ingresado excede el monto faltante para completar el pago.
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button type="button" (click)="cancelEditingVoucher()" class="btn btn-secondary">
+                      <i class="fas fa-times"></i>
+                      Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="editingVoucherForm.value > voucherRestante">
+                      <i class="fas fa-save"></i>
+                      Guardar
+                    </button>
+                  </div>
+                </form>
               </div>
-              <div class="voucher-date">
-                {{ voucher.createdAt | date:'dd/MM/yyyy HH:mm' }}
+
+              <!-- Voucher Display -->
+              <div *ngIf="editingVoucher?.id !== voucher.id" class="voucher-display">
+                <div class="voucher-header">
+                  <span class="voucher-id">#{{ voucher.id }}</span>
+                  <span class="voucher-value">${{ voucher.value | number }}</span>
+                </div>
+                <div class="voucher-date">
+                  {{ voucher.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+                <div class="voucher-actions" *ngIf="isOrderPending()">
+                  <button (click)="startEditingVoucher(voucher)" class="btn btn-edit btn-sm">
+                    <i class="fas fa-edit"></i>
+                    Editar
+                  </button>
+                  <button (click)="deleteVoucher(voucher)" class="btn btn-delete btn-sm" [disabled]="deletingVoucher">
+                    <i class="fas fa-spinner fa-spin" *ngIf="deletingVoucher"></i>
+                    <i class="fas fa-trash" *ngIf="!deletingVoucher"></i>
+                    Eliminar
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -282,35 +381,148 @@
         <div class="card-header">
           <i class="fas fa-shopping-cart"></i>
           <h3>Productos de la Orden</h3>
+          <div class="card-actions" *ngIf="isOrderPending()">
+            <button (click)="startAddingProduct()" class="btn btn-primary">
+              <i class="fas fa-plus"></i>
+              Agregar Producto
+            </button>
+          </div>
         </div>
+
+        <!-- Add Product Form -->
+        <div *ngIf="addingProduct" class="product-form">
+          <h4><i class="fas fa-plus"></i> Agregar Producto</h4>
+          <form (ngSubmit)="addProduct()">
+            <div class="form-group" style="position:relative;">
+              <label for="productInput">Producto:</label>
+              <input 
+                type="text" 
+                id="productInput"
+                [(ngModel)]="productInput"
+                name="productInput"
+                class="form-control"
+                placeholder="Escribe el nombre del producto"
+                (focus)="onProductInputFocus()"
+                (input)="onProductInputChange()"
+                (blur)="onProductInputBlur()"
+                autocomplete="off"
+                #productInputRef
+                [readonly]="addingProductLoading"
+              >
+              <button *ngIf="productInput" type="button" class="btn btn-sm btn-secondary" style="position:absolute; right:8px; top:32px; z-index:2;" (mousedown)="$event.preventDefault(); clearProductInput();">
+                Limpiar
+              </button>
+              <ul *ngIf="showProductDropdown && filteredProducts.length > 0" class="autocomplete-list">
+                <li *ngFor="let product of filteredProducts" (mousedown)="$event.preventDefault(); selectProduct(product);">
+                  {{ product.product?.product }}<span *ngIf="product.description"> - {{ product.description }}</span> (Stock: {{ product.stock }}, Precio: ${{ product.price | number }})
+                </li>
+              </ul>
+            </div>
+            <div class="form-group">
+              <label for="productAmount">Cantidad:</label>
+              <input 
+                type="number" 
+                id="productAmount" 
+                [(ngModel)]="productForm.amount" 
+                name="amount"
+                class="form-control"
+                min="1"
+                placeholder="Cantidad"
+                required>
+            </div>
+            <div class="form-actions">
+              <button type="button" (click)="cancelAddingProduct()" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="addingProductLoading">
+                <i class="fas fa-spinner fa-spin" *ngIf="addingProductLoading"></i>
+                <i class="fas fa-save" *ngIf="!addingProductLoading"></i>
+                {{ addingProductLoading ? 'Agregando...' : 'Agregar Producto' }}
+              </button>
+            </div>
+          </form>
+        </div>
+
         <div *ngIf="order.productOrder && order.productOrder.length > 0" class="products-list">
           <div *ngFor="let item of order.productOrder" class="product-item">
-            <div class="product-image">
-              <img [src]="item.product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pgo8L3N2Zz4='"
+            <!-- Edit Product Form -->
+            <div *ngIf="editingProduct?.id === item.id" class="product-edit-form">
+              <form (ngSubmit)="updateProduct()">
+                <div class="form-group">
+                  <label for="editProductAmount">Cantidad:</label>
+                  <input 
+                    type="number" 
+                    id="editProductAmount" 
+                    [(ngModel)]="editingProductForm.amount" 
+                    name="amount"
+                    class="form-control"
+                    min="1"
+                    required>
+                </div>
+                <div class="form-actions">
+                  <button type="button" (click)="cancelEditingProduct()" class="btn btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Guardar
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Product Display -->
+            <div *ngIf="editingProduct?.id !== item.id" class="product-display compact-product">
+              <div class="product-image">
+                <img [src]="item.product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2UwZWNlMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+SW1hZ2VuIG5vIGRpc3BvbmlibGU8L3RleHQ+PC9zdmc+'"
                      [alt]="item.product.product?.product || 'Producto'"
                      class="product-image"
-                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pgo8L3N2Zz4='">
-            </div>
-            <div class="product-details">
-              <h4>{{ item.product.product?.product || 'Producto ID: ' + item.product.id }}</h4>
-              <div class="product-meta">
-                <span class="product-category">{{ item.product.product?.category?.category || 'Sin categoría' }}</span>
-                <span class="product-status" [class]="'status-' + (item.product.active ? 'active' : 'inactive')">
-                  {{ item.product.active ? 'Activo' : 'Inactivo' }}
-                </span>
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2UwZWNlMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+SW1hZ2VuIG5vIGRpc3BvbmlibGU8L3RleHQ+PC9zdmc+'">
               </div>
-              <div class="product-pricing">
-                <div class="price-info">
-                  <span class="price">${{ item.product.price | number }}</span>
-                  <span class="price-label">por unidad</span>
+              <div class="product-details">
+                <div class="product-title-row">
+                  <h4>{{ item.product.product?.product || 'Producto ID: ' + item.product.id }}</h4>
+                  <span class="product-status" [class]="'status-' + (item.product.active ? 'active' : 'inactive')">
+                    {{ item.product.active ? 'Activo' : 'Inactivo' }}
+                  </span>
                 </div>
-                <div class="quantity-info">
-                  <span class="quantity">{{ item.amount }}</span>
-                  <span class="quantity-label">cantidad</span>
+                <!-- Descripción de la variante -->
+                <div *ngIf="item.product.description" class="variant-description">
+                  {{ item.product.description }}
                 </div>
-                <div class="subtotal-info">
-                  <span class="subtotal">${{ (item.product.price * item.amount) | number }}</span>
-                  <span class="subtotal-label">subtotal</span>
+                <!-- Badges de variante -->
+                <div class="product-badges">
+                  <span class="badge badge-category">{{ item.product.product?.category?.category || 'Sin categoría' }}</span>
+                  <span class="badge badge-measure" *ngIf="item.product.measure?.measure">{{ item.product.measure.measure }}</span>
+                  <span class="badge badge-color" *ngIf="item.product.color?.color">{{ item.product.color.color }}</span>
+                  <span class="badge badge-spice" *ngIf="item.product.spice?.spice">{{ item.product.spice.spice }}</span>
+                </div>
+                <div class="product-pricing compact-pricing">
+                  <div class="price-info">
+                    <span class="price">${{ item.product.price | number }}</span>
+                    <span class="price-label">por unidad</span>
+                  </div>
+                  <div class="quantity-info">
+                    <span class="quantity">{{ item.amount }}</span>
+                    <span class="quantity-label">cantidad</span>
+                  </div>
+                  <div class="subtotal-info">
+                    <span class="subtotal">${{ (item.product.price * item.amount) | number }}</span>
+                    <span class="subtotal-label">subtotal</span>
+                  </div>
+                </div>
+                <div class="product-actions" *ngIf="isOrderPending()">
+                  <button (click)="startEditingProduct(item)" class="btn btn-edit btn-sm">
+                    <i class="fas fa-edit"></i>
+                    Editar
+                  </button>
+                  <button (click)="deleteProduct(item)" class="btn btn-delete btn-sm" [disabled]="deletingProduct">
+                    <i class="fas fa-spinner fa-spin" *ngIf="deletingProduct"></i>
+                    <i class="fas fa-trash" *ngIf="!deletingProduct"></i>
+                    Eliminar
+                  </button>
                 </div>
               </div>
             </div>
@@ -320,6 +532,10 @@
           <div class="empty-state">
             <i class="fas fa-box-open"></i>
             <p>No hay productos en esta orden</p>
+            <button *ngIf="isOrderPending()" (click)="startAddingProduct()" class="btn btn-primary">
+              <i class="fas fa-plus"></i>
+              Agregar Producto
+            </button>
           </div>
         </div>
       </div>

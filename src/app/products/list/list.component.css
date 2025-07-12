@@ -272,3 +272,20 @@
   content: "➕";
   font-size: 1.2rem;
 }
+
+.filters-section, .filters-panel, .empty-state, .product-card {
+  background: var(--card-background) !important;
+  color: var(--text-primary) !important;
+}
+
+.product-name, .empty-state h3, .product-info, .variation-price, .product-category, .variation-stock, .variation-item, .product-actions .btn {
+  color: var(--text-primary) !important;
+}
+
+.product-category, .variation-stock, .empty-state p {
+  color: var(--text-secondary) !important;
+}
+
+.product-card {
+  border: 1px solid var(--border-color) !important;
+}
