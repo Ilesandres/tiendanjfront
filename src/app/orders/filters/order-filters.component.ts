@@ -20,7 +20,7 @@ export class OrderFiltersComponent implements OnInit {
   loading = false;
   showAdvancedFilters = false;
 
-  // Opciones de filtros
+
   dateRanges = [
     { value: 'today', label: 'Hoy' },
     { value: 'week', label: 'Última semana' },
@@ -42,7 +42,7 @@ export class OrderFiltersComponent implements OnInit {
     { value: 'desc', label: 'Descendente' }
   ];
 
-  // Estados predefinidos (se pueden obtener del backend si es necesario)
+
   paymentStatuses = [
     { id: 1, status: 'Pendiente' },
     { id: 2, status: 'Pagado' },
@@ -95,7 +95,7 @@ export class OrderFiltersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Escuchar cambios en el formulario
+
     this.filtersForm.valueChanges.subscribe(() => {
       this.applyFilters();
     });
@@ -104,7 +104,7 @@ export class OrderFiltersComponent implements OnInit {
   applyFilters(): void {
     const formValue = this.filtersForm.value;
     
-    // Preparar filtros básicos
+
     const filters: OrderFilters = {
       dateRange: formValue.dateRange,
       sortBy: formValue.sortBy,
@@ -113,7 +113,7 @@ export class OrderFiltersComponent implements OnInit {
       limit: formValue.limit
     };
 
-    // Agregar filtros exactamente como los espera el endpoint del JSON
+
     if (formValue.user) filters.user = formValue.user;
     if (formValue.status) filters.status = formValue.status;
     if (formValue.date) filters.date = formValue.date;
@@ -128,17 +128,17 @@ export class OrderFiltersComponent implements OnInit {
     if (formValue.userDni) filters.userDni = formValue.userDni;
     if (formValue.userId) filters.userId = parseInt(formValue.userId);
 
-    // Filtros adicionales para el frontend (no van al backend)
+
     if (formValue.startDate) filters.startDate = formValue.startDate;
     if (formValue.endDate) filters.endDate = formValue.endDate;
     if (formValue.minTotal) filters.minTotal = parseFloat(formValue.minTotal);
     if (formValue.maxTotal) filters.maxTotal = parseFloat(formValue.maxTotal);
     if (formValue.productId) filters.productId = parseInt(formValue.productId);
 
-    // Emitir filtros
+
     this.filtersChanged.emit(filters);
 
-    // Emitir término de búsqueda si existe
+
     if (formValue.searchTerm) {
       this.searchChanged.emit(formValue.searchTerm);
     }
@@ -180,11 +180,11 @@ export class OrderFiltersComponent implements OnInit {
   onDateRangeChange(): void {
     const dateRange = this.filtersForm.get('dateRange')?.value;
     if (dateRange === 'custom') {
-      // Habilitar campos de fecha personalizada
+
       this.filtersForm.get('startDate')?.enable();
       this.filtersForm.get('endDate')?.enable();
     } else {
-      // Deshabilitar campos de fecha personalizada
+
       this.filtersForm.get('startDate')?.disable();
       this.filtersForm.get('endDate')?.disable();
       this.filtersForm.patchValue({
@@ -194,7 +194,7 @@ export class OrderFiltersComponent implements OnInit {
     }
   }
 
-  // Métodos de utilidad
+
   formatDate(date: string): string {
     return new Date(date).toLocaleDateString('es-ES');
   }

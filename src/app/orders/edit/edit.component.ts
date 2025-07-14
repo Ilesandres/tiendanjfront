@@ -28,7 +28,7 @@ export class EditOrderComponent implements OnInit {
   selectedProductVariations: ProductVariation[] = [];
   addProductForm!: FormGroup;
 
-  // Verificar si la orden se puede editar
+
   canEdit = true;
 
   paymentMethods = [
@@ -77,13 +77,13 @@ export class EditOrderComponent implements OnInit {
         this.products = order.productOrder || [];
         this.canEdit = order.payment?.status?.status !== 'pagado';
         
-        // Update form values and disabled state
+
         this.paymentForm.patchValue({
           method: order.payment?.method?.id || null,
           status: order.payment?.status?.id || null
         });
         
-        // Manage disabled state through form controls
+
         if (!this.canEdit) {
           this.paymentForm.disable();
         } else {
@@ -116,7 +116,7 @@ export class EditOrderComponent implements OnInit {
     });
   }
 
-  // Métodos de pago
+
   updatePayment(): void {
     if (this.paymentForm.invalid || !this.canEdit) return;
     const { method, status } = this.paymentForm.value;
@@ -124,7 +124,7 @@ export class EditOrderComponent implements OnInit {
       .subscribe({
         next: () => {
           this.loadOrder();
-          // Si el estado cambió a pagado, actualizar canEdit
+
           if (status === 2) {
             this.canEdit = false;
           }
@@ -133,7 +133,7 @@ export class EditOrderComponent implements OnInit {
       });
   }
 
-  // Productos (variaciones)
+
   addProduct(): void {
     if (this.addProductForm.invalid || !this.canEdit) return;
     const { variationId, amount } = this.addProductForm.value;
@@ -162,17 +162,17 @@ export class EditOrderComponent implements OnInit {
     });
   }
 
-  // Obtener variaciones de un producto específico
+
   getVariationsForProduct(productId: number): ProductVariation[] {
     return this.allVariations.filter(v => v.product.id === productId && v.active);
   }
 
-  // Obtener información completa de la variación
+
   getVariationInfo(variationId: number): ProductVariation | null {
     return this.allVariations.find(v => v.id === variationId) || null;
   }
 
-  // Manejar cambio de producto seleccionado
+
   onProductChange(event: any): void {
     const productId = event.target.value;
     if (productId) {

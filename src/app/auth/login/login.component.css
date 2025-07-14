@@ -69,7 +69,7 @@
   text-decoration: underline;
 }
 
-/* Responsive */
+
 @media (max-width: 480px) {
   .auth-container {
     padding: 1rem;

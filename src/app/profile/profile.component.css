@@ -6,7 +6,7 @@
   min-height: 100vh;
 }
 
-/* Header Styles */
+
 .profile-header {
   text-align: center;
   margin-bottom: 32px;
@@ -33,7 +33,7 @@
   margin: 0;
 }
 
-/* Loading & Error States */
+
 .loading, .error {
   text-align: center;
   padding: 80px 20px;
@@ -68,7 +68,7 @@
   margin-bottom: 16px;
 }
 
-/* Profile Card */
+
 .profile-card {
   background: white;
   border-radius: 16px;
@@ -161,7 +161,7 @@
   flex-shrink: 0;
 }
 
-/* Success Message */
+
 .success-message {
   background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
   color: white;
@@ -180,7 +180,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Profile Form Card */
+
 .profile-form-card {
   background: white;
   border-radius: 16px;
@@ -265,7 +265,7 @@
   margin-top: 4px;
 }
 
-/* Form Actions */
+
 .form-actions {
   display: flex;
   gap: 16px;
@@ -275,7 +275,7 @@
   margin-top: 32px;
 }
 
-/* Button Styles */
+
 .btn {
   padding: 12px 24px;
   border: none;
@@ -318,7 +318,7 @@
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
   .profile-container {
     padding: 16px;

@@ -31,7 +31,7 @@ export class VariationsListComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  // Autocompletado de productos
+
   products: Product[] = [];
   filteredProducts: Product[] = [];
   productSearch: string = '';
@@ -91,7 +91,7 @@ export class VariationsListComponent implements OnInit {
   }
 
   onInputBlur(): void {
-    // Esperar un poco para permitir el click en la lista
+
     this.blurTimeout = setTimeout(() => {
       this.autocompleteOpen = false;
     }, 120);

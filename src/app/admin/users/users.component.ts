@@ -21,21 +21,21 @@ export class UsersComponent implements OnInit {
   error = '';
   success = '';
 
-  // Form states
+
   showCreateForm = false;
   editingUser: User | null = null;
   creatingUser = false;
   updatingUser = false;
   blockingUser = false;
 
-  // User form
+
   userForm: FormGroup;
 
-  // Search
+
   searchTerm = '';
   searchType = 'dni'; // dni, email, username
   
-  // Advanced filters
+
   showAdvancedFilters = false;
   advancedFilters: UserFilters = {
     name: '',
@@ -45,7 +45,7 @@ export class UsersComponent implements OnInit {
     user: ''
   };
 
-  // Validación personalizada para teléfono (10 dígitos sin espacios)
+
   private phoneValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null; // Campo opcional
     
@@ -61,7 +61,7 @@ export class UsersComponent implements OnInit {
     return null;
   }
 
-  // Validación personalizada para DNI (10 dígitos sin espacios)
+
   private dniValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null; // Campo requerido, se maneja con Validators.required
     
@@ -162,7 +162,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  // Search user
+
   searchUser(): void {
     if (!this.searchTerm.trim()) {
       this.error = 'Ingrese un término de búsqueda';
@@ -208,7 +208,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  // Clear search and show all loaded users
+
   clearSearch(): void {
     this.searchTerm = '';
     this.error = '';
@@ -216,7 +216,7 @@ export class UsersComponent implements OnInit {
     this.loadInitialUsers();
   }
 
-  // Toggle advanced filters
+
   toggleAdvancedFilters(): void {
     this.showAdvancedFilters = !this.showAdvancedFilters;
     if (!this.showAdvancedFilters) {
@@ -224,13 +224,13 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  // Apply advanced filters
+
   applyAdvancedFilters(): void {
     this.loading = true;
     this.error = '';
     this.success = '';
 
-    // Remove empty filters
+
     const filters: UserFilters = {};
     Object.keys(this.advancedFilters).forEach(key => {
       const value = this.advancedFilters[key as keyof UserFilters];
@@ -260,7 +260,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  // Clear advanced filters
+
   clearAdvancedFilters(): void {
     this.advancedFilters = {
       name: '',
@@ -272,7 +272,7 @@ export class UsersComponent implements OnInit {
     this.loadInitialUsers();
   }
 
-  // Create user
+
   showCreateUserForm(): void {
     this.showCreateForm = true;
     this.editingUser = null;
@@ -321,7 +321,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  // Edit user
+
   editUser(user: User): void {
     this.editingUser = user;
     this.showCreateForm = false;
@@ -373,7 +373,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  // Block/Unblock user
+
   toggleUserStatus(user: User): void {
     if (this.blockingUser) return;
 
@@ -400,7 +400,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  // Form helpers
+
   private resetForm(): void {
     this.userForm.reset({
       people: {
@@ -437,13 +437,13 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  // Check if current user is admin
+
   isAdmin(): boolean {
     const token = localStorage.getItem('auth_token');
     if (!token) return false;
     
     try {
-      // Decode JWT token (payload is the second part)
+
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.rol === 'admin';
     } catch (error) {
@@ -452,13 +452,13 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  // Check if current user is seller
+
   isSeller(): boolean {
     const token = localStorage.getItem('auth_token');
     if (!token) return false;
     
     try {
-      // Decode JWT token (payload is the second part)
+
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.rol === 'vendedor';
     } catch (error) {
@@ -467,7 +467,7 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  // Get user type display name
+
   getUserType(user: User): string {
     if (!user.rol) return 'Cliente';
     switch (user.rol.rol) {
@@ -479,17 +479,17 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  // Get status badge class
+
   getStatusClass(user: User): string {
     return user.verify ? 'status-active' : 'status-blocked';
   }
 
-  // Get status text
+
   getStatusText(user: User): string {
     return user.verify ? 'Activo' : 'Bloqueado';
   }
 
-  // Formatear teléfono automáticamente
+
   onPhoneInput(event: any): void {
     let value = event.target.value.replace(/\D/g, ''); // Solo números
     if (value.length > 10) {
@@ -498,7 +498,7 @@ export class UsersComponent implements OnInit {
     event.target.value = value;
   }
 
-  // Formatear DNI automáticamente
+
   onDniInput(event: any): void {
     let value = event.target.value.replace(/\D/g, ''); // Solo números
     if (value.length > 10) {
@@ -507,24 +507,24 @@ export class UsersComponent implements OnInit {
     event.target.value = value;
   }
 
-  // Obtener longitud del teléfono
+
   getPhoneLength(): number {
     const phoneValue = this.userForm.get('people.phone')?.value;
     return phoneValue ? phoneValue.toString().replace(/\s/g, '').length : 0;
   }
 
-  // Obtener longitud del DNI
+
   getDniLength(): number {
     const dniValue = this.userForm.get('people.dni')?.value;
     return dniValue ? dniValue.toString().replace(/\s/g, '').length : 0;
   }
 
-  // Verificar si el teléfono está completo
+
   isPhoneComplete(): boolean {
     return this.getPhoneLength() === 10;
   }
 
-  // Verificar si el DNI está completo
+
   isDniComplete(): boolean {
     return this.getDniLength() === 10;
   }

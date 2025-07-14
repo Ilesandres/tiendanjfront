@@ -170,7 +170,7 @@
   color: white;
 }
 
-/* Loading Overlay */
+
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -206,7 +206,7 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .search-bar {
     flex-direction: column;
@@ -231,7 +231,7 @@
   }
 }
 
-/* Animaciones */
+
 .advanced-filters {
   animation: slideDown 0.3s ease-out;
 }
@@ -247,13 +247,13 @@
   }
 }
 
-/* Estados de carga */
+
 .filters-container.loading {
   opacity: 0.7;
   pointer-events: none;
 }
 
-/* Estilos para campos deshabilitados */
+
 .filter-group input:disabled,
 .filter-group select:disabled {
   background-color: #f5f5f5;
@@ -261,7 +261,7 @@
   cursor: not-allowed;
 }
 
-/* Mejoras visuales */
+
 .filter-section:hover {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   transition: box-shadow 0.3s;
@@ -272,17 +272,17 @@
   border-color: #667eea;
 }
 
-/* Estilos para opciones de select */
+
 .filter-group select option {
   padding: 8px;
 }
 
-/* Estilos para campos de fecha */
+
 .filter-group input[type="date"] {
   font-family: inherit;
 }
 
-/* Estilos para campos numéricos */
+
 .filter-group input[type="number"] {
   -moz-appearance: textfield;
 }

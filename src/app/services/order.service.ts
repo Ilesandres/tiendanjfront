@@ -28,7 +28,7 @@ export class OrderService {
 
   constructor(private http: HttpClient) { }
 
-  // Type Orders
+
   getAllTypeOrders(): Observable<TypeOrder[]> {
     return this.http.get<TypeOrder[]>(`${this.apiUrl}/typeorder/all`);
   }
@@ -56,7 +56,7 @@ export class OrderService {
     return this.http.delete(`${this.apiUrl}/typeorder/delete/${id}`, { headers });
   }
 
-  // Payment Statuses
+
   getAllPaymentStatus(): Observable<PaymentStatus[]> {
     return this.http.get<PaymentStatus[]>(`${this.apiUrl}/paymentstatus/all`);
   }
@@ -84,7 +84,7 @@ export class OrderService {
     return this.http.delete(`${this.apiUrl}/paymentstatus/delete/${id}`, { headers });
   }
 
-  // Payment Methods
+
   getAllPaymentMethods(): Observable<PaymentMethod[]> {
     return this.http.get<PaymentMethod[]>(`${this.apiUrl}/paymenthmethod/all`);
   }
@@ -112,7 +112,7 @@ export class OrderService {
     return this.http.delete(`${this.apiUrl}/paymenthmethod/delete/${id}`, { headers });
   }
 
-  // Payments
+
   getAllPayments(): Observable<Payment[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<Payment[]>(`${this.apiUrl}/payment/all`, { headers });
@@ -143,7 +143,7 @@ export class OrderService {
     return this.http.delete(`${this.apiUrl}/payment/delete/${id}`, { headers });
   }
 
-  // Shipment Status
+
   getAllShipmentStatus(): Observable<ShipmentStatus[]> {
     return this.http.get<ShipmentStatus[]>(`${this.apiUrl}/statusshipment/all`);
   }
@@ -171,7 +171,7 @@ export class OrderService {
     return this.http.delete(`${this.apiUrl}/statusshipment/delete/${id}`, { headers });
   }
 
-  // Shipments
+
   getAllShipments(): Observable<Shipment[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<Shipment[]>(`${this.apiUrl}/shipment/all`, { headers });
@@ -202,7 +202,7 @@ export class OrderService {
     return this.http.delete(`${this.apiUrl}/shipment/delete/${id}`, { headers });
   }
 
-  // Product Orders
+
   addProductToOrder(orderId: number, productId: number, amount: number) {
     const headers = this.getAuthHeaders();
     return this.http.post(`${this.apiUrl}/productorder/add-product-to-order`, {
@@ -231,7 +231,7 @@ export class OrderService {
     return this.http.delete(`${this.apiUrl}/productorder/delete-product-from-order/${productOrderId}`, { headers });
   }
 
-  // Orders
+
   getAllOrders(): Observable<Order[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<Order[]>(`${this.apiUrl}/order/all`, { headers });
@@ -267,7 +267,7 @@ export class OrderService {
     return this.http.post(`${this.apiUrl}/order/update/total/${id}`, total, { headers });
   }
 
-  // Vouchers
+
   getAllVouchers(): Observable<Voucher[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<Voucher[]>(`${this.apiUrl}/vouchersabonos/all`, { headers });
@@ -298,14 +298,14 @@ export class OrderService {
     return this.http.delete(`${this.apiUrl}/vouchersabonos/delete/${id}`, { headers });
   }
 
-  // Métodos de filtrado avanzado - CORREGIDOS para usar endpoints reales
+
   getOrdersWithFilters(filters: OrderFilters): Observable<Order[]> {
     const headers = this.getAuthHeaders();
     
-    // Preparar filtros para el endpoint del backend según el JSON
+
     const backendFilters: any = {};
     
-    // Mapear filtros exactamente como están en el endpoint del JSON
+
     if (filters.user) backendFilters.user = filters.user;
     if (filters.status) backendFilters.status = filters.status;
     if (filters.date) backendFilters.date = filters.date;
@@ -320,18 +320,18 @@ export class OrderService {
     if (filters.userDni) backendFilters.dni = filters.userDni;
     if (filters.userId) backendFilters.id = filters.userId;
     
-    // Si no hay filtros específicos, obtener todas las órdenes
+
     if (Object.keys(backendFilters).length === 0) {
       return this.getAllOrders();
     }
     
-    // Usar el endpoint de filtros del backend
+
     return this.http.post<Order[]>(`${this.apiUrl}/order/filters`, backendFilters, { headers });
   }
 
-  // Método para buscar órdenes - CORREGIDO
+
   searchOrders(searchTerm: string, filters?: OrderFilters): Observable<Order[]> {
-    // Usar el endpoint de filtros para búsqueda
+
     const searchFilters: OrderFilters = {
       user: searchTerm, // Buscar por usuario
       ...filters
@@ -340,7 +340,7 @@ export class OrderService {
     return this.getOrdersWithFilters(searchFilters);
   }
 
-  // Método auxiliar para calcular rangos de fecha
+
   private calculateDateRange(range: string): { startDate: string; endDate: string } {
     const now = new Date();
     let startDate = new Date();
@@ -373,13 +373,13 @@ export class OrderService {
     };
   }
 
-  // Método para obtener estadísticas de órdenes - CORREGIDO
+
   getOrderStats(filters?: OrderFilters): Observable<any> {
-    // Por ahora, calcular estadísticas en el frontend ya que no hay endpoint de stats
+
     return this.getAllOrders();
   }
 
-  // Send invoice email
+
   sendInvoiceEmail(orderId: number): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.post(`${this.apiUrl}/order/send/email/invoice/${orderId}`,{}, { headers });

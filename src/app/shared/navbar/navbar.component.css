@@ -92,7 +92,7 @@
   font-size: 0.75rem;
 }
 
-/* Theme Toggle Switch */
+
 .theme-toggle {
   display: flex;
   align-items: center;
@@ -143,7 +143,7 @@
   background-color: var(--primary-color);
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .navbar .container {
     flex-direction: column;

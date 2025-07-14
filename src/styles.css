@@ -1,6 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
 
-/* CSS Variables para tema consistente */
+
+
 :root {
   --primary-color: #2563eb;
   --primary-dark: #1d4ed8;
@@ -22,7 +22,7 @@
   --transition: all 0.2s ease-in-out;
 }
 
-/* Variables para modo oscuro */
+
 .dark-theme {
   --primary-color: #3b82f6;
   --primary-dark: #2563eb;
@@ -42,14 +42,14 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
 }
 
-/* Reset básico */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Transiciones suaves para cambios de tema */
+
 * {
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
@@ -62,7 +62,7 @@ body {
   transition: var(--transition);
 }
 
-/* Utilidades */
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -130,7 +130,7 @@ body {
   background-color: var(--light-color);
 }
 
-/* Formularios */
+
 .form-group {
   margin-bottom: 1rem;
 }
@@ -173,7 +173,7 @@ body {
   margin-top: 0.25rem;
 }
 
-/* Cards */
+
 .card {
   background: var(--card-background);
   border-radius: var(--border-radius);
@@ -199,7 +199,7 @@ body {
   background-color: var(--light-color);
 }
 
-/* Tablas */
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -222,7 +222,7 @@ body {
   background-color: var(--light-color);
 }
 
-/* Alertas */
+
 .alert {
   padding: 0.75rem 1rem;
   border-radius: var(--border-radius);
@@ -247,7 +247,7 @@ body {
   border: 1px solid #fed7aa;
 }
 
-/* Loading */
+
 .loading {
   display: flex;
   align-items: center;
@@ -269,7 +269,7 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .container {
     padding: 0 0.5rem;
