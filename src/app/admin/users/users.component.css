@@ -12,7 +12,7 @@
   font-weight: 600;
 }
 
-/* Alerts */
+
 .alert {
   padding: 15px;
   border-radius: 8px;
@@ -32,7 +32,7 @@
   border: 1px solid #f5c6cb;
 }
 
-/* Search Section */
+
 .search-section {
   background: white;
   padding: 20px;
@@ -101,13 +101,13 @@
   border-top: 1px solid #e9ecef;
 }
 
-/* Actions Section */
+
 .actions-section {
   margin-bottom: 30px;
   text-align: right;
 }
 
-/* Form Section */
+
 .form-section {
   background: white;
   padding: 25px;
@@ -211,7 +211,7 @@
   border-top: 1px solid #e9ecef;
 }
 
-/* Buttons */
+
 .btn {
   padding: 12px 24px;
   border: none;
@@ -302,7 +302,7 @@
   box-shadow: 0 4px 15px rgba(253,126,20,0.4);
 }
 
-/* Users List */
+
 .users-list {
   margin-top: 30px;
 }
@@ -402,7 +402,7 @@
   flex: 1;
 }
 
-/* No Users & Loading */
+
 .no-users,
 .loading {
   text-align: center;
@@ -431,7 +431,7 @@
   margin-top: 20px;
 }
 
-/* Loading spinner */
+
 .loading {
   display: flex;
   flex-direction: column;
@@ -454,7 +454,7 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
   .users-container {
     padding: 15px;

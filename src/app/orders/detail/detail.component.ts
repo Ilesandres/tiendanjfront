@@ -7,6 +7,8 @@ import { ShipmentService, Shipment } from '../../services/shipment.service';
 import { StatusShipmentService, StatusShipment } from '../../services/statusshipment.service';
 import { ErrorFiltersService } from '../../interceptors/error.filters';
 import { ProductService } from '../../services/product.service';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-detail',
@@ -21,8 +23,9 @@ export class DetailComponent implements OnInit {
   error: string | null = null;
   sendingInvoice = false;
   invoiceSent = false;
+  private authSubscription: Subscription | null = null;
 
-  // Shipment management
+
   shipmentStatuses: StatusShipment[] = [];
   editingShipment = false;
   shipmentForm = {
@@ -31,7 +34,7 @@ export class DetailComponent implements OnInit {
   };
   savingShipment = false;
 
-  // Product management
+
   availableProducts: any[] = [];
   filteredProducts: any[] = [];
   productInput = '';
@@ -49,7 +52,7 @@ export class DetailComponent implements OnInit {
   };
   deletingProduct = false;
 
-  // Voucher management
+
   addingVoucher = false;
   addingVoucherLoading = false;
   voucherForm = {
@@ -62,6 +65,11 @@ export class DetailComponent implements OnInit {
   deletingVoucher = false;
   voucherRestante = 0;
 
+
+  paymentStatuses: any[] = [];
+  selectedPaymentStatusId: number | null = null;
+  updatingPaymentStatus = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -69,7 +77,8 @@ export class DetailComponent implements OnInit {
     private shipmentService: ShipmentService,
     private statusShipmentService: StatusShipmentService,
     private errorFilter: ErrorFiltersService,
-    private productService: ProductService
+    private productService: ProductService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -78,6 +87,7 @@ export class DetailComponent implements OnInit {
       this.loadOrder(parseInt(id));
       this.loadShipmentStatuses();
       this.loadAvailableProducts();
+      this.loadPaymentStatuses(); // cargar estados de pago
     }
   }
 
@@ -88,7 +98,6 @@ export class DetailComponent implements OnInit {
     this.orderService.getOrderById(id).subscribe({
       next: (order: any) => {
         this.order = order;
-        console.log("order ", this.order);
         this.updateVoucherRestante();
         this.loading = false;
       },
@@ -133,22 +142,55 @@ export class DetailComponent implements OnInit {
     });
   }
 
-  // Check if order is pending
+
+  loadPaymentStatuses(): void {
+    this.orderService.getAllPaymentStatus().subscribe({
+      next: (statuses) => {
+        this.paymentStatuses = statuses;
+      },
+      error: (err) => {
+        console.error('Error loading payment statuses:', err);
+      }
+    });
+  }
+
+
+  updatePaymentStatusDirect(): void {
+    if (!this.selectedPaymentStatusId || !this.order?.payment?.id) return;
+    this.updatingPaymentStatus = true;
+    this.error = null;
+    this.orderService.updatePayment(this.order.payment.id, {
+      method: { id: this.order.payment.method.id },
+      status: { id: this.selectedPaymentStatusId }
+    }).subscribe({
+      next: () => {
+        this.loadOrder(this.order.id);
+        this.updatingPaymentStatus = false;
+      },
+      error: (err) => {
+        this.error = 'Error al actualizar el estado del pago';
+        this.updatingPaymentStatus = false;
+        this.errorFilter.handle(err);
+      }
+    });
+  }
+
+
   isOrderPending(): boolean {
     return this.order?.payment?.status?.status?.toLowerCase() === 'pendiente';
   }
 
-  // Check if order is paid
+
   isOrderPaid(): boolean {
     return this.order?.payment?.status?.status?.toLowerCase() === 'pagado';
   }
 
-  // Check if customer has email
+
   hasCustomerEmail(): boolean {
     return this.order?.user?.people?.email && this.order.user.people.email.trim() !== '';
   }
 
-  // Send invoice email
+
   sendInvoice(): void {
     if (!this.isOrderPaid()) {
       this.error = 'No se puede enviar la factura. La orden debe estar pagada.';
@@ -167,7 +209,7 @@ export class DetailComponent implements OnInit {
       next: (response) => {
         this.sendingInvoice = false;
         this.invoiceSent = true;
-        // Reset success message after 5 seconds
+
         setTimeout(() => {
           this.invoiceSent = false;
         }, 5000);
@@ -179,8 +221,17 @@ export class DetailComponent implements OnInit {
       }
     });
   }
+  isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
 
-  // Product management methods
+
+  isAdmin(): boolean {
+    const userRole = this.authService.getUserRole();
+    return typeof userRole === 'string' && userRole.trim().toLowerCase() === 'admin';
+  }
+
+
   startAddingProduct(): void {
     this.addingProduct = true;
     this.productForm = {
@@ -323,7 +374,7 @@ export class DetailComponent implements OnInit {
     });
   }
 
-  // Voucher management methods
+
   startAddingVoucher(): void {
     this.addingVoucher = true;
     this.voucherForm.value = 0;
@@ -380,7 +431,7 @@ export class DetailComponent implements OnInit {
       this.error = 'Debe especificar un valor válido para el voucher';
       return;
     }
-    // Calcular el total abonado sin el voucher actual
+
     const total = Number(this.order.total) || 0;
     const vouchers: any[] = Array.isArray(this.order.payment.vouchers) ? this.order.payment.vouchers : [];
     const abonadoSinActual = vouchers.filter((v: any) => v.id !== this.editingVoucher.id).reduce((sum: number, v: any) => sum + Number(v.value || 0), 0);
@@ -428,7 +479,7 @@ export class DetailComponent implements OnInit {
     });
   }
 
-  // Shipment management methods
+
   startEditingShipment(): void {
     this.editingShipment = true;
     if (this.order.shipment) {
@@ -468,7 +519,7 @@ export class DetailComponent implements OnInit {
     };
 
     if (this.order.shipment) {
-      // Update existing shipment
+
       this.shipmentService.updateShipment(this.order.shipment.id, shipmentData).subscribe({
         next: (updatedShipment) => {
           this.order.shipment = updatedShipment;
@@ -482,7 +533,7 @@ export class DetailComponent implements OnInit {
         }
       });
     } else {
-      // Create new shipment
+
       this.shipmentService.createShipment(shipmentData).subscribe({
         next: (newShipment) => {
           this.order.shipment = newShipment;

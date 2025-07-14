@@ -27,22 +27,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    // Suscribirse a los cambios de autenticación
+
     this.authSubscription = this.authService.authStatus$.subscribe(isAuthenticated => {
       this.updateUserInfo();
     });
 
-    // Suscribirse a los cambios de tema
+
     this.themeSubscription = this.themeService.theme$.subscribe(theme => {
       this.currentTheme = theme;
     });
 
-    // Obtener información inicial del usuario si está autenticado
+
     this.updateUserInfo();
   }
 
   ngOnDestroy(): void {
-    // Limpiar la suscripción al destruir el componente
+
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }

@@ -4,7 +4,7 @@
     <p>Gestiona las ventas de tu tienda</p>
   </div>
 
-  <!-- Búsqueda de Usuario -->
+  
   <div class="section">
     <h2>👤 Cliente</h2>
     <div class="user-search">
@@ -28,7 +28,7 @@
         </div>
       </form>
 
-      <!-- Usuario encontrado -->
+      
       <div *ngIf="selectedUser" class="user-found">
         <div class="user-card">
           <div class="user-info">
@@ -43,7 +43,7 @@
         </div>
       </div>
 
-      <!-- Usuario no encontrado -->
+      
       <div *ngIf="userNotFound" class="user-not-found">
         <div class="alert alert-warning">
           <h3>⚠️ Cliente no encontrado</h3>
@@ -56,11 +56,11 @@
     </div>
   </div>
 
-  <!-- Selección de Productos -->
+  
   <div class="section products-section" *ngIf="selectedUser">
     <h2>📦 Productos</h2>
     
-    <!-- Búsqueda de productos -->
+    
     <div class="product-search-container">
       <form [formGroup]="productSearchForm" (ngSubmit)="searchProducts()" class="search-form">
         <div class="form-group">
@@ -85,7 +85,7 @@
       </form>
     </div>
 
-    <!-- Controles de paginación -->
+    
     <div class="pagination-controls">
       <div class="pagination-info">
         <span class="pagination-text">
@@ -108,12 +108,12 @@
       </div>
     </div>
 
-    <!-- Lista de productos -->
+    
     <div class="products-container">
       <div class="products-grid">
         <div *ngFor="let product of getPaginatedProducts()" class="product-card">
           <div *ngIf="product.active" class="product-card-content">
-            <!-- Imagen del producto -->
+            
             <div class="product-image-container">
               <img 
                 [src]="getProductImage(product)" 
@@ -123,20 +123,20 @@
               >
             </div>
             
-            <!-- Información del producto -->
+            
             <div class="product-info-container">
               <div class="product-header">
                 <h3 class="product-name">{{ product.product }}</h3>
                 <span class="product-category-badge">{{ product.category?.category || 'Sin categoría' }}</span>
               </div>
               
-              <!-- Variaciones del producto -->
+              
               <div class="product-variations-container" *ngIf="product.variationProducts && product.variationProducts.length > 0">
                 <h4 class="variations-title">Variaciones disponibles:</h4>
                 <div class="variations-grid">
                   <div *ngFor="let variation of product.variationProducts" class="variation-card">
                     <div *ngIf="variation.active" class="variation-card-content">
-                      <!-- Imagen de la variación -->
+                      
                       <div class="variation-image-container">
                         <img 
                           [src]="variation.image || 'https://placehold.co/300x200?text=variation'" 
@@ -145,7 +145,7 @@
                         >
                       </div>
                       
-                      <!-- Información de la variación -->
+                      
                       <div class="variation-details">
                         <div class="variation-specs">
                           <div class="spec-item">
@@ -179,7 +179,7 @@
                         </div>
                       </div>
                       
-                      <!-- Acciones de la variación -->
+                      
                       <div class="variation-actions-container">
                         <div class="quantity-selector">
                           <label class="quantity-label">Cantidad:</label>
@@ -211,10 +211,10 @@
       </div>
     </div>
 
-    <!-- Paginación -->
+    
     <div class="pagination-container" *ngIf="totalPages > 1">
       <div class="pagination">
-        <!-- Botón Anterior -->
+        
         <button 
           (click)="onPageChange(currentPage - 1)" 
           [disabled]="currentPage === 1"
@@ -224,9 +224,9 @@
           ← Anterior
         </button>
 
-        <!-- Números de página -->
+        
         <div class="pagination-numbers">
-          <!-- Primera página -->
+          
           <button 
             *ngIf="currentPage > 3 && totalPages > 5"
             (click)="onPageChange(1)" 
@@ -235,10 +235,10 @@
             1
           </button>
           
-          <!-- Separador -->
+          
           <span *ngIf="currentPage > 3 && totalPages > 5" class="pagination-separator">...</span>
 
-          <!-- Números de página -->
+          
           <button 
             *ngFor="let page of getPageNumbers()" 
             (click)="onPageChange(page)" 
@@ -248,10 +248,10 @@
             {{ page }}
           </button>
 
-          <!-- Separador -->
+          
           <span *ngIf="currentPage < totalPages - 2 && totalPages > 5" class="pagination-separator">...</span>
 
-          <!-- Última página -->
+          
           <button 
             *ngIf="currentPage < totalPages - 2 && totalPages > 5"
             (click)="onPageChange(totalPages)" 
@@ -261,7 +261,7 @@
           </button>
         </div>
 
-        <!-- Botón Siguiente -->
+        
         <button 
           (click)="onPageChange(currentPage + 1)" 
           [disabled]="currentPage === totalPages"
@@ -274,7 +274,7 @@
     </div>
   </div>
 
-  <!-- Carrito de Compras -->
+  
   <div class="section" *ngIf="selectedUser && cartItems.length > 0">
     <h2>🛒 Carrito de Compras</h2>
     
@@ -333,7 +333,7 @@
     </div>
   </div>
 
-  <!-- Configuración de Pago -->
+  
   <div class="section" *ngIf="selectedUser && cartItems.length > 0">
     <h2>💳 Configuración de Pago</h2>
     
@@ -372,7 +372,7 @@
     </form>
   </div>
 
-  <!-- Botones de Acción -->
+  
   <div class="actions" *ngIf="selectedUser && cartItems.length > 0">
     <button 
       (click)="createOrder()" 
@@ -388,7 +388,7 @@
     </button>
   </div>
 
-  <!-- Loading -->
+  
   <div *ngIf="loading" class="loading-overlay">
     <div class="loading">
       <div class="spinner"></div>

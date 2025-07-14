@@ -4,9 +4,9 @@
     <p>Explora nuestro catálogo de productos</p>
   </div>
 
-  <!-- Filtros -->
+  
   <div class="filters-section">
-    <!-- Botón para mostrar/ocultar filtros -->
+    
     <div class="filters-toggle">
       <button (click)="toggleFilters()" class="btn btn-outline">
         <span *ngIf="!showFilters">🔍 Mostrar Filtros</span>
@@ -14,12 +14,12 @@
       </button>
     </div>
 
-    <!-- Panel de filtros (colapsable) -->
+    
     <div class="filters-panel" [class.show]="showFilters">
       <h3>🔍 Filtros de Búsqueda</h3>
       
       <div class="filters-grid">
-        <!-- Categoría -->
+        
         <div class="form-group">
           <label for="category" class="form-label">Categoría</label>
           <select 
@@ -35,7 +35,7 @@
           </select>
         </div>
 
-        <!-- Nombre -->
+        
         <div class="form-group">
           <label for="name" class="form-label">Nombre del producto</label>
           <input 
@@ -48,7 +48,7 @@
           >
         </div>
 
-        <!-- Estado del producto -->
+        
         <div class="form-group">
           <label for="active" class="form-label">Estado del producto</label>
           <select 
@@ -63,7 +63,7 @@
           </select>
         </div>
 
-        <!-- Variaciones activas -->
+        
         <div class="form-group">
           <label for="variationActive" class="form-label">Variaciones activas</label>
           <select 
@@ -78,7 +78,7 @@
           </select>
         </div>
 
-        <!-- Precio mínimo -->
+        
         <div class="form-group">
           <label for="minPrice" class="form-label">Precio mínimo</label>
           <input 
@@ -92,7 +92,7 @@
           >
         </div>
 
-        <!-- Precio máximo -->
+        
         <div class="form-group">
           <label for="maxPrice" class="form-label">Precio máximo</label>
           <input 
@@ -106,7 +106,7 @@
           >
         </div>
 
-        <!-- Sabor/Especia -->
+        
         <div class="form-group">
           <label for="spice" class="form-label">Sabor/Especia</label>
           <select 
@@ -122,7 +122,7 @@
           </select>
         </div>
 
-        <!-- Medida -->
+        
         <div class="form-group">
           <label for="measure" class="form-label">Unidad de medida</label>
           <select 
@@ -139,7 +139,7 @@
         </div>
       </div>
 
-      <!-- Botón limpiar filtros -->
+      
       <div class="filters-actions">
         <button (click)="clearFilters()" class="btn btn-outline">
           🗑️ Limpiar Filtros
@@ -148,23 +148,23 @@
     </div>
   </div>
 
-  <!-- Botón crear producto (solo admin/seller) -->
+  
   <div *ngIf="canEdit()" class="actions">
     <a [routerLink]="['/products/create']" class="btn-create">Crear Producto</a>
   </div>
 
-  <!-- Loading -->
+  
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Cargando productos...</p>
   </div>
 
-  <!-- Error -->
+  
   <div *ngIf="error" class="alert alert-error">
     {{ error }}
   </div>
 
-  <!-- Lista de productos -->
+  
   <div *ngIf="!loading && !error" class="products-grid">
     <div *ngFor="let product of products" class="product-card">
       <div class="product-image">
@@ -208,7 +208,7 @@
     </div>
   </div>
 
-  <!-- Sin productos -->
+  
   <div *ngIf="!loading && !error && products.length === 0" class="empty-state">
     <div class="empty-icon">📦</div>
     <h3>No se encontraron productos</h3>

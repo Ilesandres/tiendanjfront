@@ -4,18 +4,18 @@
     <p>Modifica el precio, stock e imagen de la variación del producto</p>
   </div>
 
-  <!-- Loading -->
+  
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Cargando variación...</p>
   </div>
 
-  <!-- Error -->
+  
   <div *ngIf="error" class="alert alert-error">
     {{ error }}
   </div>
 
-  <!-- Información de la variación (solo lectura) -->
+  
   <div *ngIf="!loading && !error && variation" class="variation-info">
     <div class="info-card">
       <h3>Información de la Variación</h3>
@@ -42,7 +42,7 @@
     </div>
   </div>
 
-  <!-- Formulario de edición -->
+  
   <div *ngIf="!loading && !error && variation" class="edit-form">
     <form (ngSubmit)="onSubmit()" #editForm="ngForm">
       <div class="form-group">
@@ -130,7 +130,7 @@
         </div>
       </div>
 
-      <!-- Vista previa de la imagen actual -->
+      
       <div *ngIf="variation.image" class="current-image">
         <label class="form-label">Imagen Actual:</label>
         <div class="image-preview">
@@ -139,7 +139,7 @@
         </div>
       </div>
 
-      <!-- Mensaje cuando no hay imagen -->
+      
       <div *ngIf="!variation.image" class="no-image">
         <label class="form-label">Imagen Actual:</label>
         <div class="no-image-message">
@@ -160,7 +160,7 @@
     </form>
   </div>
 
-  <!-- Sin permisos -->
+  
   <div *ngIf="!canEdit()" class="no-permissions">
     <div class="empty-icon">🚫</div>
     <h3>Sin permisos</h3>
