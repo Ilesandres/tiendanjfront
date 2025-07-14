@@ -10,7 +10,6 @@ export class ErrorFiltersService {
   constructor(private router: Router) {}
 
   handle(error: HttpErrorResponse) {
-    console.log("error")
     if (error.status === 401) {
       localStorage.clear();
       this.router.navigate(['/auth/login']);

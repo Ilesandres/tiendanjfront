@@ -48,7 +48,7 @@
   margin: 0;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .demo-buttons {
     flex-direction: column;

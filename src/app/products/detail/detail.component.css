@@ -1,10 +1,10 @@
-/* ===== CONTAINER & LAYOUT ===== */
+
 .container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-/* ===== LOADING STATES ===== */
+
 .loading-container {
   display: flex;
   justify-content: center;
@@ -35,7 +35,7 @@
   100% { transform: rotate(360deg); }
 }
 
-/* ===== ERROR STATES ===== */
+
 .error-container {
   display: flex;
   justify-content: center;
@@ -69,7 +69,7 @@
   margin-bottom: 2rem;
 }
 
-/* ===== HERO SECTION ===== */
+
 .hero-section {
   position: relative;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -224,14 +224,14 @@
   border-color: rgba(231, 76, 60, 0.9);
 }
 
-/* ===== MAIN CONTENT ===== */
+
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem 2rem;
 }
 
-/* ===== GALLERY SECTION ===== */
+
 .gallery-section {
   margin-bottom: 3rem;
 }
@@ -286,7 +286,7 @@
   font-size: 0.9rem;
 }
 
-/* ===== VARIATIONS SECTION ===== */
+
 .variations-section {
   background: white;
   border-radius: 20px;
@@ -338,7 +338,7 @@
   color: #3498db;
 }
 
-/* ===== LOADING CARDS ===== */
+
 .loading-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -386,7 +386,7 @@
   100% { background-position: -200% 0; }
 }
 
-/* ===== VARIATIONS GRID ===== */
+
 .variations-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -413,7 +413,7 @@
   filter: grayscale(0.3);
 }
 
-/* ===== CARD HEADER ===== */
+
 .card-header {
   position: relative;
 }
@@ -474,7 +474,7 @@
   color: white;
 }
 
-/* ===== CARD CONTENT ===== */
+
 .card-content {
   padding: 1.5rem;
 }
@@ -513,7 +513,7 @@
   font-size: 1.1rem;
 }
 
-/* ===== VARIATION DETAILS ===== */
+
 .variation-details {
   margin-bottom: 1rem;
 }
@@ -571,7 +571,7 @@
   margin: 0;
 }
 
-/* ===== CARD ACTIONS ===== */
+
 .card-actions {
   display: flex;
   gap: 0.5rem;
@@ -641,7 +641,7 @@
   box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
 }
 
-/* ===== EMPTY STATES ===== */
+
 .empty-variations {
   text-align: center;
   padding: 3rem 2rem;
@@ -703,7 +703,7 @@
   margin-bottom: 2rem;
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+
 @media (max-width: 768px) {
   .hero-section {
     padding: 2rem 1rem;

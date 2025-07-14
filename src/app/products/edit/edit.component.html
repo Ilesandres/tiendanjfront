@@ -4,18 +4,18 @@
     <p>Modifica la información del producto</p>
   </div>
 
-  <!-- Loading -->
+  
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Cargando producto...</p>
   </div>
 
-  <!-- Error -->
+  
   <div *ngIf="error" class="alert alert-error">
     {{ error }}
   </div>
 
-  <!-- Formulario de edición -->
+  
   <div *ngIf="!loading && !error && product" class="edit-form">
     <form (ngSubmit)="onSubmit()" #editForm="ngForm">
       <div class="form-group">
@@ -58,7 +58,7 @@
     </form>
   </div>
 
-  <!-- Sin permisos -->
+  
   <div *ngIf="!canEdit()" class="no-permissions">
     <div class="empty-icon">🚫</div>
     <h3>Sin permisos</h3>

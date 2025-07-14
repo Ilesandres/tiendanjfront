@@ -1,7 +1,7 @@
 <div class="users-container">
   <h1>Gestión de Usuarios</h1>
 
-  <!-- Success/Error Messages -->
+  
   <div *ngIf="success" class="alert alert-success">
     {{ success }}
   </div>
@@ -9,7 +9,7 @@
     {{ error }}
   </div>
 
-  <!-- Search Section -->
+  
   <div class="search-section">
     <h3>Buscar Usuario</h3>
     <div class="search-form">
@@ -34,7 +34,7 @@
       </button>
     </div>
     
-    <!-- Advanced Filters Toggle -->
+    
     <div class="advanced-filters-toggle">
       <button (click)="toggleAdvancedFilters()" class="btn btn-outline">
         <i class="fas" [class.fa-filter]="!showAdvancedFilters" [class.fa-times]="showAdvancedFilters"></i>
@@ -43,7 +43,7 @@
     </div>
   </div>
 
-  <!-- Advanced Filters Section -->
+  
   <div *ngIf="showAdvancedFilters" class="advanced-filters-section">
     <h3>Filtros Avanzados</h3>
     <div class="filters-form">
@@ -109,7 +109,7 @@
         </div>
         
         <div class="form-col">
-          <!-- Empty column for alignment -->
+          
         </div>
       </div>
 
@@ -126,7 +126,7 @@
     </div>
   </div>
 
-  <!-- Create User Button -->
+  
   <div class="actions-section">
     <button (click)="showCreateUserForm()" class="btn btn-success">
       <i class="fas fa-plus"></i>
@@ -134,12 +134,12 @@
     </button>
   </div>
 
-  <!-- Create/Edit User Form -->
+  
   <div *ngIf="showCreateForm || editingUser" class="form-section">
     <h3>{{ editingUser ? 'Editar' : 'Crear' }} Usuario</h3>
     
     <form [formGroup]="userForm" (ngSubmit)="editingUser ? updateUser() : createUser()">
-      <!-- Personal Information -->
+      
       <div class="form-group">
         <h4>Información Personal</h4>
         
@@ -283,7 +283,7 @@
         </div>
       </div>
 
-      <!-- Account Information (Admin only) -->
+      
       <div *ngIf="isAdmin()" class="form-group">
         <h4>Información de Cuenta</h4>
         
@@ -305,6 +305,7 @@
               id="password" 
               formControlName="password" 
               class="form-control"
+              autocomplete="current-password"
             >
           </div>
         </div>
@@ -343,7 +344,7 @@
         </div>
       </div>
 
-      <!-- Form Actions -->
+      
       <div class="form-actions">
         <button 
           type="submit" 
@@ -366,7 +367,7 @@
     </form>
   </div>
 
-  <!-- Users List -->
+  
   <div *ngIf="users.length > 0" class="users-list">
     <h3>Usuarios Encontrados</h3>
     
@@ -434,7 +435,7 @@
     </div>
   </div>
 
-  <!-- No Users Message -->
+  
   <div *ngIf="users.length === 0 && !loading" class="no-users">
     <div class="no-users-content">
       <i class="fas fa-users" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
@@ -449,7 +450,7 @@
     </div>
   </div>
 
-  <!-- Loading -->
+  
   <div *ngIf="loading" class="loading">
     <p>Cargando...</p>
   </div>

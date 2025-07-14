@@ -40,28 +40,28 @@ interface Product {
   imports: [CommonModule, ReactiveFormsModule]
 })
 export class CreateComponent implements OnInit {
-  // Estados del wizard
+
   currentStep = 1;
   showProductModal = false;
   
-  // Formularios
+
   productForm: FormGroup;
   variationForm: FormGroup;
   
-  // Estados de carga
+
   isLoading = false;
   isInitialLoading = true;
   message = '';
   messageType = '';
 
-  // Datos
+
   categories: Category[] = [];
   spices: Spice[] = [];
   measures: Measure[] = [];
   colors: Color[] = [];
   products: Product[] = [];
   
-  // Producto seleccionado/creado
+
   selectedProduct: Product | null = null;
   isNewProduct = false;
   filteredProducts: Product[] = [];
@@ -72,13 +72,13 @@ export class CreateComponent implements OnInit {
     private router: Router,
     private errorFilter:ErrorFiltersService
   ) {
-    // Formulario para crear producto nuevo
+
     this.productForm = this.fb.group({
       productName: ['', [Validators.required, Validators.minLength(2)]],
       category: ['']
     });
 
-    // Formulario para crear variación
+
     this.variationForm = this.fb.group({
       price: ['', [Validators.required, Validators.min(0)]],
       stock: ['', [Validators.required, Validators.min(0)]],
@@ -165,7 +165,7 @@ export class CreateComponent implements OnInit {
     }
   }
 
-  // Métodos del wizard
+
   selectExistingProduct(): void {
     this.showProductModal = true;
     this.isNewProduct = false;
@@ -300,8 +300,8 @@ export class CreateComponent implements OnInit {
   }
 
   onImageInput(event: any): void {
-    // Este método se ejecuta cada vez que el usuario escribe en el campo de imagen
-    // La validación ya está manejada por el FormControl
+
+
   }
 
   getImageLength(): number {
@@ -310,8 +310,8 @@ export class CreateComponent implements OnInit {
   }
 
   onDescriptionInput(event: any): void {
-    // Este método se ejecuta cada vez que el usuario escribe en el campo de descripción
-    // La validación ya está manejada por el FormControl
+
+
   }
 
   getDescriptionLength(): number {

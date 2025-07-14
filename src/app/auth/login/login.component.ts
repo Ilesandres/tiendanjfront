@@ -33,7 +33,7 @@ export class LoginComponent {
     this.error = null;
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
-        // El token ya se maneja automáticamente en el AuthService
+
         this.router.navigate(['/products']);
       },
       error: (err) => {

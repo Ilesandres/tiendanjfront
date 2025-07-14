@@ -16,23 +16,23 @@ export class ThemeService {
   }
 
   private initializeTheme(): void {
-    // Solo ejecutar en el navegador
+
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
-    // Intentar obtener el tema guardado en localStorage
+
     const savedTheme = localStorage.getItem('theme') as Theme;
     
     if (savedTheme) {
       this.setTheme(savedTheme);
     } else {
-      // Si no hay tema guardado, usar la preferencia del sistema
+
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       this.setTheme(prefersDark ? 'dark' : 'light');
     }
 
-    // Escuchar cambios en la preferencia del sistema
+
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
       if (!localStorage.getItem('theme')) {
         this.setTheme(e.matches ? 'dark' : 'light');
@@ -47,7 +47,7 @@ export class ThemeService {
   setTheme(theme: Theme): void {
     this.themeSubject.next(theme);
     
-    // Solo guardar en localStorage si estamos en el navegador
+
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('theme', theme);
       this.applyTheme(theme);
@@ -61,7 +61,7 @@ export class ThemeService {
   }
 
   private applyTheme(theme: Theme): void {
-    // Solo aplicar tema si estamos en el navegador
+
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }

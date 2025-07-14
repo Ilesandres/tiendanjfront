@@ -1,5 +1,5 @@
 <div class="profile-container">
-  <!-- Header -->
+  
   <div class="profile-header">
     <div class="header-content">
       <h1>👤 Mi Perfil</h1>
@@ -7,13 +7,13 @@
     </div>
   </div>
 
-  <!-- Loading -->
+  
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Cargando información del perfil...</p>
   </div>
 
-  <!-- Error -->
+  
   <div *ngIf="error" class="error">
     <div class="error-icon">⚠️</div>
     <p>{{ error }}</p>
@@ -23,10 +23,10 @@
     </button>
   </div>
 
-  <!-- Profile Content -->
+  
   <div *ngIf="user && !loading" class="profile-content">
     
-    <!-- User Info Card -->
+    
     <div class="profile-card">
       <div class="card-header">
         <div class="user-avatar">
@@ -54,17 +54,17 @@
       </div>
     </div>
 
-    <!-- Success Message -->
+    
     <div *ngIf="success" class="success-message">
       <i class="fas fa-check-circle"></i>
       Perfil actualizado exitosamente
     </div>
 
-    <!-- Profile Form -->
+    
     <div class="profile-form-card">
       <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
         
-        <!-- Personal Information Section -->
+        
         <div class="form-section">
           <h3><i class="fas fa-user"></i> Información Personal</h3>
           
@@ -169,7 +169,7 @@
           </div>
         </div>
 
-        <!-- Account Information Section -->
+        
         <div class="form-section">
           <h3><i class="fas fa-lock"></i> Información de Cuenta</h3>
           
@@ -196,6 +196,7 @@
                 type="password" 
                 id="password" 
                 formControlName="password"
+                autocomplete="current-password"
                 placeholder="Deja en blanco para mantener la actual">
               <div class="error-message" *ngIf="getPasswordError()">
                 {{ getPasswordError() }}
@@ -208,12 +209,13 @@
                 type="password" 
                 id="confirmPassword" 
                 formControlName="confirmPassword"
+                autocomplete="current-password"
                 placeholder="Confirma la nueva contraseña">
             </div>
           </div>
         </div>
 
-        <!-- Form Actions -->
+        
         <div class="form-actions" *ngIf="editing">
           <button 
             type="button" 

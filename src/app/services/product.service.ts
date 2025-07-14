@@ -26,7 +26,7 @@ export class ProductService {
     private http: HttpClient,
   ) { }
 
-  // Categories
+
   getAllCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.apiUrl}/category/all`);
   }
@@ -64,7 +64,7 @@ export class ProductService {
     return this.http.patch(`${this.apiUrl}/category/enable/${id}`, {}, { headers });
   }
 
-  // Colors
+
   getAllColors(): Observable<Color[]> {
     return this.http.get<Color[]>(`${this.apiUrl}/color/all`);
   }
@@ -92,7 +92,7 @@ export class ProductService {
     return this.http.delete(`${this.apiUrl}/color/delete/${id}`, { headers });
   }
 
-  // Spices
+
   getAllSpices(): Observable<Spice[]> {
     return this.http.get<Spice[]>(`${this.apiUrl}/spice/all`);
   }
@@ -120,7 +120,7 @@ export class ProductService {
     return this.http.delete(`${this.apiUrl}/spice/delete/${id}`, { headers });
   }
 
-  // Measures
+
   getAllMeasures(): Observable<Measure[]> {
     return this.http.get<Measure[]>(`${this.apiUrl}/typemeasuremedida/all`);
   }
@@ -148,7 +148,7 @@ export class ProductService {
     return this.http.delete(`${this.apiUrl}/typemeasuremedida/delete/${id}`, { headers });
   }
 
-  // Products
+
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.apiUrl}/product/all`);
   }
@@ -189,7 +189,7 @@ export class ProductService {
     return this.http.delete(`${this.apiUrl}/product/delete/${id}`, { headers });
   }
 
-  // Product Variations
+
   getAllVariations(): Observable<ProductVariation[]> {
     return this.http.get<ProductVariation[]>(`${this.apiUrl}/variationproduct/all`);
   }
@@ -232,7 +232,7 @@ export class ProductService {
     return this.http.get<ProductVariation[]>(`${this.apiUrl}/variationproduct/findbydescription/${encodeURIComponent(description)}`, { headers:headers});
   }
 
-  // Convenience methods for component use
+
   async getCategories(): Promise<Category[]> {
     try {
       const result = await firstValueFrom(this.getAllCategories());
@@ -273,7 +273,7 @@ export class ProductService {
     }
   }
 
-  // Async versions of create methods
+
   async createProductAsync(product: CreateProductRequest): Promise<any> {
     return firstValueFrom(this.createProduct(product));
   }

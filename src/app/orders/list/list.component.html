@@ -7,32 +7,32 @@
     </button>
   </div>
 
-  <!-- Filtros -->
+  
   <app-order-filters
     (filtersChanged)="onFiltersChanged($event)"
     (searchChanged)="onSearchChanged($event)">
   </app-order-filters>
 
-  <!-- Estadísticas -->
+  
   <app-order-stats 
     [orders]="orders" 
     [filteredOrders]="filteredOrders">
   </app-order-stats>
 
-  <!-- Loading -->
+  
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Cargando ventas...</p>
   </div>
 
-  <!-- Error -->
+  
   <div *ngIf="error" class="alert alert-error">
     {{ error }}
   </div>
 
-  <!-- Lista de órdenes -->
+  
   <div *ngIf="!loading && !error" class="orders-container">
-    <!-- Información de resultados -->
+    
     <div class="results-info" *ngIf="filteredOrders.length > 0">
       <p>
         Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} - 
@@ -66,7 +66,7 @@
         <div class="order-type-info">
           <h4>Tipo</h4>
           <p>{{ order.typeOrder?.type || 'No especificado' }}</p>
-          <div *ngIf="order.invoice" class="invoice-html" [innerHTML]="order.invoice"></div>
+          <div *ngIf="order.invoice" class="invoice-html safe-html" [innerHTML]="order.invoice"></div>
         </div>
 
         <div class="payment-info">
@@ -106,7 +106,7 @@
       </div>
     </div>
 
-    <!-- Paginación -->
+    
     <div class="pagination" *ngIf="totalPages > 1">
       <button 
         class="btn btn-outline" 
@@ -135,7 +135,7 @@
     </div>
   </div>
 
-  <!-- Sin órdenes -->
+  
   <div *ngIf="!loading && !error && filteredOrders.length === 0" class="empty-state">
     <div class="empty-icon">📋</div>
     <h3 *ngIf="orders.length === 0">No hay ventas registradas</h3>

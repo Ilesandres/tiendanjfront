@@ -18,20 +18,20 @@ export class AuthService {
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    // Inicializar el estado de autenticación
+
     this.authStatusSubject.next(this.isAuthenticated());
   }
 
-  // Observable para detectar cambios de autenticación
+
   get authStatus$(): Observable<boolean> {
     return this.authStatusSubject.asObservable();
   }
 
-  // Login
+
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
       tap(response => {
-        // El backend devuelve acces_token
+
         if (response.acces_token) {
           this.setToken(response.acces_token);
           this.authStatusSubject.next(true);
@@ -40,27 +40,27 @@ export class AuthService {
     );
   }
 
-  // Register user
+
   registerUser(userData: RegisterUserRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/register/user`, userData);
   }
 
-  // Update user
+
   updateUser(userId: number, userData: UpdateUserRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/update/user/${userId}`, userData);
   }
 
-  // Block user (admin only)
+
   blockUser(userId: number): Observable<any> {
     return this.http.patch(`${this.apiUrl}/auth/block/user/${userId}`, {});
   }
 
-  // Unblock user (admin only)
+
   unblockUser(userId: number): Observable<any> {
     return this.http.patch(`${this.apiUrl}/auth/unblock/user/${userId}`, {});
   }
 
-  // Token management
+
   setToken(token: string): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.tokenKey, token);
@@ -84,5 +84,17 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+
+  getUserRole(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.rol || null;
+    } catch (e) {
+      return null;
+    }
   }
 } 

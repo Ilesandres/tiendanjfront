@@ -29,7 +29,7 @@ export class ProfileComponent implements OnInit {
     private fb: FormBuilder,
     private errorFilter: ErrorFiltersService
   ) {
-    // Formulario temporal más simple para pruebas
+
     this.profileForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       lastname: ['', [Validators.required, Validators.minLength(2)]],
@@ -58,13 +58,13 @@ export class ProfileComponent implements OnInit {
       next: (types: TypeDni[]) => {
         this.typeDnis = types;
         console.log('Type DNIs loaded successfully:', this.typeDnis);
-        // Una vez cargados los tipos, cargar el perfil del usuario
+
         this.loadUserProfile();
       },
       error: (err) => {
         console.error('Error loading type DNIs:', err);
         this.errorFilter.handle(err);
-        // Intentar cargar el perfil de todas formas
+
         this.loadUserProfile();
       }
     });
@@ -74,7 +74,7 @@ export class ProfileComponent implements OnInit {
     this.loading = true;
     this.error = null;
     
-    // Obtener el usuario actual del localStorage o del servicio de auth
+
     const currentUser = this.userService.getUserInfo();
     if (!currentUser) {
       this.error = 'No se pudo obtener la información del usuario';
@@ -82,13 +82,13 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    // Cargar información completa del usuario
+
     this.userService.getUserById(currentUser.id).subscribe({
       next: (user) => {
         this.user = user;
         this.populateForm(user);
         this.loading = false;
-        // Asegurar que el formulario esté deshabilitado inicialmente
+
         if (!this.editing) {
           this.profileForm.disable();
           this.profileForm.get('password')?.disable();
@@ -106,7 +106,7 @@ export class ProfileComponent implements OnInit {
   populateForm(user: User): void {
     console.log('Populating form with user data:', user);
     
-    // Verificar que el usuario y sus datos existan
+
     if (!user || !user.people) {
       console.error('User or user.people is null/undefined');
       return;
@@ -116,7 +116,7 @@ export class ProfileComponent implements OnInit {
     console.log('Current form structure:', this.profileForm.value);
     
     try {
-      // Usar patchValue para ser más flexible con campos opcionales
+
       this.profileForm.patchValue({
         name: user.people.name || '',
         lastname: user.people.lastname || '',
@@ -132,7 +132,7 @@ export class ProfileComponent implements OnInit {
 
       console.log('Form values after population:', this.profileForm.value);
       
-      // Verificar que el formulario se haya poblado correctamente
+
       setTimeout(() => {
         console.log('Form values after timeout:', this.profileForm.value);
         console.log('Form controls:', this.profileForm.controls);
@@ -183,7 +183,7 @@ export class ProfileComponent implements OnInit {
       user: formValue.user
     };
 
-    // Solo incluir password si se proporcionó uno nuevo
+
     if (formValue.password) {
       updateData.password = formValue.password;
     }
@@ -200,10 +200,10 @@ export class ProfileComponent implements OnInit {
         this.success = true;
         this.editing = false;
         
-        // Recargar la información del usuario
+
         this.loadUserProfile();
         
-        // Reset success message after 5 seconds
+
         setTimeout(() => {
           this.success = false;
         }, 5000);
