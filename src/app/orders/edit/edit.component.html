@@ -1,14 +1,14 @@
 <div class="edit-order-container" *ngIf="!loading && order">
   <h2>Editar Orden #{{ order.id }}</h2>
   
-  <!-- Alerta si no se puede editar -->
+  
   <div *ngIf="!canEdit" class="alert alert-warning">
     <strong>⚠️ Orden no editable:</strong> Esta orden no se puede editar porque el pago ya está pagado.
   </div>
   
   <div *ngIf="error" class="alert alert-error">{{ error }}</div>
 
-  <!-- Editar pago -->
+  
   <form [formGroup]="paymentForm" (ngSubmit)="updatePayment()" class="payment-form">
     <h3>Pago</h3>
     <label>Método de pago:</label>
@@ -22,7 +22,7 @@
     <button type="submit" [disabled]="paymentForm.invalid || !canEdit">Actualizar Pago</button>
   </form>
 
-  <!-- Editar productos -->
+  
   <div class="products-section">
     <h3>Productos en la orden</h3>
     <table>
@@ -64,7 +64,7 @@
       </tbody>
     </table>
     
-    <!-- Agregar nueva variación -->
+    
     <form [formGroup]="addProductForm" (ngSubmit)="addProduct()" class="add-product-form" *ngIf="canEdit">
       <h4>Agregar variación de producto</h4>
       <div class="form-row">

@@ -36,7 +36,7 @@ export class CreateComponent implements OnInit {
   userSearchForm: FormGroup;
   productSearchForm: FormGroup;
   
-  // Data
+
   paymentMethods: PaymentMethod[] = [];
   paymentStatuses: PaymentStatus[] = [];
   typeOrders: TypeOrder[] = [];
@@ -45,28 +45,28 @@ export class CreateComponent implements OnInit {
   selectedUser: User | null = null;
   cartItems: CartItem[] = [];
   
-  // Pagination
+
   currentPage = 1;
   itemsPerPage = 10;
   totalItems = 0;
   totalPages = 0;
   itemsPerPageOptions = [5, 10, 15, 20, 25];
   
-  // Math object for template
+
   Math = Math;
   
-  // UI States
+
   loading = false;
   searchingUser = false;
   searchingProducts = false;
   userNotFound = false;
   showUserForm = false;
   
-  // Totals
+
   subtotal = 0;
   total = 0;
 
-  // Estado para mostrar el dialog de alerta de stock
+
   showStockDialog = false;
   stockDialogMessage = '';
 
@@ -100,7 +100,7 @@ export class CreateComponent implements OnInit {
     this.loadProducts();
     this.userService.getUserInfo();
 
-    // Búsqueda interactiva de productos
+
     this.productSearchForm.get('searchTerm')?.valueChanges.subscribe((searchTerm: string) => {
       if (!searchTerm || searchTerm.trim() === '') {
         this.products = this.allProducts;
@@ -114,7 +114,7 @@ export class CreateComponent implements OnInit {
     });
   }
 
-  // Load Data Methods
+
   loadPaymentMethods(): void {
     this.orderService.getAllPaymentMethods().subscribe({
       next: (methods: PaymentMethod[]) => {

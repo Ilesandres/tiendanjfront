@@ -215,7 +215,7 @@
   font-size: 1rem;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .page-header h1 {
     font-size: 2rem;

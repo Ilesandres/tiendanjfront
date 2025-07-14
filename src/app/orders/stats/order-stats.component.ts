@@ -13,26 +13,26 @@ export class OrderStatsComponent implements OnInit {
   @Input() orders: Order[] = [];
   @Input() filteredOrders: Order[] = [];
 
-  // Estadísticas generales
+
   totalSales = 0;
   totalOrders = 0;
   averageOrderValue = 0;
   
-  // Estadísticas por estado
+
   completedOrders = 0;
   pendingOrders = 0;
   cancelledOrders = 0;
   
-  // Estadísticas por método de pago
+
   paymentMethodStats: { [key: string]: number } = {};
   
-  // Estadísticas por tipo de orden
+
   orderTypeStats: { [key: string]: number } = {};
   
-  // Estadísticas por mes
+
   monthlyStats: { [key: string]: { orders: number; sales: number } } = {};
   
-  // Estadísticas de hoy
+
   todaySales = 0;
   todayOrders = 0;
   todayCompletedOrders = 0;
@@ -49,12 +49,12 @@ export class OrderStatsComponent implements OnInit {
   calculateStats(): void {
     const ordersToAnalyze = this.filteredOrders.length > 0 ? this.filteredOrders : this.orders;
     
-    // Estadísticas básicas
+
     this.totalOrders = ordersToAnalyze.length;
     this.totalSales = ordersToAnalyze.reduce((sum, order) => Number(sum) + Number(order.total || 0), 0);
     this.averageOrderValue = this.totalOrders > 0 ? this.totalSales / this.totalOrders : 0;
     
-    // Estadísticas por estado
+
     this.completedOrders = ordersToAnalyze.filter(order => 
       order.payment?.status?.status?.toLowerCase().includes('completado') ||
       order.payment?.status?.status?.toLowerCase().includes('pagado')
@@ -70,21 +70,21 @@ export class OrderStatsComponent implements OnInit {
       order.payment?.status?.status?.toLowerCase().includes('rechazado')
     ).length;
     
-    // Estadísticas por método de pago
+
     this.paymentMethodStats = {};
     ordersToAnalyze.forEach(order => {
       const method = order.payment?.method?.method || 'No especificado';
       this.paymentMethodStats[method] = (this.paymentMethodStats[method] || 0) + 1;
     });
     
-    // Estadísticas por tipo de orden
+
     this.orderTypeStats = {};
     ordersToAnalyze.forEach(order => {
       const type = order.typeOrder?.type || 'No especificado';
       this.orderTypeStats[type] = (this.orderTypeStats[type] || 0) + 1;
     });
     
-    // Estadísticas por mes
+
     this.monthlyStats = {};
     ordersToAnalyze.forEach(order => {
       const date = new Date(order.createdAt);
@@ -98,7 +98,7 @@ export class OrderStatsComponent implements OnInit {
       this.monthlyStats[monthKey].sales += Number(order.total) || 0;
     });
     
-    // Calcular estadísticas de hoy
+
     this.calculateTodayStats(ordersToAnalyze);
   }
 
@@ -107,13 +107,13 @@ export class OrderStatsComponent implements OnInit {
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
     const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
     
-    // Filtrar órdenes de hoy
+
     const todayOrders = orders.filter(order => {
       const orderDate = new Date(order.createdAt);
       return orderDate >= todayStart && orderDate <= todayEnd;
     });
     
-    // Calcular estadísticas de hoy
+
     this.todayOrders = todayOrders.length;
     this.todaySales = todayOrders.reduce((sum, order) => Number(sum) + Number(order.total || 0), 0);
     this.todayCompletedOrders = todayOrders.filter(order => 
@@ -126,7 +126,7 @@ export class OrderStatsComponent implements OnInit {
     ).length;
   }
 
-  // Métodos de utilidad
+
   formatCurrency(amount: number): string {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -162,7 +162,7 @@ export class OrderStatsComponent implements OnInit {
     return 'status-unknown';
   }
 
-  // Métodos para obtener top items
+
   getTopPaymentMethods(limit: number = 5): Array<{ method: string; count: number; percentage: number }> {
     return Object.entries(this.paymentMethodStats)
       .map(([method, count]) => ({

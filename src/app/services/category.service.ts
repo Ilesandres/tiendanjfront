@@ -23,46 +23,46 @@ export class CategoryService {
     });
   }
 
-  // Obtener todas las categorías
+
   getAllCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.apiUrl}/category/all`);
   }
 
-  // Obtener categoría por ID
+
   getCategoryById(id: number): Observable<Category> {
     return this.http.get<Category>(`${this.apiUrl}/category/one/${id}`);
   }
 
-  // Obtener categoría por nombre
+
   getCategoryByName(name: string): Observable<Category> {
     return this.http.get<Category>(`${this.apiUrl}/category/name/${name}`);
   }
 
-  // Crear nueva categoría (admin, seller)
+
   createCategory(categoryData: CreateCategoryRequest): Observable<Category> {
     const headers = this.getAuthHeaders();
     return this.http.post<Category>(`${this.apiUrl}/category/create`, categoryData, { headers });
   }
 
-  // Actualizar categoría (admin, seller)
+
   updateCategory(id: number, categoryData: UpdateCategoryRequest): Observable<Category> {
     const headers = this.getAuthHeaders();
     return this.http.post<Category>(`${this.apiUrl}/category/update/${id}`, categoryData, { headers });
   }
 
-  // Deshabilitar categoría (admin, seller)
+
   disableCategory(id: number): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.patch(`${this.apiUrl}/category/disable/${id}`, {}, { headers });
   }
 
-  // Habilitar categoría (admin, seller)
+
   enableCategory(id: number): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.patch(`${this.apiUrl}/category/enable/${id}`, {}, { headers });
   }
 
-  // Eliminar categoría (admin)
+
   deleteCategory(id: number): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.delete(`${this.apiUrl}/category/delete/${id}`, { headers });

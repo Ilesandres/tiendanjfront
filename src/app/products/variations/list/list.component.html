@@ -9,7 +9,7 @@
     </div>
   </div>
 
-  <!-- Autocompletado de productos -->
+  
   <div class="search-section">
     <input
       type="text"
@@ -38,20 +38,20 @@
     </button>
   </div>
 
-  <!-- Loading -->
+  
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Cargando variaciones...</p>
   </div>
 
-  <!-- Error -->
+  
   <div *ngIf="error" class="alert alert-error">
     {{ error }}
   </div>
 
-  <!-- Lista de variaciones -->
+  
   <div *ngIf="!loading && !error" class="variations-container">
-    <!-- Estadísticas -->
+    
     <div class="stats-section">
       <div class="stat-card">
         <div class="stat-number">{{ totalVariations }}</div>
@@ -67,7 +67,7 @@
       </div>
     </div>
 
-    <!-- Grid de variaciones -->
+    
     <div *ngIf="variations.length > 0" class="variations-grid">
       <div *ngFor="let variation of variations" class="variation-card">
         <div class="variation-image">
@@ -117,7 +117,7 @@
             </div>
           </div>
           
-          <!-- Botones de gestión -->
+          
           <div *ngIf="canEdit()" class="variation-actions">
             <button (click)="goToProductDetail(variation.product.id)" class="btn btn-sm btn-outline">
               👁️ Ver Producto
@@ -136,7 +136,7 @@
       </div>
     </div>
 
-    <!-- Sin variaciones -->
+    
     <div *ngIf="variations.length === 0" class="empty-state">
       <div class="empty-icon">📦</div>
       <h3>No hay variaciones</h3>
@@ -147,7 +147,7 @@
     </div>
   </div>
 
-  <!-- Sin permisos -->
+  
   <div *ngIf="!canEdit()" class="no-permissions">
     <div class="empty-icon">🚫</div>
     <h3>Sin permisos</h3>

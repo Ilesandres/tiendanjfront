@@ -188,18 +188,18 @@ export interface Category {
 }
 
 export interface OrderFilters {
-  // Filtros por cliente (según endpoint del JSON)
+
   userId?: number;
   userDni?: string;
   user?: string; // username del usuario
   
-  // Filtros por fecha
+
   startDate?: string;
   endDate?: string;
   dateRange?: 'today' | 'week' | 'month' | 'quarter' | 'year' | 'custom';
   date?: string; // fecha específica
   
-  // Filtros por estado (según endpoint del JSON)
+
   status?: string; // estado general
   paymentStatus?: number;
   shipmentStatus?: number;
@@ -207,32 +207,32 @@ export interface OrderFilters {
   statusShipment?: string;
   statusPaymentMethod?: string;
   
-  // Filtros por tipo de orden
+
   orderType?: number;
   typeOrder?: string;
   
-  // Filtros por monto
+
   minTotal?: number;
   maxTotal?: number;
   total?: number; // monto específico
   
-  // Filtros por método de pago
+
   paymentMethod?: string;
   
-  // Filtros por envío
+
   shipment?: string;
   
-  // Filtros por producto
+
   productId?: number;
   
-  // Filtros por categoría
+
   categoryId?: number;
   
-  // Ordenamiento
+
   sortBy?: 'id' | 'total' | 'createdAt' | 'userName';
   sortOrder?: 'asc' | 'desc';
   
-  // Paginación
+
   page?: number;
   limit?: number;
 }

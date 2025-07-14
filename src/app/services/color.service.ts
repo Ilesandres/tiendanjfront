@@ -23,34 +23,34 @@ export class ColorService {
     });
   }
 
-  // Obtener todos los colores
+
   getAllColors(): Observable<Color[]> {
     return this.http.get<Color[]>(`${this.apiUrl}/color/all`);
   }
 
-  // Obtener color por ID
+
   getColorById(id: number): Observable<Color> {
     return this.http.get<Color>(`${this.apiUrl}/color/id/${id}`);
   }
 
-  // Obtener color por nombre
+
   getColorByName(name: string): Observable<Color> {
     return this.http.get<Color>(`${this.apiUrl}/color/name/${name}`);
   }
 
-  // Crear nuevo color (admin, seller)
+
   createColor(colorData: CreateColorRequest): Observable<Color> {
     const headers = this.getAuthHeaders();
     return this.http.post<Color>(`${this.apiUrl}/color/create`, colorData, { headers });
   }
 
-  // Actualizar color (admin, seller)
+
   updateColor(id: number, colorData: UpdateColorRequest): Observable<Color> {
     const headers = this.getAuthHeaders();
     return this.http.post<Color>(`${this.apiUrl}/color/update/${id}`, colorData, { headers });
   }
 
-  // Eliminar color (admin)
+
   deleteColor(id: number): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.delete(`${this.apiUrl}/color/delte/${id}`, { headers });

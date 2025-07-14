@@ -1,5 +1,5 @@
 <div class="container">
-  <!-- Loading State -->
+  
   <div *ngIf="loading" class="loading-container">
     <div class="loading-spinner">
       <div class="spinner"></div>
@@ -7,7 +7,7 @@
     </div>
   </div>
 
-  <!-- Error State -->
+  
   <div *ngIf="error" class="error-container">
     <div class="error-content">
       <div class="error-icon">⚠️</div>
@@ -19,9 +19,9 @@
     </div>
   </div>
 
-  <!-- Product Detail -->
+  
   <div *ngIf="!loading && !error && product" class="product-detail">
-    <!-- Hero Section -->
+    
     <div class="hero-section">
       <div class="hero-background"></div>
       <div class="hero-content">
@@ -43,7 +43,7 @@
           </p>
         </div>
 
-        <!-- Admin Actions -->
+        
         <div *ngIf="canEdit()" class="admin-actions">
           <button (click)="editProduct()" class="btn btn-outline">
             <i class="fas fa-edit"></i>
@@ -65,9 +65,9 @@
       </div>
     </div>
 
-    <!-- Main Content -->
+    
     <div class="main-content">
-      <!-- Product Gallery -->
+      
       <div class="gallery-section">
         <div class="gallery-container">
           <div class="main-gallery">
@@ -87,7 +87,7 @@
         </div>
       </div>
 
-      <!-- Variations Section -->
+      
       <div class="variations-section">
         <div class="section-header">
           <div class="section-title">
@@ -106,7 +106,7 @@
           </div>
         </div>
 
-        <!-- Loading Variations -->
+        
         <div *ngIf="loadingVariations" class="variations-loading">
           <div class="loading-cards">
             <div class="skeleton-card" *ngFor="let item of [1,2,3]">
@@ -120,10 +120,10 @@
           </div>
         </div>
 
-        <!-- Variations Grid -->
+        
         <div *ngIf="!loadingVariations && variations && variations.length > 0" class="variations-grid">
           <div *ngFor="let variation of variations" class="variation-card" [class.inactive]="!variation.active">
-            <!-- Card Header -->
+            
             <div class="card-header">
               <div class="variation-image">
                 <img 
@@ -149,7 +149,7 @@
               </div>
             </div>
 
-            <!-- Card Content -->
+            
             <div class="card-content">
               <div class="variation-title">
                 <h3>{{ variation.spice.spice || 'Sin sabor' }}</h3>
@@ -186,7 +186,7 @@
               </div>
             </div>
 
-            <!-- Card Actions -->
+            
             <div *ngIf="canEdit()" class="card-actions">
               <button (click)="editVariation(variation.id)" class="btn btn-sm btn-outline">
                 <i class="fas fa-edit"></i>
@@ -204,7 +204,7 @@
           </div>
         </div>
 
-        <!-- No Variations -->
+        
         <div *ngIf="!loadingVariations && (!variations || variations.length === 0)" class="empty-variations">
           <div class="empty-content">
             <div class="empty-icon">
@@ -222,7 +222,7 @@
     </div>
   </div>
 
-  <!-- Product Not Found -->
+  
   <div *ngIf="!loading && !error && !product" class="not-found">
     <div class="not-found-content">
       <div class="not-found-icon">

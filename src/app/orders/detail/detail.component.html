@@ -1,12 +1,11 @@
 <div class="order-detail-container">
-  <!-- Header -->
+  
   <div class="header">
     <button (click)="goBack()" class="btn btn-outline">
       <i class="fas fa-arrow-left"></i>
       Volver a Órdenes
     </button>
     
-    <!-- Send Invoice Button -->
     <div class="header-actions" *ngIf="order && !loading">
       <button 
         (click)="sendInvoice()" 
@@ -19,7 +18,6 @@
         {{ sendingInvoice ? 'Enviando ✉️...' : 'Enviar Factura ✉️✉️' }}
       </button>
       
-      <!-- Success message -->
       <div *ngIf="invoiceSent" class="success-message">
         <i class="fas fa-check-circle"></i>
         Factura enviada exitosamente
@@ -38,13 +36,11 @@
     </div>
   </div>
 
-  <!-- Loading -->
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Cargando detalles de la orden...</p>
   </div>
 
-  <!-- Error -->
   <div *ngIf="error" class="error">
     <div class="error-icon">⚠️</div>
     <p>{{ error }}</p>
@@ -54,12 +50,9 @@
     </button>
   </div>
 
-  <!-- Order Details -->
   <div *ngIf="order && !loading" class="order-content">
     
-    <!-- Customer & Order Info Grid -->
     <div class="info-grid-main">
-      <!-- Customer Info -->
       <div class="info-card customer-card">
         <div class="card-header">
           <i class="fas fa-user"></i>
@@ -92,7 +85,6 @@
         </div>
       </div>
 
-      <!-- Order Summary -->
       <div class="info-card order-summary">
         <div class="card-header">
           <i class="fas fa-receipt"></i>
@@ -119,7 +111,7 @@
           </div>
           <div class="info-item" *ngIf="order.invoice">
             <span class="label">Factura:</span>
-            <div class="invoice-card" [innerHTML]="order.invoice"></div>
+            <div class="invoice-card safe-html" [innerHTML]="order.invoice"></div>
           </div>
         </div>
         <div class="total-section">
@@ -131,9 +123,7 @@
       </div>
     </div>
 
-    <!-- Payment & Shipment Info -->
     <div class="info-grid-secondary">
-      <!-- Payment Info -->
       <div class="info-card payment-card" *ngIf="order.payment">
         <div class="card-header">
           <i class="fas fa-credit-card"></i>
@@ -153,6 +143,18 @@
             {{ order.payment.status.status }}
           </span>
         </div>
+        <div *ngIf="isAdmin() || (!isOrderPaid() && !isAdmin()) && paymentStatuses.length > 0" class="update-payment-status-form" style="margin: 12px 0;">
+          <label for="paymentStatusSelect"><b>Actualizar estado de pago:</b></label>
+          <select id="paymentStatusSelect" class="form-control" [(ngModel)]="selectedPaymentStatusId" name="paymentStatusSelect">
+            <option [ngValue]="null">Selecciona un estado</option>
+            <option *ngFor="let status of paymentStatuses" [ngValue]="status.id">{{ status.status }}</option>
+          </select>
+          <button class="btn btn-primary" style="margin-top: 8px;" (click)="updatePaymentStatusDirect()" [disabled]="!selectedPaymentStatusId || updatingPaymentStatus">
+            <i class="fas fa-spinner fa-spin" *ngIf="updatingPaymentStatus"></i>
+            <i class="fas fa-save" *ngIf="!updatingPaymentStatus"></i>
+            {{ updatingPaymentStatus ? 'Actualizando...' : 'Actualizar Estado' }}
+          </button>
+        </div>
         <div class="info-list">
           <div class="info-item">
             <span class="label">Método:</span>
@@ -164,7 +166,6 @@
           </div>
         </div>
 
-        <!-- Add Voucher Form -->
         <div *ngIf="addingVoucher" class="voucher-form">
           <h4><i class="fas fa-plus"></i> Agregar Abono</h4>
           <div class="voucher-restante-info">
@@ -202,12 +203,10 @@
           </form>
         </div>
 
-        <!-- Vouchers -->
         <div *ngIf="order.payment.vouchers && order.payment.vouchers.length > 0" class="vouchers-section">
           <h4><i class="fas fa-ticket-alt"></i> Vouchers/Abonos</h4>
           <div class="vouchers-list">
             <div *ngFor="let voucher of order.payment.vouchers" class="voucher-item">
-              <!-- Edit Voucher Form -->
               <div *ngIf="editingVoucher?.id === voucher.id" class="voucher-edit-form">
                 <form (ngSubmit)="updateVoucher()">
                   <div class="voucher-restante-info">
@@ -242,7 +241,6 @@
                 </form>
               </div>
 
-              <!-- Voucher Display -->
               <div *ngIf="editingVoucher?.id !== voucher.id" class="voucher-display">
                 <div class="voucher-header">
                   <span class="voucher-id">#{{ voucher.id }}</span>
@@ -268,7 +266,6 @@
         </div>
       </div>
 
-      <!-- Shipment Info -->
       <div class="info-card shipment-card">
         <div class="card-header">
           <i class="fas fa-shipping-fast"></i>
@@ -285,7 +282,6 @@
           </div>
         </div>
 
-        <!-- Shipment Display -->
         <div *ngIf="order.shipment && !editingShipment">
           <div class="shipment-status">
             <span class="status-badge status-{{ order.shipment.status.status }}">
@@ -318,7 +314,6 @@
           </div>
         </div>
 
-        <!-- Shipment Form -->
         <div *ngIf="editingShipment" class="shipment-form">
           <form (ngSubmit)="saveShipment()">
             <div class="form-group">
@@ -361,7 +356,6 @@
           </form>
         </div>
 
-        <!-- No Shipment Message -->
         <div *ngIf="!order.shipment && !editingShipment" class="no-shipment">
           <div class="empty-state">
             <i class="fas fa-shipping-fast"></i>
@@ -375,7 +369,6 @@
       </div>
     </div>
 
-    <!-- Products Section -->
     <div class="products-section">
       <div class="info-card products-card">
         <div class="card-header">
@@ -389,7 +382,6 @@
           </div>
         </div>
 
-        <!-- Add Product Form -->
         <div *ngIf="addingProduct" class="product-form">
           <h4><i class="fas fa-plus"></i> Agregar Producto</h4>
           <form (ngSubmit)="addProduct()">
@@ -446,7 +438,6 @@
 
         <div *ngIf="order.productOrder && order.productOrder.length > 0" class="products-list">
           <div *ngFor="let item of order.productOrder" class="product-item">
-            <!-- Edit Product Form -->
             <div *ngIf="editingProduct?.id === item.id" class="product-edit-form">
               <form (ngSubmit)="updateProduct()">
                 <div class="form-group">
@@ -473,7 +464,6 @@
               </form>
             </div>
 
-            <!-- Product Display -->
             <div *ngIf="editingProduct?.id !== item.id" class="product-display compact-product">
               <div class="product-image">
                 <img [src]="item.product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2UwZWNlMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+SW1hZ2VuIG5vIGRpc3BvbmlibGU8L3RleHQ+PC9zdmc+'"
@@ -488,11 +478,9 @@
                     {{ item.product.active ? 'Activo' : 'Inactivo' }}
                   </span>
                 </div>
-                <!-- Descripción de la variante -->
                 <div *ngIf="item.product.description" class="variant-description">
                   {{ item.product.description }}
                 </div>
-                <!-- Badges de variante -->
                 <div class="product-badges">
                   <span class="badge badge-category">{{ item.product.product?.category?.category || 'Sin categoría' }}</span>
                   <span class="badge badge-measure" *ngIf="item.product.measure?.measure">{{ item.product.measure.measure }}</span>

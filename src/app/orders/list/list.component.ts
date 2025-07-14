@@ -23,22 +23,22 @@ export class ListComponent implements OnInit {
   currentFilters: OrderFilters = {};
   searchTerm: string = '';
 
-  // Estadísticas
+
   totalSales = 0;
   completedOrders = 0;
   pendingOrders = 0;
   
-  // Estadísticas de hoy
+
   todaySales = 0;
   todayOrders = 0;
   todayCompletedOrders = 0;
 
-  // Paginación
+
   currentPage = 1;
   itemsPerPage = 20;
   totalItems = 0;
 
-  // Hacer Math disponible en el template
+
   Math = Math;
 
   constructor(
@@ -62,7 +62,6 @@ export class ListComponent implements OnInit {
         this.filteredOrders = orders;
         this.totalItems = orders.length;
         this.loading = false;
-        console.log('Órdenes cargadas:', this.orders);
       },
       error: (err) => {
         this.error = 'Error al cargar las ventas';
@@ -81,7 +80,7 @@ export class ListComponent implements OnInit {
     this.searchTerm = searchTerm;
     
     if (searchTerm) {
-      // Usar el endpoint de búsqueda
+
       this.loading = true;
       this.orderService.searchOrders(searchTerm, this.currentFilters).subscribe({
         next: (orders) => {
@@ -98,7 +97,7 @@ export class ListComponent implements OnInit {
         }
       });
     } else {
-      // Si no hay término de búsqueda, aplicar filtros normales
+
       this.applyFilters();
     }
   }
@@ -106,7 +105,7 @@ export class ListComponent implements OnInit {
   applyFilters(): void {
     this.loading = true;
     
-    // Usar el endpoint de filtros del backend
+
     this.orderService.getOrdersWithFilters(this.currentFilters).subscribe({
       next: (orders) => {
         this.orders = orders;
@@ -123,11 +122,11 @@ export class ListComponent implements OnInit {
     });
   }
 
-  // Método para aplicar filtros en el frontend
+
   private applyFrontendFilters(orders: Order[]): Order[] {
     let filtered = [...orders];
 
-    // Filtro por búsqueda
+
     if (this.searchTerm) {
       const searchLower = this.searchTerm.toLowerCase();
       filtered = filtered.filter(order => 
@@ -140,7 +139,7 @@ export class ListComponent implements OnInit {
       );
     }
 
-    // Filtro por fecha
+
     if (this.currentFilters.dateRange && this.currentFilters.dateRange !== 'custom') {
       const { startDate, endDate } = this.calculateDateRange(this.currentFilters.dateRange);
       filtered = filtered.filter(order => {
@@ -158,28 +157,28 @@ export class ListComponent implements OnInit {
       });
     }
 
-    // Filtro por estado de pago
+
     if (this.currentFilters.paymentStatus) {
       filtered = filtered.filter(order => 
         order.payment?.status?.id === this.currentFilters.paymentStatus
       );
     }
 
-    // Filtro por estado de envío
+
     if (this.currentFilters.shipmentStatus) {
       filtered = filtered.filter(order => 
         order.shipment?.status?.id === this.currentFilters.shipmentStatus
       );
     }
 
-    // Filtro por tipo de orden
+
     if (this.currentFilters.orderType) {
       filtered = filtered.filter(order => 
         order.typeOrder?.id === this.currentFilters.orderType
       );
     }
 
-    // Filtro por monto mínimo
+
     if (this.currentFilters.minTotal) {
       filtered = filtered.filter(order => {
         const total = typeof order.total === 'string' ? parseFloat(order.total) : order.total;
@@ -187,7 +186,7 @@ export class ListComponent implements OnInit {
       });
     }
 
-    // Filtro por monto máximo
+
     if (this.currentFilters.maxTotal) {
       filtered = filtered.filter(order => {
         const total = typeof order.total === 'string' ? parseFloat(order.total) : order.total;
@@ -195,7 +194,7 @@ export class ListComponent implements OnInit {
       });
     }
 
-    // Filtro por categoría de producto
+
     if (this.currentFilters.categoryId) {
       filtered = filtered.filter(order => 
         order.productOrder?.some(po => 
@@ -204,7 +203,7 @@ export class ListComponent implements OnInit {
       );
     }
 
-    // Ordenamiento
+
     if (this.currentFilters.sortBy) {
       filtered.sort((a, b) => {
         let aValue: any;
@@ -290,7 +289,7 @@ export class ListComponent implements OnInit {
 
     this.totalItems = this.filteredOrders.length;
     
-    // Calcular estadísticas de hoy
+
     this.calculateTodayStats();
   }
 
@@ -299,13 +298,13 @@ export class ListComponent implements OnInit {
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
     const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
     
-    // Filtrar órdenes de hoy
+
     const todayOrders = this.filteredOrders.filter(order => {
       const orderDate = new Date(order.createdAt);
       return orderDate >= todayStart && orderDate <= todayEnd;
     });
     
-    // Calcular estadísticas de hoy
+
     this.todayOrders = todayOrders.length;
     this.todaySales = todayOrders.reduce((sum, order) => Number(sum) + Number(order.total || 0), 0);
     this.todayCompletedOrders = todayOrders.filter(order => 
@@ -329,7 +328,7 @@ export class ListComponent implements OnInit {
     }
   }
 
-  // Métodos de paginación
+
   get paginatedOrders(): Order[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
@@ -354,7 +353,7 @@ export class ListComponent implements OnInit {
     }
   }
 
-  // Métodos de utilidad
+
   formatDate(date: string): string {
     return new Date(date).toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -385,7 +384,7 @@ export class ListComponent implements OnInit {
     return this.isAdmin() || this.isSeller();
   }
 
-  // Métodos auxiliares para manejar campos opcionales
+
   getVouchersCount(order: Order): number {
     return order.payment?.vouchers?.length || 0;
   }
@@ -408,7 +407,6 @@ export class ListComponent implements OnInit {
   }
 
   createNewOrder(): void {
-    // TODO: Implementar creación de nueva orden
-    console.log('Crear nueva orden');
+
   }
 }

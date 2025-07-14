@@ -209,7 +209,7 @@ export class DetailComponent implements OnInit {
     });
   }
 
-  // Métodos para estadísticas de variaciones
+
   getTotalVariations(): number {
     return this.variations?.length || 0;
   }

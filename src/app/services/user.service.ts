@@ -91,7 +91,7 @@ export class UserService {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
 
-      // Asegurar que el rol se obtenga correctamente
+
       let rol = 'cliente'; // default
       if (payload.rol) {
         rol = payload.rol;
@@ -108,7 +108,6 @@ export class UserService {
 
       return userInfo;
     } catch (error) {
-      console.error('Error decoding JWT token:', error);
       return null;
     }
   }
@@ -138,7 +137,7 @@ export class UserService {
     return userRole ? roles.includes(userRole) : false;
   }
 
-  // Métodos para obtener información del usuario desde el backend
+
   getUserById(id: number): Observable<User> {
     const headers = this.getAuthHeaders();
     return this.http.get<any>(`${this.apiUrl}/auth/user/info/id/${id}`, { headers }).pipe(
@@ -186,14 +185,13 @@ export class UserService {
         })
       );
     } catch (error) {
-      console.error('Error searching user by DNI:', error);
       this.errorFilter.handle(error as HttpErrorResponse);
       throw error;
     }
 
   }
 
-  // Métodos para crear y actualizar usuarios
+
   createUser(userData: CreateUserRequest): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.post(`${this.apiUrl}/auth/register/user`, userData, { headers });
@@ -204,7 +202,7 @@ export class UserService {
     return this.http.post(`${this.apiUrl}/auth/update/user/${userId}`, userData, { headers });
   }
 
-  // Métodos para bloquear/desbloquear usuarios (solo admin)
+
   blockUser(userId: number): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.patch(`${this.apiUrl}/auth/block/user/${userId}`, {}, { headers });

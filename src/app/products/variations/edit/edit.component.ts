@@ -62,7 +62,7 @@ export class EditVariationComponent implements OnInit {
         this.formData.description = variation.description || '';
         this.loading = false;
         
-        // Log para debugging
+
         console.log('Variación cargada:', variation);
       },
       error: (err) => {
@@ -83,18 +83,18 @@ export class EditVariationComponent implements OnInit {
     this.saving = true;
     this.error = null;
 
-    // Se pueden actualizar price, stock, image y description
+
     const updateData: UpdateVariationRequest = {
       price: this.formData.price,
       stock: this.formData.stock
     };
 
-    // Solo incluir image si se ha modificado
+
     if (this.formData.image && this.formData.image !== this.variation.image) {
       updateData.image = this.formData.image;
     }
 
-    // Solo incluir description si se ha modificado
+
     if (this.formData.description !== this.variation.description) {
       updateData.description = this.formData.description;
     }
@@ -102,7 +102,7 @@ export class EditVariationComponent implements OnInit {
     this.productService.updateVariation(this.variation.id, updateData).subscribe({
       next: (updatedVariation) => {
         this.saving = false;
-        // Redirigir al detalle del producto
+
         if (this.variation?.product?.id) {
           this.router.navigate(['/products', this.variation.product.id]);
         } else {
@@ -146,8 +146,8 @@ export class EditVariationComponent implements OnInit {
   }
 
   onImageInput(event: any): void {
-    // Este método se ejecuta cada vez que el usuario escribe en el campo de imagen
-    // La validación ya está manejada por el ngModel
+
+
   }
 
   getImageLength(): number {
@@ -155,8 +155,8 @@ export class EditVariationComponent implements OnInit {
   }
 
   onDescriptionInput(event: any): void {
-    // Este método se ejecuta cada vez que el usuario escribe en el campo de descripción
-    // La validación ya está manejada por el ngModel
+
+
   }
 
   getDescriptionLength(): number {
